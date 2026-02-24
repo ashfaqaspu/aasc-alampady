@@ -2,246 +2,573 @@
 {% block content %}
 
 <style>
-/* ================= COMMITTEE PAGE ================= */
-.committee-page {
-    max-width: 1200px;
-    margin: auto;
+:root {
+    --cream:#f7f0e6; --warm-white:#fdf8f2; --sand:#e8d5b7;
+    --amber:#b8751a; --amber-bright:#d4891f; --amber-pale:#e8c07a;
+    --terra:#8b4513; --terra-soft:#c0622a;
+    --teal:#2a7a72; --teal-light:#3d9e94; --teal-pale:#d4f0ec;
+    --ink:#1a1208; --ink-warm:#3d2e1a; --ink-mid:#6b5540; --ink-soft:#9a8270;
+    --shimmer: linear-gradient(105deg, #b8751a 0%, #e8c07a 25%, #d4891f 50%, #e8c07a 75%, #b8751a 100%);
+    --shimmer-teal: linear-gradient(105deg, #2a7a72 0%, #3d9e94 40%, #2a7a72 100%);
 }
 
-.committee-page h1 {
-    text-align: center;
-    color: #0d47a1;
-    margin-bottom: 12px;
-    font-size: 34px;
+@keyframes shimMove   { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+@keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+@keyframes pulse      { from{transform:scale(1);opacity:.8} to{transform:scale(1.1);opacity:1} }
+@keyframes spinSlow   { to{transform:rotate(360deg)} }
+@keyframes cardIn     { from{opacity:0;transform:translateY(24px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes crownFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+.reveal { opacity:0; transform:translateY(28px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ══════════════════════════════════════════
+   PAGE HERO
+══════════════════════════════════════════ */
+.committee-hero {
+    position:relative; border-radius:28px; overflow:hidden;
+    padding:76px 72px 68px; text-align:center;
+    background:linear-gradient(140deg,
+        #f0e4cc 0%, #f8ece0 30%, #eef6f5 65%, #f5ece0 100%);
+    border:1px solid rgba(184,117,26,.22);
+    box-shadow:
+        0 40px 100px rgba(184,117,26,.15),
+        0 8px 32px rgba(0,0,0,.06),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    margin-bottom:56px;
+    animation:fadeIn .6s ease both;
+}
+.committee-hero::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation:shimMove 5s linear infinite; border-radius:28px 28px 0 0;
+}
+.ch-pat {
+    position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(circle at 1px 1px,rgba(184,117,26,.055) 1px,transparent 0);
+    background-size:28px 28px; opacity:.55;
+}
+.ch-glow {
+    position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse 75% 85% at 50% 50%,rgba(232,192,122,.22) 0%,transparent 65%);
+}
+.brk-tl { position:absolute; top:20px; left:20px; width:42px; height:42px; border-top:2px solid rgba(184,117,26,.5); border-left:2px solid rgba(184,117,26,.5); pointer-events:none; }
+.brk-br { position:absolute; bottom:20px; right:20px; width:42px; height:42px; border-bottom:2px solid rgba(184,117,26,.5); border-right:2px solid rgba(184,117,26,.5); pointer-events:none; }
+
+.page-eyebrow {
+    display:inline-flex; align-items:center; gap:12px; font-family:'Cinzel',serif;
+    font-size:9.5px; letter-spacing:4px; text-transform:uppercase; color:var(--amber);
+    margin-bottom:18px; animation:fadeUp .7s ease both .1s; position:relative;
+}
+.page-eyebrow::before { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,transparent,var(--amber)); }
+.page-eyebrow::after  { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,var(--amber),transparent); }
+
+.committee-page-title {
+    font-family:'Cinzel',serif; font-size:clamp(26px,5vw,56px); font-weight:700;
+    color:var(--ink); letter-spacing:5px; line-height:1.05; margin:0 0 8px;
+    animation:fadeUp .8s ease both .15s; position:relative;
+}
+.committee-page-sub {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(14px,2vw,19px); font-weight:400;
+    color:var(--amber); letter-spacing:3px; margin-bottom:20px;
+    animation:fadeUp .8s ease both .2s; position:relative;
+}
+.committee-page-desc {
+    font-family:'Raleway',sans-serif; font-size:14.5px; line-height:1.9;
+    color:var(--ink-mid); max-width:580px; margin:0 auto 28px;
+    animation:fadeIn 1s ease both .3s; position:relative;
+}
+.hero-orn { display:flex; align-items:center; gap:14px; justify-content:center; animation:fadeIn 1s ease both .35s; position:relative; }
+.hero-orn-l { width:52px; height:1px; }
+.hero-orn-l:first-child { background:linear-gradient(90deg,transparent,rgba(184,117,26,.5)); }
+.hero-orn-l:last-child  { background:linear-gradient(90deg,rgba(184,117,26,.5),transparent); }
+.hero-orn-c { color:var(--amber); font-size:9px; display:flex; gap:7px; }
+
+/* ══════════════════════════════════════════
+   COMMITTEE SECTION WRAPPER
+══════════════════════════════════════════ */
+.committee-section { margin-bottom:72px; }
+
+/* ── section heading block ── */
+.section-heading {
+    display:flex; align-items:center; gap:18px; margin-bottom:36px;
+}
+.section-heading-bar {
+    width:5px; height:48px; border-radius:3px; flex-shrink:0;
+}
+.central .section-heading-bar { background:linear-gradient(180deg,var(--amber),var(--terra-soft)); }
+.gcc     .section-heading-bar { background:linear-gradient(180deg,var(--teal),var(--teal-light)); }
+
+.section-heading-text { flex:1; }
+.section-heading h2 {
+    font-family:'Cinzel',serif; font-size:clamp(20px,3vw,28px); font-weight:700;
+    color:var(--ink); letter-spacing:3px; text-transform:uppercase; margin:0 0 4px;
+}
+.section-heading-sub {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:14px; color:var(--amber); letter-spacing:2px;
+}
+.gcc .section-heading-sub { color:var(--teal); }
+
+.section-heading-emblem {
+    width:56px; height:56px; border-radius:50%; position:relative; flex-shrink:0;
+}
+.emb-r {
+    position:absolute; border-radius:50%; border:1px solid rgba(184,117,26,.3);
+}
+.emb-r:nth-child(1) { inset:0; animation:spinSlow 25s linear infinite; }
+.emb-r:nth-child(2) { inset:8px; border-style:dashed; border-color:rgba(184,117,26,.18); animation:spinSlow 18s linear infinite reverse; }
+.emb-core {
+    position:absolute; inset:16px; border-radius:50%;
+    background:radial-gradient(circle,var(--amber-pale),var(--sand));
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; color:var(--amber); animation:pulse 4s ease-in-out infinite alternate;
+}
+.gcc .emb-r   { border-color:rgba(42,122,114,.3); }
+.gcc .emb-r:nth-child(2) { border-color:rgba(42,122,114,.18); }
+.gcc .emb-core { background:radial-gradient(circle,var(--teal-pale),rgba(212,240,236,.6)); color:var(--teal); }
+
+/* ── subsection label ── */
+.sub-label {
+    display:flex; align-items:center; gap:14px; margin:40px 0 22px;
+}
+.sub-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(184,117,26,.25),transparent); }
+.sub-label-text {
+    font-family:'Cinzel',serif; font-size:9px; letter-spacing:3px;
+    text-transform:uppercase; white-space:nowrap;
+    padding:5px 16px; border-radius:20px;
+    background:var(--amber); color:rgba(253,248,242,.95);
+}
+.gcc .sub-label-text,
+.sub-label.teal .sub-label-text {
+    background:var(--teal);
+}
+.sub-label::before { content:'◆'; color:var(--amber-pale); font-size:7px; flex-shrink:0; }
+.sub-label.teal::before { color:var(--teal-pale); }
+
+/* ══════════════════════════════════════════
+   TOP LEADERSHIP GRID
+══════════════════════════════════════════ */
+.top-leadership {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:28px; margin-bottom:0;
 }
 
-.committee-page p {
-    text-align: center;
-    color: #444;
-    margin-bottom: 50px;
-    font-size: 16px;
+.top-leadership .committee-card {
+    position:relative; overflow:visible;
 }
 
-/* ================= SECTION ================= */
-.committee-section {
-    margin-bottom: 70px;
+/* crown on leadership cards */
+.top-leadership .committee-card::before {
+    content:'♛';
+    position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+    font-size:20px; color:var(--amber-pale);
+    animation:crownFloat 3s ease-in-out infinite;
+    filter:drop-shadow(0 2px 6px rgba(184,117,26,.3));
 }
 
-.committee-section h2 {
-    color: #0d47a1;
-    border-left: 5px solid #ff9800;
-    padding-left: 12px;
-    margin-bottom: 25px;
-    font-size: 26px;
-}
-
-/* ================= GRID ================= */
+/* ══════════════════════════════════════════
+   COMMITTEE CARD
+══════════════════════════════════════════ */
 .committee-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 28px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:22px;
 }
 
-/* ================= CARD ================= */
 .committee-card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    padding: 22px;
-    text-align: center;
-    transition: transform 0.3s ease;
+    background:rgba(253,248,242,.94);
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-radius:18px;
+    border:1px solid rgba(184,117,26,.16);
+    box-shadow:
+        0 16px 45px rgba(184,117,26,.1),
+        0 4px 16px rgba(0,0,0,.05),
+        inset 0 1px 0 rgba(255,255,255,.88);
+    padding:28px 22px 24px;
+    text-align:center;
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1),
+               box-shadow .35s, border-color .35s;
+    position:relative; overflow:hidden;
 }
+
+/* shimmer top on hover */
+.committee-card::after {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation:shimMove 4s linear infinite;
+    opacity:0; transition:opacity .3s; border-radius:18px 18px 0 0;
+}
+.committee-card:hover::after { opacity:1; }
 
 .committee-card:hover {
-    transform: translateY(-6px);
+    transform:translateY(-7px);
+    box-shadow:0 28px 70px rgba(184,117,26,.18),0 8px 30px rgba(0,0,0,.07);
+    border-color:rgba(184,117,26,.32);
 }
+
+/* teal committee card variant */
+.gcc .committee-card:hover {
+    box-shadow:0 28px 70px rgba(42,122,114,.16),0 8px 30px rgba(0,0,0,.07);
+    border-color:rgba(42,122,114,.3);
+}
+.gcc .committee-card::after { background:var(--shimmer-teal); }
+
+/* ── photo ── */
+.card-photo-wrap {
+    position:relative; width:110px; height:110px;
+    margin:0 auto 16px;
+}
+
+.card-photo-ring {
+    position:absolute; inset:-5px; border-radius:50%;
+    border:1.5px solid rgba(184,117,26,.3);
+    animation:spinSlow 20s linear infinite;
+}
+.card-photo-ring::before {
+    content:'◆◆◆';
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%) rotate(0deg);
+    font-size:5px; letter-spacing:28px;
+    color:rgba(184,117,26,.4);
+    white-space:nowrap;
+    animation:spinSlow 20s linear infinite reverse;
+}
+
+.gcc .card-photo-ring { border-color:rgba(42,122,114,.3); }
+.gcc .card-photo-ring::before { color:rgba(42,122,114,.35); }
 
 .committee-card img {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 12px;
-    background: #e0e0e0;
+    width:110px; height:110px; border-radius:50%;
+    object-fit:cover; display:block;
+    border:3px solid var(--sand);
+    box-shadow:0 6px 22px rgba(184,117,26,.18);
+    transition:transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s;
+    background:var(--sand);
+    position:relative; z-index:1;
 }
+.committee-card:hover img {
+    transform:scale(1.06);
+    border-color:var(--amber-pale);
+}
+.gcc .committee-card:hover img { border-color:var(--teal-pale); }
 
+/* ── name ── */
 .committee-card h3 {
-    margin: 8px 0 4px;
-    font-size: 18px;
-    color: #222;
+    font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:700;
+    color:var(--ink); margin:0 0 6px; line-height:1.25; letter-spacing:.3px;
+    text-transform:capitalize;
 }
 
+/* ── role badge ── */
 .committee-card span {
-    font-size: 14px;
-    color: #666;
+    display:inline-block;
+    font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px;
+    text-transform:uppercase;
+    padding:4px 13px; border-radius:20px;
+    background:rgba(232,192,122,.25);
+    border:1px solid rgba(184,117,26,.2);
+    color:var(--amber);
+    transition:background .25s, border-color .25s;
+}
+.committee-card:hover span {
+    background:rgba(232,192,122,.4);
+    border-color:rgba(184,117,26,.4);
+}
+.gcc .committee-card span {
+    background:rgba(42,122,114,.1);
+    border-color:rgba(42,122,114,.25); color:var(--teal);
+}
+.gcc .committee-card:hover span { background:rgba(42,122,114,.2); border-color:rgba(42,122,114,.45); }
+
+/* leadership card larger photo */
+.top-leadership .card-photo-wrap { width:130px; height:130px; margin-bottom:18px; }
+.top-leadership .committee-card img { width:130px; height:130px; }
+.top-leadership .committee-card h3 { font-size:19px; }
+.top-leadership .committee-card span { font-size:9px; padding:5px 16px; }
+/* gold role badge for leaders */
+.top-leadership .committee-card span {
+    background:linear-gradient(135deg,rgba(232,192,122,.5),rgba(253,248,242,.8));
+    border-color:rgba(184,117,26,.35); color:var(--terra);
+    font-weight:600;
+}
+.top-leadership.gcc-leads .committee-card span {
+    background:linear-gradient(135deg,rgba(42,122,114,.15),rgba(212,240,236,.7));
+    border-color:rgba(42,122,114,.35); color:var(--teal);
 }
 
-/* ================= TOP LEADERSHIP ================= */
-.top-leadership {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 30px;
-    margin-bottom: 50px;
+/* ══════════════════════════════════════════
+   GRAND DIVIDER BETWEEN COMMITTEES
+══════════════════════════════════════════ */
+.grand-divider {
+    display:flex; align-items:center; gap:20px;
+    margin:72px 0 72px;
+}
+.grand-divider::before,.grand-divider::after {
+    content:''; flex:1; height:1px;
+}
+.grand-divider::before { background:linear-gradient(90deg,transparent,rgba(184,117,26,.35),var(--amber)); }
+.grand-divider::after  { background:linear-gradient(90deg,var(--amber),rgba(184,117,26,.35),transparent); }
+
+.grand-divider-center {
+    display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0;
+}
+.gdiv-mandala {
+    position:relative; width:60px; height:60px;
+}
+.gdiv-ring {
+    position:absolute; border-radius:50%; border:1px solid rgba(184,117,26,.3);
+}
+.gdiv-ring:nth-child(1) { inset:0; animation:spinSlow 20s linear infinite; }
+.gdiv-ring:nth-child(2) { inset:8px; border-style:dashed; border-color:rgba(184,117,26,.2); animation:spinSlow 14s linear infinite reverse; }
+.gdiv-ring:nth-child(3) { inset:16px; border-color:rgba(184,117,26,.45); }
+.gdiv-core {
+    position:absolute; inset:22px; border-radius:50%;
+    background:radial-gradient(circle,var(--amber-pale),var(--sand));
+    display:flex; align-items:center; justify-content:center;
+    color:var(--amber); font-size:10px;
+    animation:pulse 3s ease-in-out infinite alternate;
+}
+.gdiv-label {
+    font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--ink-soft); white-space:nowrap;
 }
 
-/* ================= DIVIDER ================= */
-.section-divider {
-    height: 4px;
-    width: 120px;
-    background: #ff9800;
-    margin: 70px auto;
-    border-radius: 4px;
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-    .committee-section h2 {
-        font-size: 22px;
-    }
+/* mobile */
+@media(max-width:768px){
+    .committee-hero { padding:56px 24px 50px; }
+    .section-heading { gap:12px; }
+    .section-heading-emblem { display:none; }
+    .top-leadership { grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
+    .committee-grid { grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); }
+    .grand-divider { margin:50px 0; }
 }
 </style>
 
-<div class="committee-page">
 
-    <h1>👥 Committee Members</h1>
-    <p>
+<!-- ══ HERO ══ -->
+<div class="committee-hero">
+    <div class="ch-pat"></div>
+    <div class="ch-glow"></div>
+    <div class="brk-tl"></div>
+    <div class="brk-br"></div>
+
+    <div class="page-eyebrow">Leadership · Service · Unity</div>
+    <h1 class="committee-page-title">Committee</h1>
+    <p class="committee-page-sub">Members &amp; Leadership</p>
+    <p class="committee-page-desc">
         Our committees work collectively to strengthen leadership,
         coordination, and service across India and GCC regions.
     </p>
 
-    <!-- ================= CENTRAL COMMITTEE ================= -->
-    <div class="committee-section">
-        <h2>Central Committee 2025-2026</h2>
+    <div class="hero-orn">
+        <div class="hero-orn-l"></div>
+        <div class="hero-orn-c"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
+        <div class="hero-orn-l"></div>
+    </div>
+</div>
 
-        <!-- Leadership -->
-        <div class="top-leadership">
-            <div class="committee-card">
+
+<!-- ══════════════════════════════════════════
+     CENTRAL COMMITTEE
+══════════════════════════════════════════ -->
+<div class="committee-section central reveal">
+
+    <div class="section-heading">
+        <div class="section-heading-bar"></div>
+        <div class="section-heading-text">
+            <h2>Central Committee</h2>
+            <div class="section-heading-sub">2025 – 2026</div>
+        </div>
+        <div class="section-heading-emblem">
+            <div class="emb-r"></div>
+            <div class="emb-r"></div>
+            <div class="emb-core">✦</div>
+        </div>
+    </div>
+
+    <!-- Leadership -->
+    <div class="sub-label"><span class="sub-label-text">Leadership</span></div>
+    <div class="top-leadership">
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
                 <img src="/static/images/committee/central/pr.jpeg">
-                <h3>sideeq m</h3>
-                <span>President</span>
             </div>
-            <div class="committee-card">
+            <h3>Sideeq M</h3>
+            <span>President</span>
+        </div>
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
                 <img src="/static/images/committee/central/gsec.jpeg">
-                <h3>Abdul khader Jeelani </h3>
-                <span>Secretary</span>
             </div>
-            <div class="committee-card">
+            <h3>Abdul Khader Jeelani</h3>
+            <span>Secretary</span>
+        </div>
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
                 <img src="/static/images/committee/central/tr.jpeg">
-                <h3>Rafeek p k</h3>
-                <span>Treasurer</span>
             </div>
+            <h3>Rafeek P K</h3>
+            <span>Treasurer</span>
         </div>
-
-        <!-- Vice Presidents -->
-        <h2>Vice Presidents</h2>
-        <div class="committee-grid">
-            <div class="committee-card"><img src="/static/images/committee/central/vp1.jpeg"><h3>HAWAS</h3><span>Vice President</span></div>
-            <div class="committee-card"><img src="/static/images/committee/central/vp2.jpeg"><h3>HARIS S T</h3><span>Vice President</span></div>
-            <div class="committee-card"><img src="/static/images/committee/central/vp3.jpeg"><h3>MANIKANDAN</h3><span>Vice President</span></div>
-        </div>
-
-        <!-- Joint Secretaries -->
-        <h2>Joint Secretaries</h2>
-        <div class="committee-grid">
-            <div class="committee-card"><img src="/static/images/committee/central/js1.jpeg"><h3>ABDUL KHADER ASHFAQ K A</h3><span>Join Secretary</span></div>
-            <div class="committee-card"><img src="/static/images/committee/central/js2.jpeg"><h3>MUNAWIR</h3><span>Join Secretary</span></div>
-            <div class="committee-card"><img src="/static/images/committee/central/js3.jpeg"><h3>ADDI PATHRAM</h3><span>Join Secretary</span></div>
-        </div>
-
-        <!-- Executives -->
-        <h2>Executive Members</h2>
-<div class="committee-grid">
-    {% set central_executives = [
-        "Basheer m m",
-        "NIZAR P M",
-        "ASIF B A",
-        "KHADER KAAU",
-        "QAISAR MIHRAJ",
-        "SALAM LONDON",
-        "RIYAS T A",
-        "BATHISHA",
-        "LATHI MASTER",
-        "ABDUL KHADER"
-    ] %}
-
-    {% for name in central_executives %}
-    <div class="committee-card">
-        <img src="/static/images/committee/central/ex{{ loop.index }}.jpeg">
-        <h3>{{ name }}</h3>
-        <span>Executive Member</span>
     </div>
-    {% endfor %}
+
+    <!-- Vice Presidents -->
+    <div class="sub-label"><span class="sub-label-text">Vice Presidents</span></div>
+    <div class="committee-grid">
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/central/vp1.jpeg"></div><h3>Hawas</h3><span>Vice President</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/central/vp2.jpeg"></div><h3>Haris S T</h3><span>Vice President</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/central/vp3.jpeg"></div><h3>Manikandan</h3><span>Vice President</span></div>
+    </div>
+
+    <!-- Joint Secretaries -->
+    <div class="sub-label"><span class="sub-label-text">Joint Secretaries</span></div>
+    <div class="committee-grid">
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/central/js1.jpeg"></div><h3>Abdul Khader Ashfaq K A</h3><span>Joint Secretary</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/central/js2.jpeg"></div><h3>Munawir</h3><span>Joint Secretary</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/central/js3.jpeg"></div><h3>Addi Pathram</h3><span>Joint Secretary</span></div>
+    </div>
+
+    <!-- Executives -->
+    <div class="sub-label"><span class="sub-label-text">Executive Members</span></div>
+    <div class="committee-grid">
+        {% set central_executives = [
+            "Basheer M M","NIZAR P M","ASIF B A","KHADER KAAU",
+            "QAISAR MIHRAJ","SALAM LONDON","RIYAS T A","BATHISHA",
+            "LATHI MASTER","ABDUL KHADER"
+        ] %}
+        {% for name in central_executives %}
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
+                <img src="/static/images/committee/central/ex{{ loop.index }}.jpeg">
+            </div>
+            <h3>{{ name }}</h3>
+            <span>Executive Member</span>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
 
 
-    <!-- ================= DIVIDER ================= -->
-    <div class="section-divider"></div>
+<!-- ══ GRAND DIVIDER ══ -->
+<div class="grand-divider reveal">
+    <div class="grand-divider-center">
+        <div class="gdiv-mandala">
+            <div class="gdiv-ring"></div>
+            <div class="gdiv-ring"></div>
+            <div class="gdiv-ring"></div>
+            <div class="gdiv-core">✦</div>
+        </div>
+        <div class="gdiv-label">GCC Committee</div>
+    </div>
+</div>
 
-    <!-- ================= GCC COMMITTEE ================= -->
-    <div class="committee-section">
-        <h2>GCC Committee 2025-2026</h2>
 
-        <!-- Leadership -->
-        <div class="top-leadership">
-            <div class="committee-card">
+<!-- ══════════════════════════════════════════
+     GCC COMMITTEE
+══════════════════════════════════════════ -->
+<div class="committee-section gcc reveal">
+
+    <div class="section-heading">
+        <div class="section-heading-bar"></div>
+        <div class="section-heading-text">
+            <h2>GCC Committee</h2>
+            <div class="section-heading-sub">2025 – 2026</div>
+        </div>
+        <div class="section-heading-emblem">
+            <div class="emb-r"></div>
+            <div class="emb-r"></div>
+            <div class="emb-core">✦</div>
+        </div>
+    </div>
+
+    <!-- Leadership -->
+    <div class="sub-label teal"><span class="sub-label-text">Leadership</span></div>
+    <div class="top-leadership gcc-leads">
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
                 <img src="/static/images/committee/gcc/pr.jpeg">
-                <h3>Jabu Polit</h3>
-                <span>President</span>
             </div>
-            <div class="committee-card">
+            <h3>Jabu Polit</h3>
+            <span>President</span>
+        </div>
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
                 <img src="/static/images/committee/gcc/sec.jpeg">
-                <h3>Yaseen C H </h3>
-                <span>Secretary</span>
             </div>
-            <div class="committee-card">
+            <h3>Yaseen C H</h3>
+            <span>Secretary</span>
+        </div>
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
                 <img src="/static/images/committee/gcc/tr.jpeg">
-                <h3>Davood Mihraj</h3>
-                <span>Treasurer</span>
             </div>
+            <h3>Davood Mihraj</h3>
+            <span>Treasurer</span>
         </div>
-
-        <!-- Vice Presidents -->
-        <h2>Vice Presidents</h2>
-        <div class="committee-grid">
-            <div class="committee-card"><img src="/static/images/committee/gcc/vp1.jpeg"><h3>Siddiq Copa</h3><span>Vice President</span></div>
-            <div class="committee-card"><img src="/static/images/committee/gcc/vp2.jpeg"><h3>Naseer C H </h3><span>Vice President</span></div>
-            <div class="committee-card"><img src="/static/images/committee/gcc/vp3.jpeg"><h3>Kabeer Mihraj</h3><span>Vice President</span></div>
-        </div>
-
-        <!-- Joint Secretaries -->
-        <h2>Joint Secretaries</h2>
-        <div class="committee-grid">
-            <div class="committee-card"><img src="/static/images/committee/gcc/js1.jpeg"><h3>Faizal Arafa</h3><span>Joint Secretary</span></div>
-            <div class="committee-card"><img src="/static/images/committee/gcc/js2.jpeg"><h3>Ashkar Moulavi</h3><span>Joint Secretary</span></div>
-            <div class="committee-card"><img src="/static/images/committee/gcc/js3.jpeg"><h3>Adrama Adkathil</h3><span>Joint Secretary</span></div>
-        </div>
-
-        <!-- Executives -->
-       <h2>Executive Members</h2>
-<div class="committee-grid">
-    {% set gcc_executives = [
-        "ADHRA MENATH",
-        "IBRAHIM MIHRAJ",
-        "MOHAMMED JOUHAR",
-        "AZEEZ AJJU",
-        "MUNEER QATAR",
-        "AOUF KANNIKAD",
-        "SAMSI WELCOME",
-        "FAHI",
-        "ASHI NALTHADUKKA",
-        "ABDUL KHADER",
-        "ABDUL RAHMAN"
-    ] %}
-
-    {% for name in gcc_executives %}
-    <div class="committee-card">
-        <img src="/static/images/committee/gcc/ex{{ loop.index }}.jpeg">
-        <h3>{{ name }}</h3>
-        <span>Executive Member</span>
     </div>
-    {% endfor %}
+
+    <!-- Vice Presidents -->
+    <div class="sub-label teal"><span class="sub-label-text">Vice Presidents</span></div>
+    <div class="committee-grid">
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/gcc/vp1.jpeg"></div><h3>Siddiq Copa</h3><span>Vice President</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/gcc/vp2.jpeg"></div><h3>Naseer C H</h3><span>Vice President</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/gcc/vp3.jpeg"></div><h3>Kabeer Mihraj</h3><span>Vice President</span></div>
+    </div>
+
+    <!-- Joint Secretaries -->
+    <div class="sub-label teal"><span class="sub-label-text">Joint Secretaries</span></div>
+    <div class="committee-grid">
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/gcc/js1.jpeg"></div><h3>Faizal Arafa</h3><span>Joint Secretary</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/gcc/js2.jpeg"></div><h3>Ashkar Moulavi</h3><span>Joint Secretary</span></div>
+        <div class="committee-card"><div class="card-photo-wrap"><div class="card-photo-ring"></div><img src="/static/images/committee/gcc/js3.jpeg"></div><h3>Adrama Adkathil</h3><span>Joint Secretary</span></div>
+    </div>
+
+    <!-- Executives -->
+    <div class="sub-label teal"><span class="sub-label-text">Executive Members</span></div>
+    <div class="committee-grid">
+        {% set gcc_executives = [
+            "ADHRA MENATH","IBRAHIM MIHRAJ","MOHAMMED JOUHAR","AZEEZ AJJU",
+            "MUNEER QATAR","AOUF KANNIKAD","SAMSI WELCOME","FAHI",
+            "ASHI NALTHADUKKA","ABDUL KHADER","ABDUL RAHMAN"
+        ] %}
+        {% for name in gcc_executives %}
+        <div class="committee-card">
+            <div class="card-photo-wrap">
+                <div class="card-photo-ring"></div>
+                <img src="/static/images/committee/gcc/ex{{ loop.index }}.jpeg">
+            </div>
+            <h3>{{ name }}</h3>
+            <span>Executive Member</span>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
 
 
+<script>
+(function(){
+    const els=document.querySelectorAll('.reveal');
+    const io=new IntersectionObserver((entries)=>{
+        entries.forEach((e,i)=>{
+            if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*80); io.unobserve(e.target); }
+        });
+    },{threshold:.04});
+    els.forEach(el=>io.observe(el));
+})();
+</script>
 
 {% endblock %}

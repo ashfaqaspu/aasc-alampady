@@ -2,230 +2,511 @@
 {% block content %}
 
 <style>
-/* ================= HERO ================= */
-.about-hero {
+:root {
+    --cream: #f7f0e6; --warm-white: #fdf8f2; --sand: #e8d5b7; --sand-dark: #c9b48a;
+    --amber: #b8751a; --amber-bright: #d4891f; --amber-pale: #e8c07a;
+    --terra: #8b4513; --terra-soft: #c0622a;
+    --teal: #2a7a72; --teal-light: #3d9e94; --teal-pale: #d4f0ec;
+    --ink: #1a1208; --ink-warm: #3d2e1a; --ink-mid: #6b5540; --ink-soft: #9a8270;
+    --shimmer: linear-gradient(105deg, #b8751a 0%, #e8c07a 25%, #d4891f 50%, #e8c07a 75%, #b8751a 100%);
+}
+
+@keyframes shimMove { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes pulse    { from{transform:scale(1);opacity:.8} to{transform:scale(1.1);opacity:1} }
+@keyframes floatUp  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+.reveal { opacity:0; transform:translateY(30px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ══════════════════════════
+   HERO — no bg image, pure design
+══════════════════════════ */
+.home-hero {
     position: relative;
-    background:
-        linear-gradient(rgba(13,71,161,0.85), rgba(0,0,0,0.75)),
-        url("{{ url_for('static', filename='images/cbd.jpeg') }}") center/cover no-repeat;
-    padding: 120px 20px 90px;
-    color: #ffffff;
+    border-radius: 28px; overflow: hidden;
+    padding: 0;
+    background: linear-gradient(140deg,
+        var(--cream) 0%, #eedfc4 30%,
+        #f5e6cc 55%, #e8f5f3 85%, var(--cream) 100%);
+    border: 1px solid rgba(184,117,26,0.22);
+    box-shadow:
+        0 40px 100px rgba(184,117,26,0.16),
+        0 8px 36px rgba(0,0,0,0.07),
+        inset 0 1px 0 rgba(255,255,255,0.95);
+    margin-bottom: 48px;
 }
 
-/* LOGOS */
-.about-logos {
-    position: absolute;
-    top: 30px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 50px;
+/* geometric art-deco overlay pattern */
+.home-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(184,117,26,0.08) 0%, transparent 45%),
+        radial-gradient(circle at 80% 20%, rgba(42,122,114,0.07) 0%, transparent 40%),
+        radial-gradient(circle at 60% 85%, rgba(192,98,42,0.06) 0%, transparent 40%);
+    pointer-events: none;
 }
 
-.about-logos img {
-    width: 85px;
-    opacity: 0.95;
+/* shimmer top bar */
+.home-hero::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--shimmer); background-size: 300% 100%;
+    animation: shimMove 5s linear infinite;
+    border-radius: 28px 28px 0 0;
 }
 
-/* HERO TEXT */
-.about-container {
-    max-width: 1000px;
-    margin: auto;
-    text-align: center;
+/* tl corner bracket */
+.hero-bracket-tl {
+    position: absolute; top: 20px; left: 20px;
+    width: 44px; height: 44px;
+    border-top: 2px solid rgba(184,117,26,0.55);
+    border-left: 2px solid rgba(184,117,26,0.55);
+    pointer-events: none;
+}
+.hero-bracket-br {
+    position: absolute; bottom: 20px; right: 20px;
+    width: 44px; height: 44px;
+    border-bottom: 2px solid rgba(184,117,26,0.55);
+    border-right: 2px solid rgba(184,117,26,0.55);
+    pointer-events: none;
 }
 
-.about-container h2 {
-    font-size: 40px;
-    letter-spacing: 1px;
-    margin-bottom: 18px;
+/* ── hero inner layout: two columns ── */
+.hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    min-height: 480px;
 }
 
-.about-container p {
-    font-size: 18px;
-    line-height: 1.9;
-    color: #f2f2f2;
+/* left text col */
+.hero-text {
+    padding: 72px 60px 72px 72px;
+    display: flex; flex-direction: column;
+    justify-content: center; gap: 0;
+    position: relative; z-index: 1;
 }
 
-/* ================= CONTENT CARD ================= */
+.hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'Cinzel', serif; font-size: 9.5px;
+    letter-spacing: 4px; text-transform: uppercase; color: var(--amber);
+    margin-bottom: 22px;
+    animation: fadeUp .7s ease both .1s;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; display: block; width: 26px; height: 1px;
+}
+.hero-eyebrow::before { background: linear-gradient(90deg, transparent, var(--amber)); }
+.hero-eyebrow::after  { background: linear-gradient(90deg, var(--amber), transparent); }
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 5vw, 72px);
+    font-weight: 700; color: var(--ink); line-height: 1.05;
+    letter-spacing: 1px; margin: 0 0 6px;
+    animation: fadeUp .8s ease both .15s;
+}
+
+.hero-title em {
+    font-style: italic; color: var(--amber);
+    font-size: .85em; display: block; letter-spacing: 2px;
+}
+
+/* ornament */
+.hero-orn {
+    display: flex; align-items: center; gap: 12px;
+    margin: 22px 0 24px;
+    animation: fadeIn .9s ease both .25s;
+}
+.hero-orn-l { width: 56px; height: 1px; background: linear-gradient(90deg, transparent, rgba(184,117,26,.5)); }
+.hero-orn-l:last-child { background: linear-gradient(90deg, rgba(184,117,26,.5), transparent); }
+.hero-orn-mid { color: var(--amber); font-size: 9px; display: flex; gap: 6px; }
+
+.hero-body {
+    font-family: 'Raleway', sans-serif; font-size: 15.5px;
+    line-height: 2; color: var(--ink-mid); max-width: 560px;
+    letter-spacing: .2px;
+    animation: fadeUp .9s ease both .3s;
+}
+.hero-body strong { color: var(--ink); font-weight: 600; }
+
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 34px;
+    padding: 11px 26px;
+    background: rgba(184,117,26,0.1);
+    border: 1px solid rgba(184,117,26,0.3);
+    border-radius: 4px;
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 2.5px; color: var(--amber); text-transform: uppercase;
+    animation: fadeIn 1s ease both .45s;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+}
+.hero-badge::before { content: '◆'; font-size: 8px; }
+.hero-badge::after  { content: '◆'; font-size: 8px; }
+
+/* right decorative col */
+.hero-deco-col {
+    position: relative; overflow: hidden;
+    border-left: 1px solid rgba(184,117,26,0.15);
+    background: linear-gradient(180deg, rgba(232,192,122,0.2) 0%, rgba(42,122,114,0.08) 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 28px;
+    padding: 40px 28px;
+}
+
+/* large ornament circle */
+.hero-orb {
+    position: relative; width: 160px; height: 160px;
+}
+.orb-r {
+    position: absolute; border-radius: 50%;
+    border: 1px solid rgba(184,117,26,0.3);
+}
+.orb-r:nth-child(1) { inset:0; animation: spinSlow 30s linear infinite; }
+.orb-r:nth-child(2) { inset:14px; border-style:dashed; border-color:rgba(184,117,26,.18); animation: spinSlow 20s linear infinite reverse; }
+.orb-r:nth-child(3) { inset:28px; border-color:rgba(184,117,26,.4); animation: spinSlow 14s linear infinite; }
+.orb-r:nth-child(4) { inset:42px; border-color:rgba(42,122,114,.35); animation: spinSlow 10s linear infinite reverse; }
+.orb-core {
+    position: absolute; inset:54px; border-radius:50%;
+    background: radial-gradient(circle, var(--amber-pale) 0%, var(--sand) 100%);
+    display: flex; align-items:center; justify-content:center;
+    font-family:'Cinzel',serif; font-size:13px; color:var(--amber);
+    animation: gemPulse 4s ease-in-out infinite alternate;
+    box-shadow: 0 0 30px rgba(184,117,26,.2);
+}
+
+@keyframes gemPulse {
+    from { box-shadow: 0 0 16px rgba(184,117,26,.15); }
+    to   { box-shadow: 0 0 36px rgba(184,117,26,.35); }
+}
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+
+/* stat chips */
+.hero-stats {
+    display: flex; flex-direction: column; gap: 12px; width: 100%;
+}
+.stat-chip {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: rgba(253,248,242,.8);
+    border: 1px solid rgba(184,117,26,0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(184,117,26,.08);
+    transition: transform .3s, box-shadow .3s;
+}
+.stat-chip:hover { transform: translateX(-4px); box-shadow: 0 8px 28px rgba(184,117,26,.16); }
+.stat-icon { font-size: 18px; }
+.stat-num {
+    font-family: 'Cormorant Garamond',serif; font-size: 22px; font-weight: 700;
+    color: var(--amber); line-height: 1;
+}
+.stat-lbl {
+    font-family: 'Raleway',sans-serif; font-size: 10px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--ink-soft);
+}
+
+/* ══════════════════════════
+   CONTENT CARD
+══════════════════════════ */
 .about-card {
-    background: #ffffff;
-    color: #333;
-    padding: 50px;
-    margin-top: 60px;
-    border-radius: 18px;
-    box-shadow: 0 18px 45px rgba(0,0,0,0.25);
-    text-align: left;
+    background: rgba(253,248,242,.94);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    padding: 72px 80px;
+    margin-top: 0;
+    border-radius: 24px;
+    border: 1px solid rgba(184,117,26,0.18);
+    box-shadow:
+        0 32px 90px rgba(184,117,26,0.12),
+        0 6px 28px rgba(0,0,0,.06),
+        inset 0 1px 0 rgba(255,255,255,.92);
+    position: relative; overflow: hidden;
 }
 
-.about-card h3 {
-    font-size: 24px;
-    color: #0d47a1;
-    margin-top: 35px;
-    margin-bottom: 14px;
+.about-card::before {
+    content: '';
+    position: absolute; top:0; left:0; right:0; height: 3px;
+    background: var(--shimmer); background-size: 300% 100%;
+    animation: shimMove 6s linear infinite;
+    border-radius: 24px 24px 0 0;
 }
+
+/* large wm */
+.about-card::after {
+    content: '✦';
+    position: absolute; bottom:-40px; right:36px;
+    font-size: 220px; color: rgba(184,117,26,.03);
+    pointer-events:none; font-family:'Cinzel',serif; line-height:1;
+}
+
+/* card section titles */
+.about-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; font-weight: 700; font-style: italic;
+    color: var(--ink); margin-top: 52px; margin-bottom: 16px;
+    padding-left: 22px; position: relative; letter-spacing: .5px;
+}
+.about-card h3::before {
+    content: '';
+    position: absolute; left:0; top:50%; transform:translateY(-50%);
+    width: 4px; height: 74%;
+    background: linear-gradient(180deg, var(--amber), var(--terra-soft));
+    border-radius: 2px;
+}
+.about-card h3:first-of-type { margin-top: 0; }
 
 .about-card p {
-    font-size: 16.5px;
-    line-height: 1.85;
-    color: #444;
+    font-family: 'Raleway', sans-serif; font-size: 15px;
+    line-height: 2.05; color: var(--ink-mid); letter-spacing: .2px;
 }
+.about-card strong { color: var(--ink); font-weight: 600; }
 
-/* BULLETS */
+/* highlights grid */
 .about-highlights ul {
-    margin-top: 15px;
-    padding-left: 22px;
+    margin-top: 18px; padding-left: 0; list-style: none;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
 }
-
 .about-highlights li {
-    margin-bottom: 10px;
-    font-size: 16px;
+    font-family: 'Raleway',sans-serif; font-size: 14px;
+    color: var(--ink-mid); line-height: 1.65;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, rgba(232,192,122,.25), rgba(253,248,242,.7));
+    border: 1px solid rgba(184,117,26,.18); border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 10px;
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s, border-color .3s;
 }
+.about-highlights li::before { content:'◆'; color:var(--amber); font-size:7px; margin-top:5px; flex-shrink:0; }
+.about-highlights li:hover { transform:translateY(-4px); box-shadow:0 10px 30px rgba(184,117,26,.18); border-color:rgba(184,117,26,.38); }
 
-/* ================= BUILDING MILESTONE ================= */
+/* ══════════════════════════
+   BUILDING MILESTONE
+══════════════════════════ */
 .building-milestone {
-    background: linear-gradient(135deg, #f8fbff, #eef4ff);
-    padding: 65px 45px;
-    margin: 90px 0;
-    border-radius: 22px;
-    box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+    position: relative;
+    background: linear-gradient(135deg,
+        rgba(232,192,122,.35) 0%, rgba(212,240,236,.4) 50%, rgba(247,240,230,.8) 100%);
+    padding: 80px 72px; margin: 56px 0;
+    border-radius: 24px;
+    border: 1px solid rgba(184,117,26,.22);
+    box-shadow: 0 32px 90px rgba(184,117,26,.12), 0 6px 28px rgba(0,0,0,.05);
+    overflow: hidden;
 }
-
+.building-milestone::before {
+    content: '';
+    position: absolute; top:0; left:0; right:0; height: 3px;
+    background: var(--shimmer); background-size: 300% 100%;
+    animation: shimMove 5s linear infinite;
+}
+.building-milestone::after {
+    content: '2026';
+    position: absolute; bottom:-24px; right:36px;
+    font-family: 'Cormorant Garamond',serif; font-size: 165px; font-weight: 700;
+    color: rgba(184,117,26,.055); pointer-events:none; line-height:1; letter-spacing:-6px;
+}
 .building-milestone h2 {
-    text-align: center;
-    font-size: 36px;
-    color: #0d47a1;
-    margin-bottom: 10px;
+    text-align: center; font-family: 'Cinzel',serif;
+    font-size: clamp(22px,3.5vw,40px); font-weight: 700; letter-spacing: 3px;
+    color: var(--ink); margin-bottom: 8px; position:relative;
 }
-
 .building-milestone h4 {
-    text-align: center;
-    font-size: 18px;
-    font-weight: 500;
-    color: #ff9800;
-    margin-bottom: 40px;
+    text-align: center; font-family: 'Cormorant Garamond',serif;
+    font-style: italic; font-size: 18px; font-weight: 400;
+    color: var(--amber); margin-bottom: 48px; letter-spacing: 2px; position:relative;
 }
-
+.building-milestone h4::after {
+    content:''; display:block; width:60px; height:1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    margin: 14px auto 0;
+}
 .building-milestone p {
-    font-size: 17px;
-    line-height: 1.9;
-    color: #333;
-    margin-bottom: 22px;
+    font-family: 'Raleway',sans-serif; font-size: 15px; line-height: 2;
+    color: var(--ink-mid); margin-bottom: 20px; position:relative;
+    max-width: 780px; margin-left: auto; margin-right: auto; text-align: center;
 }
 
 .building-highlight {
-    background: #ffffff;
-    border-left: 6px solid #0d47a1;
-    padding: 24px 28px;
-    border-radius: 12px;
-    margin: 35px 0;
-    font-style: italic;
-    font-size: 16.5px;
+    position: relative;
+    background: rgba(253,248,242,.92); backdrop-filter: blur(12px);
+    border: 1px solid rgba(184,117,26,.22); border-radius: 16px;
+    padding: 32px 52px; margin: 38px auto;
+    max-width: 660px; text-align: center;
+    box-shadow: 0 16px 50px rgba(184,117,26,.12), inset 0 1px 0 rgba(255,255,255,.85);
+}
+.building-highlight::before {
+    content:'✦'; display:block; font-size:20px; color:var(--amber);
+    margin-bottom:12px; animation: pulse 3s ease-in-out infinite alternate;
+}
+.building-highlight p {
+    font-family: 'Cormorant Garamond',serif !important;
+    font-style: italic; font-size: 17.5px !important;
+    line-height: 1.85 !important; color: var(--ink) !important;
+    text-align: center;
 }
 
+/* ══════════════════════════
+   VISION
+══════════════════════════ */
+.vision-block {
+    margin-top: 56px; padding: 44px 52px;
+    background: linear-gradient(135deg, rgba(42,122,114,.08), rgba(232,192,122,.2));
+    border: 1px solid rgba(42,122,114,.2); border-radius: 16px;
+    text-align: center; position: relative; overflow: hidden;
+}
+.vision-block::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background: linear-gradient(90deg, var(--teal), var(--amber), var(--teal));
+    background-size: 300% 100%; animation: shimMove 5s linear infinite;
+}
+.vision-block h3 {
+    font-family: 'Cormorant Garamond',serif; font-style:italic; font-size:24px;
+    color:var(--ink); margin:0 0 16px !important; padding-left:0 !important;
+}
+.vision-block h3::before { display:none !important; }
+.vision-block p {
+    font-family: 'Raleway',sans-serif; font-size:16px; color:var(--ink-mid);
+    line-height:1.95; max-width:600px; margin:0 auto;
+}
+.vision-block em { font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--teal); font-size:19px; }
 
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-    .about-container h2 { font-size: 30px; }
-    .about-card { padding: 35px 25px; }
-    .building-milestone { padding: 45px 25px; }
-    .about-logos img { width: 65px; }
+/* mobile */
+@media(max-width:900px){
+    .hero-layout { grid-template-columns:1fr; }
+    .hero-deco-col { display:none; }
+    .hero-text { padding:56px 28px; }
+    .about-card { padding:40px 28px; }
+    .building-milestone { padding:50px 28px; }
+    .about-highlights ul { grid-template-columns:1fr; }
+    .vision-block { padding:32px 24px; }
 }
 </style>
 
-<section class="about-hero">
+<!-- ══ HERO ══ -->
+<section class="home-hero">
+    <div class="hero-bracket-tl"></div>
+    <div class="hero-bracket-br"></div>
 
-    <div class="about-logos">
-        <img src="{{ url_for('static', filename='images/cc.jpeg') }}">
-        <img src="{{ url_for('static', filename='images/gcc.jpeg') }}">
-    </div>
+    <div class="hero-layout">
+        <!-- LEFT: text -->
+        <div class="hero-text">
+            <div class="hero-eyebrow">Est. 1991 &nbsp;·&nbsp; Alampady, Kerala</div>
 
-    <div class="about-container">
-        <h2>AASC Alampady</h2>
-        <p>
-            <strong>Alampady Arts & Sports Club (AASC)</strong> is a community-driven
-            institution rooted in unity, discipline, and social responsibility.
-            With a legacy spanning nearly four decades, AASC stands as a proud
-            pillar of cultural, athletic, and humanitarian growth in Alampady.
-        </p>
+            <h1 class="hero-title">
+                AASC Alampady
+                <em>Arts &amp; Sports Club</em>
+            </h1>
 
-        <div class="about-card">
-
-            <h3>About AASC</h3>
-            <p>
-                AASC is dedicated to nurturing talent, leadership, and collective
-                progress through arts, sports, and service. Built on systematic
-                growth and inclusive participation, the club provides a platform
-                where creativity flourishes, discipline is cultivated, and values
-                are strengthened.
-            </p>
-
-            <h3>Commitment to Society</h3>
-            <p>
-                Charity at AASC is a continuous responsibility, not an occasional
-                activity. The club believes that true development emerges when
-                sports, culture, and service move together in harmony.
-            </p>
-
-            <h3>Our History & Legacy</h3>
-            <p>
-                Registered on <strong>27 November 1991</strong> and registered under
-                <strong>Reg No. 255/91, NYK.012, Govt. of India</strong>, AASC has
-                evolved into a respected institution known for discipline,
-                leadership, and service.
-            </p>
-
-            <h3>Community & Charity</h3>
-            <p>
-                With the formation of the GCC Committee in <strong>2016</strong>,
-                AASC expanded its humanitarian reach internationally, strengthening
-                year-round charity and social welfare initiatives.
-            </p>
-
-            <h3>Our Strength</h3>
-            <div class="about-highlights">
-                <ul>
-                    <li>Nearly <strong>400 active members</strong> worldwide</li>
-                    <li>Strong <strong>GCC presence</strong> across countries</li>
-                    <li>Structured <strong>Central & GCC Committees</strong></li>
-                    <li>Government-recognized registered organization</li>
-                    <li>Year-round sports, cultural & charity programs</li>
-                </ul>
+            <div class="hero-orn">
+                <div class="hero-orn-l"></div>
+                <div class="hero-orn-mid"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
+                <div class="hero-orn-l"></div>
             </div>
 
-            <!-- BUILDING -->
-            <section class="building-milestone">
-                <h2>AASC Own Building</h2>
-                <h4>A Permanent Home for Vision, Growth & Service</h4>
-
-                <p>
-                    On <strong>11 January 2026</strong>, AASC achieved a historic
-                    milestone with the inauguration of its own building on its
-                    own land — a symbol of unity, dedication, and long-term vision.
-                </p>
-
-                <div class="building-highlight">
-                    Inaugurated by <strong>Professor Gopinath Muthukad</strong>,
-                    marking the realization of a long-cherished dream.
-                </div>
-
-                <p>
-                    More than a structure, the building is a living space for
-                    training, creativity, charity, leadership, and community
-                    engagement — ensuring stability and independence for future
-                    generations.
-                </p>
-            </section>
-
-            <h3>Our Vision</h3>
-            <p>
-                To build a society where sports inspire discipline, charity
-                strengthens humanity, and unity shapes a better future —
-                <em>Better Together.</em>
+            <p class="hero-body">
+                <strong>Alampady Arts &amp; Sports Club (AASC)</strong> is a community-driven
+                institution rooted in unity, discipline, and social responsibility.
+                With a legacy spanning nearly four decades, AASC stands as a proud
+                pillar of cultural, athletic, and humanitarian growth in Alampady.
             </p>
 
+            <div class="hero-badge">Reg No. 255/91 &nbsp;·&nbsp; NYK.012 &nbsp;·&nbsp; Govt. of India</div>
+        </div>
+
+        <!-- RIGHT: decorative -->
+        <div class="hero-deco-col">
+            <div class="hero-orb">
+                <div class="orb-r"></div>
+                <div class="orb-r"></div>
+                <div class="orb-r"></div>
+                <div class="orb-r"></div>
+                <div class="orb-core">✦</div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-chip">
+                    <span class="stat-icon">👥</span>
+                    <div>
+                        <div class="stat-num">400+</div>
+                        <div class="stat-lbl">Active Members</div>
+                    </div>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-icon">🌍</span>
+                    <div>
+                        <div class="stat-num">GCC</div>
+                        <div class="stat-lbl">International Presence</div>
+                    </div>
+                </div>
+                <div class="stat-chip">
+                    <span class="stat-icon">📅</span>
+                    <div>
+                        <div class="stat-num">1991</div>
+                        <div class="stat-lbl">Year Founded</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
+
+<!-- ══ CONTENT CARD ══ -->
+<div class="about-card reveal">
+    <h3>About AASC</h3>
+    <p>AASC is dedicated to nurturing talent, leadership, and collective progress through arts, sports, and service. Built on systematic growth and inclusive participation, the club provides a platform where creativity flourishes, discipline is cultivated, and values are strengthened.</p>
+
+    <h3>Commitment to Society</h3>
+    <p>Charity at AASC is a continuous responsibility, not an occasional activity. The club believes that true development emerges when sports, culture, and service move together in harmony.</p>
+
+    <h3>Our History &amp; Legacy</h3>
+    <p>Registered on <strong>27 November 1991</strong> and registered under <strong>Reg No. 255/91, NYK.012, Govt. of India</strong>, AASC has evolved into a respected institution known for discipline, leadership, and service.</p>
+
+    <h3>Community &amp; Charity</h3>
+    <p>With the formation of the GCC Committee in <strong>2016</strong>, AASC expanded its humanitarian reach internationally, strengthening year-round charity and social welfare initiatives.</p>
+
+    <h3>Our Strength</h3>
+    <div class="about-highlights reveal">
+        <ul>
+            <li>Nearly <strong>400 active members</strong> worldwide</li>
+            <li>Strong <strong>GCC presence</strong> across countries</li>
+            <li>Structured <strong>Central &amp; GCC Committees</strong></li>
+            <li>Government-recognized registered organization</li>
+            <li>Year-round sports, cultural &amp; charity programs</li>
+        </ul>
+    </div>
+
+    <!-- Building Milestone -->
+    <section class="building-milestone reveal">
+        <h2>AASC Own Building</h2>
+        <h4>A Permanent Home for Vision, Growth &amp; Service</h4>
+        <p>On <strong>11 January 2026</strong>, AASC achieved a historic milestone with the inauguration of its own building on its own land — a symbol of unity, dedication, and long-term vision.</p>
+        <div class="building-highlight">
+            <p>Inaugurated by <strong>Professor Gopinath Muthukad</strong>, marking the realization of a long-cherished dream.</p>
+        </div>
+        <p>More than a structure, the building is a living space for training, creativity, charity, leadership, and community engagement — ensuring stability and independence for future generations.</p>
+    </section>
+
+    <!-- Vision -->
+    <div class="vision-block reveal">
+        <h3>Our Vision</h3>
+        <p>To build a society where sports inspire discipline, charity strengthens humanity, and unity shapes a better future — <em>Better Together.</em></p>
+    </div>
+</div>
+
+<script>
+(function(){
+    const els=document.querySelectorAll('.reveal');
+    const io=new IntersectionObserver((entries)=>{
+        entries.forEach((e,i)=>{
+            if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*90); io.unobserve(e.target); }
+        });
+    },{threshold:.07});
+    els.forEach(el=>io.observe(el));
+})();
+</script>
 
 {% endblock %}

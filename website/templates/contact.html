@@ -2,157 +2,437 @@
 {% block content %}
 
 <style>
-/* ================= CONTACT PAGE ================= */
-.contact-page {
-    max-width: 900px;
-    margin: auto;
+:root {
+    --cream:#f7f0e6; --warm-white:#fdf8f2; --sand:#e8d5b7;
+    --amber:#b8751a; --amber-bright:#d4891f; --amber-pale:#e8c07a;
+    --terra:#8b4513; --terra-soft:#c0622a;
+    --teal:#2a7a72; --teal-light:#3d9e94; --teal-pale:#d4f0ec;
+    --green:#1a8c4e; --green-light:#25d366;
+    --ink:#1a1208; --ink-warm:#3d2e1a; --ink-mid:#6b5540; --ink-soft:#9a8270;
+    --shimmer: linear-gradient(105deg, #b8751a 0%, #e8c07a 25%, #d4891f 50%, #e8c07a 75%, #b8751a 100%);
 }
 
-.contact-page h1 {
-    text-align: center;
-    font-size: 34px;
-    color: #0d47a1;
-    margin-bottom: 30px;
+@keyframes shimMove   { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+@keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+@keyframes pulse      { from{transform:scale(1);opacity:.8} to{transform:scale(1.1);opacity:1} }
+@keyframes spinSlow   { to{transform:rotate(360deg)} }
+@keyframes ringPing   { 0%{transform:scale(1);opacity:.6} 100%{transform:scale(2.2);opacity:0} }
+
+.reveal { opacity:0; transform:translateY(28px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ══════════════════════════════════════════
+   PAGE HERO
+══════════════════════════════════════════ */
+.contact-hero {
+    position:relative; border-radius:28px; overflow:hidden;
+    padding:76px 72px 68px; text-align:center;
+    background: linear-gradient(140deg,
+        #f2e8d5 0%, #faeee0 30%, #f0f8f6 65%, #f8ede0 100%);
+    border:1px solid rgba(184,117,26,.22);
+    box-shadow:
+        0 40px 100px rgba(184,117,26,.15),
+        0 8px 32px rgba(0,0,0,.06),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    margin-bottom:48px;
+    animation: fadeIn .6s ease both;
 }
 
+.contact-hero::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation: shimMove 5s linear infinite;
+    border-radius:28px 28px 0 0;
+}
+
+/* dot-grid pattern */
+.ch-pat {
+    position:absolute; inset:0; pointer-events:none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(184,117,26,.055) 1px, transparent 0);
+    background-size:28px 28px; opacity:.55;
+}
+
+/* radial glow */
+.ch-glow {
+    position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(ellipse 75% 85% at 50% 50%, rgba(232,192,122,.22) 0%, transparent 65%);
+}
+
+/* corner brackets */
+.brk-tl {
+    position:absolute; top:20px; left:20px; width:42px; height:42px;
+    border-top:2px solid rgba(184,117,26,.5); border-left:2px solid rgba(184,117,26,.5);
+    pointer-events:none;
+}
+.brk-br {
+    position:absolute; bottom:20px; right:20px; width:42px; height:42px;
+    border-bottom:2px solid rgba(184,117,26,.5); border-right:2px solid rgba(184,117,26,.5);
+    pointer-events:none;
+}
+
+.page-eyebrow {
+    display:inline-flex; align-items:center; gap:12px;
+    font-family:'Cinzel',serif; font-size:9.5px; letter-spacing:4px;
+    text-transform:uppercase; color:var(--amber); margin-bottom:18px;
+    animation: fadeUp .7s ease both .1s; position:relative;
+}
+.page-eyebrow::before { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,transparent,var(--amber)); }
+.page-eyebrow::after  { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,var(--amber),transparent); }
+
+.contact-page-title {
+    font-family:'Cinzel',serif; font-size:clamp(28px,5vw,58px); font-weight:700;
+    color:var(--ink); letter-spacing:5px; line-height:1.05; margin:0 0 8px;
+    animation: fadeUp .8s ease both .15s; position:relative;
+}
+
+.contact-page-sub {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(14px,2vw,19px); font-weight:400;
+    color:var(--amber); letter-spacing:3px; margin-bottom:28px;
+    animation: fadeUp .8s ease both .2s; position:relative;
+}
+
+.hero-orn {
+    display:flex; align-items:center; gap:14px; justify-content:center;
+    animation: fadeIn 1s ease both .3s; position:relative;
+}
+.hero-orn-l { width:52px; height:1px; }
+.hero-orn-l:first-child { background:linear-gradient(90deg,transparent,rgba(184,117,26,.5)); }
+.hero-orn-l:last-child  { background:linear-gradient(90deg,rgba(184,117,26,.5),transparent); }
+.hero-orn-c { color:var(--amber); font-size:9px; display:flex; gap:7px; }
+
+/* ══════════════════════════════════════════
+   CONTACT GRID LAYOUT
+══════════════════════════════════════════ */
+.contact-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    margin-bottom:28px;
+}
+
+/* about card takes full width on top */
+.contact-grid-full {
+    grid-column: 1 / -1;
+}
+
+/* ══════════════════════════════════════════
+   SECTION CARDS
+══════════════════════════════════════════ */
 .contact-section {
-    background: #ffffff;
-    padding: 30px;
-    margin-bottom: 35px;
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    background: rgba(253,248,242,.94);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-radius:22px;
+    border:1px solid rgba(184,117,26,.18);
+    box-shadow:
+        0 24px 65px rgba(184,117,26,.11),
+        0 6px 22px rgba(0,0,0,.05),
+        inset 0 1px 0 rgba(255,255,255,.9);
+    overflow:hidden; position:relative;
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .35s, border-color .35s;
 }
 
+.contact-section:hover {
+    transform:translateY(-5px);
+    box-shadow: 0 36px 88px rgba(184,117,26,.17), 0 8px 36px rgba(0,0,0,.07);
+    border-color:rgba(184,117,26,.32);
+}
+
+/* shimmer top on hover */
+.contact-section::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation: shimMove 5s linear infinite;
+    opacity:0; transition:opacity .3s; z-index:2;
+    border-radius:22px 22px 0 0;
+}
+.contact-section:hover::before { opacity:1; }
+
+/* color-coded left border per card type */
+.contact-section.cs-about  { border-left:4px solid var(--amber); }
+.contact-section.cs-blood  { border-left:4px solid #c0392b; }
+.contact-section.cs-medical{ border-left:4px solid var(--teal); }
+
+/* card inner */
+.cs-inner { padding:36px 40px 38px; }
+
+/* ── card icon badge ── */
+.cs-icon-badge {
+    width:52px; height:52px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:22px; margin-bottom:20px;
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
+    transition:transform .3s;
+}
+.contact-section:hover .cs-icon-badge { transform:rotate(-6deg) scale(1.1); }
+
+.cs-about   .cs-icon-badge { background:linear-gradient(135deg, rgba(232,192,122,.5), rgba(253,248,242,.9)); border:1px solid rgba(184,117,26,.25); }
+.cs-blood   .cs-icon-badge { background:linear-gradient(135deg, rgba(255,200,200,.5), rgba(255,240,240,.9)); border:1px solid rgba(192,57,43,.2); }
+.cs-medical .cs-icon-badge { background:linear-gradient(135deg, rgba(42,122,114,.15), rgba(212,240,236,.7)); border:1px solid rgba(42,122,114,.25); }
+
+/* ── card heading ── */
 .contact-section h2 {
-    color: #0d47a1;
-    margin-bottom: 12px;
-    font-size: 24px;
+    font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700;
+    color:var(--ink); margin-bottom:16px; padding-left:18px; position:relative; line-height:1.2;
 }
+.contact-section h2::before {
+    content:''; position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:4px; height:80%;
+    border-radius:2px;
+}
+.cs-about   h2::before { background:linear-gradient(180deg, var(--amber), var(--amber-bright)); }
+.cs-blood   h2::before { background:linear-gradient(180deg, #e74c3c, #c0392b); }
+.cs-medical h2::before { background:linear-gradient(180deg, var(--teal), var(--teal-light)); }
 
+/* ── card body text ── */
 .contact-section p {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.8;
-    margin-bottom: 18px;
+    font-family:'Raleway',sans-serif; font-size:14.5px;
+    line-height:1.95; color:var(--ink-mid); margin-bottom:14px; letter-spacing:.2px;
 }
+.contact-section p:last-of-type { margin-bottom:0; }
 
-/* ================= BUTTON ================= */
-.contact-btn {
-    display: inline-block;
-    background: #25d366;
-    color: #fff;
-    padding: 12px 22px;
-    border-radius: 30px;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    margin-right: 12px;
-}
+/* ── contact info rows ── */
+.contact-info { margin:20px 0 24px; }
 
-/* Email button variant */
-.contact-btn.email {
-    background: #0d47a1;
-}
-
-.contact-btn:hover {
-    opacity: 0.9;
-}
-
-/* ================= INFO ================= */
 .contact-info p {
-    margin: 6px 0;
-    font-size: 15px;
+    display:flex; align-items:center; gap:10px;
+    font-family:'Raleway',sans-serif; font-size:14px;
+    color:var(--ink-mid); margin:8px 0; letter-spacing:.3px;
+    padding:9px 14px;
+    background:rgba(232,192,122,.12);
+    border:1px solid rgba(184,117,26,.13);
+    border-radius:8px;
+    transition:background .25s, border-color .25s;
+}
+.contact-info p:hover { background:rgba(232,192,122,.22); border-color:rgba(184,117,26,.28); }
+
+/* ══════════════════════════════════════════
+   ACTION BUTTONS
+══════════════════════════════════════════ */
+.btn-row {
+    display:flex; flex-wrap:wrap; gap:12px; margin-top:26px;
 }
 
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-    .contact-page h1 {
-        font-size: 26px;
-    }
+.contact-btn {
+    display:inline-flex; align-items:center; gap:9px;
+    padding:12px 24px; border-radius:6px;
+    font-family:'Cinzel',serif; font-size:9.5px;
+    font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    text-decoration:none; position:relative; overflow:hidden;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
+    cursor:pointer;
+}
 
-    .contact-section {
-        padding: 22px;
-    }
+/* button hover lift */
+.contact-btn:hover { transform:translateY(-3px); }
 
-    .contact-btn {
-        margin-bottom: 10px;
-    }
+/* button shine sweep */
+.contact-btn::after {
+    content:'';
+    position:absolute; top:0; left:-100%; width:60%; height:100%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+    transform:skewX(-20deg);
+    transition:left .5s;
+}
+.contact-btn:hover::after { left:150%; }
+
+/* WhatsApp green */
+.contact-btn.btn-wa {
+    background:linear-gradient(135deg, #1da851, #25d366);
+    color:#fff;
+    box-shadow:0 6px 22px rgba(37,211,102,.35);
+}
+.contact-btn.btn-wa:hover { box-shadow:0 10px 36px rgba(37,211,102,.5); color:#fff; }
+.contact-btn.btn-wa::before { content:''; display:inline-block; width:16px; height:16px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z'/%3E%3C/svg%3E") center/contain no-repeat; flex-shrink:0; }
+
+/* Email blue-amber */
+.contact-btn.btn-email {
+    background:linear-gradient(135deg, var(--amber), var(--amber-bright));
+    color:#fff;
+    box-shadow:0 6px 22px rgba(184,117,26,.35);
+}
+.contact-btn.btn-email:hover { box-shadow:0 10px 36px rgba(184,117,26,.5); color:#fff; }
+
+/* ══════════════════════════════════════════
+   AVAILABILITY BADGE (blood & medical)
+══════════════════════════════════════════ */
+.avail-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 16px; margin-bottom:20px;
+    border-radius:30px; font-family:'Cinzel',serif; font-size:8.5px;
+    letter-spacing:2px; text-transform:uppercase;
+}
+
+.avail-badge.green {
+    background:rgba(37,211,102,.1);
+    border:1px solid rgba(37,211,102,.3); color:#1a8c4e;
+}
+.avail-badge.teal {
+    background:rgba(42,122,114,.1);
+    border:1px solid rgba(42,122,114,.3); color:var(--teal);
+}
+
+/* pulsing dot */
+.avail-dot {
+    width:7px; height:7px; border-radius:50%; position:relative; flex-shrink:0;
+}
+.avail-badge.green .avail-dot { background:#25d366; }
+.avail-badge.teal  .avail-dot { background:var(--teal-light); }
+.avail-dot::after {
+    content:''; position:absolute; inset:-3px; border-radius:50%;
+    border:1.5px solid currentColor; opacity:0;
+    animation: ringPing 1.8s ease-out infinite;
+}
+
+/* ══════════════════════════════════════════
+   MOBILE
+══════════════════════════════════════════ */
+@media(max-width:900px){
+    .contact-hero { padding:56px 28px 50px; }
+    .contact-grid { grid-template-columns:1fr; }
+    .contact-grid-full { grid-column:1; }
+    .cs-inner { padding:28px 24px 30px; }
+    .btn-row { flex-direction:column; }
+    .contact-btn { justify-content:center; }
 }
 </style>
 
-<div class="contact-page">
 
-    <h1>📞 Contact & Support</h1>
+<!-- ══ HERO ══ -->
+<div class="contact-hero">
+    <div class="ch-pat"></div>
+    <div class="ch-glow"></div>
+    <div class="brk-tl"></div>
+    <div class="brk-br"></div>
 
-    <!-- ABOUT AASC -->
-    <div class="contact-section">
-        <h2>About AASC Alampady</h2>
-        <p>
-            Alampady Arts & Sports Club (AASC) is a community-driven organization
-            based in Alampady, Kasaragod district, Kerala. For decades, AASC has
-            been actively involved in sports development, social responsibility,
-            charity initiatives, and community welfare activities.
-        </p>
-        <p>
-            The club stands as a trusted support system for the local community,
-            responding to social needs with unity, discipline, and compassion.
-        </p>
+    <div class="page-eyebrow">Reach Out · We're Here</div>
+    <h1 class="contact-page-title">Contact</h1>
+    <p class="contact-page-sub">Support &amp; Connections</p>
 
-        <div class="contact-info">
-            <p>📍 Location: Alampady, Kasaragod, Kerala</p>
-            <p>📧 Email: aasc.alampady@gmail.com</p>
+    <div class="hero-orn">
+        <div class="hero-orn-l"></div>
+        <div class="hero-orn-c"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
+        <div class="hero-orn-l"></div>
+    </div>
+</div>
+
+
+<!-- ══ CARDS ══ -->
+<div class="contact-grid">
+
+    <!-- ABOUT — full width -->
+    <div class="contact-section cs-about contact-grid-full reveal">
+        <div class="cs-inner">
+            <div class="cs-icon-badge">🏛️</div>
+            <h2>About AASC Alampady</h2>
+
+            <p>
+                Alampady Arts &amp; Sports Club (AASC) is a community-driven organization
+                based in Alampady, Kasaragod district, Kerala. For decades, AASC has
+                been actively involved in sports development, social responsibility,
+                charity initiatives, and community welfare activities.
+            </p>
+            <p>
+                The club stands as a trusted support system for the local community,
+                responding to social needs with unity, discipline, and compassion.
+            </p>
+
+            <div class="contact-info">
+                <p>📍 Alampady, Kasaragod, Kerala</p>
+                <p>📧 aasc.alampady@gmail.com</p>
+            </div>
+
+            <div class="btn-row">
+                <a class="contact-btn btn-email"
+                   href="mailto:aasc.alampady@gmail.com">
+                    Email AASC Club
+                </a>
+            </div>
         </div>
-
-        <!-- EMAIL BUTTON -->
-        <a class="contact-btn email"
-           href="mailto:aasc.alampady@gmail.com">
-            Email AASC Club
-        </a>
     </div>
 
-    <!-- BLOOD DONATION SUPPORT -->
-    <div class="contact-section">
-        <h2>🩸 Blood Donation Support</h2>
-        <p>
-            AASC Alampady operates an active blood support network for the
-            Alampady and nearby regions. In case of medical emergencies,
-            accidents, or urgent blood requirements, our volunteers coordinate
-            quickly to arrange donors and assistance.
-        </p>
-        <p>
-            This service is available round-the-clock and is purely driven by
-            humanitarian values to save lives within our locality.
-        </p>
+    <!-- BLOOD DONATION -->
+    <div class="contact-section cs-blood reveal">
+        <div class="cs-inner">
+            <div class="cs-icon-badge">🩸</div>
 
-        <a class="contact-btn"
-           href="https://wa.me/919995074439"
-           target="_blank">
-            Contact Blood Support Team
-        </a>
+            <div class="avail-badge green">
+                <div class="avail-dot"></div>
+                24 / 7 Available
+            </div>
+
+            <h2>Blood Donation Support</h2>
+
+            <p>
+                AASC Alampady operates an active blood support network for the
+                Alampady and nearby regions. In case of medical emergencies,
+                accidents, or urgent blood requirements, our volunteers coordinate
+                quickly to arrange donors and assistance.
+            </p>
+            <p>
+                This service is available round-the-clock and is purely driven by
+                humanitarian values to save lives within our locality.
+            </p>
+
+            <div class="btn-row">
+                <a class="contact-btn btn-wa"
+                   href="https://wa.me/919995074439"
+                   target="_blank">
+                    Contact Blood Support Team
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- MEDICAL AID SUPPORT -->
-    <div class="contact-section">
-        <h2>🏥 Medical Aid Support</h2>
-        <p>
-            AASC Alampady also extends support for urgent medical assistance,
-            including guidance, coordination, medical equipmental relief and financial help for patients
-            from Alampady and surrounding areas who are facing critical health
-            situations.
-        </p>
-        <p>
-            Our medical aid initiatives focus on timely support, community
-            cooperation, and ensuring that no one is left alone during medical
-            emergencies.
-        </p>
+    <!-- MEDICAL AID -->
+    <div class="contact-section cs-medical reveal">
+        <div class="cs-inner">
+            <div class="cs-icon-badge">🏥</div>
 
-        <a class="contact-btn"
-           href="https://wa.me/919946533055"
-           target="_blank">
-            Contact Medical Aid Support
-        </a>
+            <div class="avail-badge teal">
+                <div class="avail-dot"></div>
+                Emergency Support
+            </div>
+
+            <h2>Medical Aid Support</h2>
+
+            <p>
+                AASC Alampady also extends support for urgent medical assistance,
+                including guidance, coordination, medical equipment relief and financial help for patients
+                from Alampady and surrounding areas who are facing critical health
+                situations.
+            </p>
+            <p>
+                Our medical aid initiatives focus on timely support, community
+                cooperation, and ensuring that no one is left alone during medical
+                emergencies.
+            </p>
+
+            <div class="btn-row">
+                <a class="contact-btn btn-wa"
+                   href="https://wa.me/919946533055"
+                   target="_blank">
+                    Contact Medical Aid Support
+                </a>
+            </div>
+        </div>
     </div>
 
 </div>
+
+
+<script>
+(function(){
+    const els=document.querySelectorAll('.reveal');
+    const io=new IntersectionObserver((entries)=>{
+        entries.forEach((e,i)=>{
+            if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*100); io.unobserve(e.target); }
+        });
+    },{threshold:.06});
+    els.forEach(el=>io.observe(el));
+})();
+</script>
 
 {% endblock %}

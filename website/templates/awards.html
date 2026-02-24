@@ -1,20 +1,357 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>🏆 Awards & Recognition</h1>
+<style>
+:root {
+    --cream:#f7f0e6; --warm-white:#fdf8f2; --sand:#e8d5b7;
+    --amber:#b8751a; --amber-bright:#d4891f; --amber-pale:#e8c07a;
+    --terra:#8b4513; --terra-soft:#c0622a;
+    --teal:#2a7a72; --teal-light:#3d9e94; --teal-pale:#d4f0ec;
+    --ink:#1a1208; --ink-warm:#3d2e1a; --ink-mid:#6b5540; --ink-soft:#9a8270;
+    --shimmer: linear-gradient(105deg, #b8751a 0%, #e8c07a 25%, #d4891f 50%, #e8c07a 75%, #b8751a 100%);
+}
+
+@keyframes shimMove   { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+@keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+@keyframes pulse      { from{transform:scale(1);opacity:.8} to{transform:scale(1.12);opacity:1} }
+@keyframes spinSlow   { to{transform:rotate(360deg)} }
+@keyframes trophyBob  { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-8px) rotate(3deg)} }
+@keyframes starPop    { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+@keyframes ribbonGlow {
+    0%,100% { box-shadow: 0 0 0 0 rgba(184,117,26,0); }
+    50%     { box-shadow: 0 0 28px 6px rgba(184,117,26,0.18); }
+}
+
+.reveal {
+    opacity:0; transform:translateY(28px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ══════════════════════════════════════════
+   PAGE HERO
+══════════════════════════════════════════ */
+.awards-hero {
+    position:relative; border-radius:28px; overflow:hidden;
+    padding:76px 72px 68px; text-align:center;
+    background:linear-gradient(140deg,
+        #f5e8cc 0%, #fdf0d8 30%, #f8f2e8 60%, #f2ece0 100%);
+    border:1px solid rgba(184,117,26,.25);
+    box-shadow:
+        0 40px 100px rgba(184,117,26,.18),
+        0 8px 32px rgba(0,0,0,.06),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    margin-bottom:52px;
+    animation:fadeIn .6s ease both;
+}
+
+.awards-hero::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation:shimMove 5s linear infinite; border-radius:28px 28px 0 0;
+}
+
+/* faint trophy watermark */
+.awards-hero-wm {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:clamp(120px,20vw,220px);
+    opacity:.04; pointer-events:none; user-select:none;
+    animation:trophyBob 6s ease-in-out infinite;
+    line-height:1;
+}
+
+.ah-pat {
+    position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(circle at 1px 1px, rgba(184,117,26,.055) 1px, transparent 0);
+    background-size:28px 28px; opacity:.5;
+}
+.ah-glow {
+    position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse 70% 80% at 50% 50%, rgba(232,192,122,.25) 0%, transparent 65%);
+}
+
+.brk-tl { position:absolute; top:20px; left:20px; width:42px; height:42px; border-top:2px solid rgba(184,117,26,.55); border-left:2px solid rgba(184,117,26,.55); pointer-events:none; }
+.brk-tr { position:absolute; top:20px; right:20px; width:42px; height:42px; border-top:2px solid rgba(184,117,26,.55); border-right:2px solid rgba(184,117,26,.55); pointer-events:none; }
+.brk-bl { position:absolute; bottom:20px; left:20px; width:42px; height:42px; border-bottom:2px solid rgba(184,117,26,.55); border-left:2px solid rgba(184,117,26,.55); pointer-events:none; }
+.brk-br { position:absolute; bottom:20px; right:20px; width:42px; height:42px; border-bottom:2px solid rgba(184,117,26,.55); border-right:2px solid rgba(184,117,26,.55); pointer-events:none; }
+
+.page-eyebrow {
+    display:inline-flex; align-items:center; gap:12px;
+    font-family:'Cinzel',serif; font-size:9.5px; letter-spacing:4px;
+    text-transform:uppercase; color:var(--amber); margin-bottom:18px;
+    animation:fadeUp .7s ease both .1s; position:relative;
+}
+.page-eyebrow::before { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,transparent,var(--amber)); }
+.page-eyebrow::after  { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,var(--amber),transparent); }
+
+.awards-page-title {
+    font-family:'Cinzel',serif; font-size:clamp(28px,5.5vw,62px); font-weight:700;
+    color:var(--ink); letter-spacing:6px; line-height:1.05; margin:0 0 8px;
+    animation:fadeUp .8s ease both .15s; position:relative;
+}
+.awards-page-sub {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(14px,2vw,19px); font-weight:400;
+    color:var(--amber); letter-spacing:3px; margin-bottom:28px;
+    animation:fadeUp .8s ease both .2s; position:relative;
+}
+
+/* star row */
+.hero-stars {
+    display:inline-flex; gap:10px; align-items:center; margin-bottom:22px;
+    animation:fadeIn 1s ease both .25s; position:relative;
+}
+.hero-star {
+    color:var(--amber-pale); font-size:14px;
+    animation:starPop 2s ease-in-out infinite;
+}
+.hero-star:nth-child(2) { font-size:20px; color:var(--amber); animation-delay:-.3s; }
+.hero-star:nth-child(3) { font-size:14px; animation-delay:-.6s; }
+
+.hero-orn { display:flex; align-items:center; gap:14px; justify-content:center; animation:fadeIn 1s ease both .35s; position:relative; }
+.hero-orn-l { width:52px; height:1px; }
+.hero-orn-l:first-child { background:linear-gradient(90deg,transparent,rgba(184,117,26,.5)); }
+.hero-orn-l:last-child  { background:linear-gradient(90deg,rgba(184,117,26,.5),transparent); }
+.hero-orn-c { color:var(--amber); font-size:9px; display:flex; gap:7px; }
+
+/* ══════════════════════════════════════════
+   AWARDS LIST
+══════════════════════════════════════════ */
+.awards-list {
+    display:flex; flex-direction:column; gap:32px;
+}
+
+/* ══════════════════════════════════════════
+   AWARD CARD
+══════════════════════════════════════════ */
+.award-card {
+    background:rgba(253,248,242,.94);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-radius:24px;
+    border:1px solid rgba(184,117,26,.18);
+    box-shadow:
+        0 24px 65px rgba(184,117,26,.12),
+        0 6px 22px rgba(0,0,0,.05),
+        inset 0 1px 0 rgba(255,255,255,.9);
+    overflow:hidden; position:relative;
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1),
+               box-shadow .35s, border-color .35s;
+    display:grid;
+    grid-template-columns:1fr;
+}
+
+.award-card:hover {
+    transform:translateY(-6px);
+    box-shadow:0 40px 90px rgba(184,117,26,.18), 0 10px 40px rgba(0,0,0,.07);
+    border-color:rgba(184,117,26,.35);
+}
+
+/* shimmer top on hover */
+.award-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation:shimMove 4s linear infinite;
+    opacity:0; transition:opacity .3s; z-index:2;
+    border-radius:24px 24px 0 0;
+}
+.award-card:hover::before { opacity:1; }
+
+/* left accent ribbon */
+.award-card::after {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:5px;
+    background:linear-gradient(180deg, var(--amber), var(--amber-bright), var(--terra-soft));
+    border-radius:0 0 0 24px;
+}
+
+/* when image is present: side-by-side on wide screens */
+.award-card.has-image {
+    grid-template-columns:1fr 340px;
+}
+
+/* ── card body ── */
+.award-body {
+    padding:36px 44px 38px 54px;
+    display:flex; flex-direction:column; justify-content:center; gap:0;
+}
+
+/* ── year badge ── */
+.award-year-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    margin-bottom:16px;
+    padding:5px 16px; border-radius:20px;
+    background:linear-gradient(135deg,rgba(232,192,122,.35),rgba(253,248,242,.8));
+    border:1px solid rgba(184,117,26,.25);
+    font-family:'Cinzel',serif; font-size:9px; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--amber);
+    width:fit-content;
+    animation:ribbonGlow 4s ease-in-out infinite;
+}
+.award-year-badge::before { content:'◆'; font-size:6px; opacity:.7; }
+
+/* ── award title ── */
+.award-card h3 {
+    font-family:'Cormorant Garamond',serif; font-size:clamp(20px,2.5vw,26px);
+    font-weight:700; color:var(--ink); margin:0 0 16px; line-height:1.25;
+    letter-spacing:.4px;
+}
+
+/* ── description ── */
+.award-card p {
+    font-family:'Raleway',sans-serif; font-size:14.5px;
+    line-height:1.95; color:var(--ink-mid); letter-spacing:.2px; margin:0;
+    max-width:680px;
+}
+
+/* ── trophy icon beside title ── */
+.award-title-row {
+    display:flex; align-items:flex-start; gap:14px; margin-bottom:4px;
+}
+.award-trophy {
+    font-size:28px; flex-shrink:0; margin-top:2px;
+    animation:trophyBob 4s ease-in-out infinite;
+    filter:drop-shadow(0 3px 8px rgba(184,117,26,.25));
+}
+
+/* ── image side ── */
+.award-img-wrap {
+    overflow:hidden; position:relative;
+    border-left:1px solid rgba(184,117,26,.12);
+}
+
+.award-img-wrap img {
+    width:100%; height:100%; min-height:220px;
+    object-fit:cover; display:block;
+    transition:transform .7s ease;
+}
+.award-card:hover .award-img-wrap img { transform:scale(1.04); }
+
+/* bottom fade on image */
+.award-img-wrap::after {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, rgba(253,248,242,.15), transparent 30%);
+    pointer-events:none;
+}
+
+/* ── full-width image (no side layout) ── */
+.award-img-full-wrap {
+    overflow:hidden; position:relative;
+    border-top:1px solid rgba(184,117,26,.1);
+    max-height:380px;
+}
+.award-img-full-wrap img {
+    width:100%; max-height:380px;
+    object-fit:cover; display:block;
+    transition:transform .7s ease;
+}
+.award-card:hover .award-img-full-wrap img { transform:scale(1.025); }
+.award-img-full-wrap::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:80px;
+    background:linear-gradient(transparent, rgba(253,248,242,.4));
+    pointer-events:none;
+}
+
+/* ══════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════ */
+.empty-state {
+    text-align:center; padding:90px 40px;
+    border-radius:24px;
+    background:linear-gradient(135deg,rgba(245,232,200,.5),rgba(253,248,242,.8));
+    border:1px solid rgba(184,117,26,.18);
+    box-shadow:0 8px 40px rgba(184,117,26,.08);
+}
+.empty-icon { font-size:56px; display:block; margin-bottom:20px; animation:trophyBob 3s ease-in-out infinite; }
+.empty-state p {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:20px; color:var(--ink-soft); letter-spacing:1px;
+}
+
+/* mobile */
+@media(max-width:860px){
+    .awards-hero { padding:56px 28px 50px; }
+    .award-card.has-image { grid-template-columns:1fr; }
+    .award-img-wrap { border-left:none; border-top:1px solid rgba(184,117,26,.12); min-height:220px; }
+    .award-img-wrap img { min-height:220px; }
+    .award-body { padding:28px 26px 30px 34px; }
+}
+</style>
+
+
+<!-- ══ HERO ══ -->
+<div class="awards-hero">
+    <div class="ah-pat"></div>
+    <div class="ah-glow"></div>
+    <div class="awards-hero-wm">🏆</div>
+    <div class="brk-tl"></div>
+    <div class="brk-tr"></div>
+    <div class="brk-bl"></div>
+    <div class="brk-br"></div>
+
+    <div class="page-eyebrow">Honour · Achievement · Legacy</div>
+
+    <div class="hero-stars">
+        <span class="hero-star">★</span>
+        <span class="hero-star">★</span>
+        <span class="hero-star">★</span>
+    </div>
+
+    <h1 class="awards-page-title">Awards</h1>
+    <p class="awards-page-sub">Recognition &amp; Honours</p>
+
+    <div class="hero-orn">
+        <div class="hero-orn-l"></div>
+        <div class="hero-orn-c"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
+        <div class="hero-orn-l"></div>
+    </div>
+</div>
+
+
+<!-- ══ AWARDS LIST ══ -->
+<div class="awards-list">
 
 {% for a in awards %}
-<div style="background:white; padding:20px; margin-bottom:20px; border-radius:10px;">
-    <h3>{{ a[1] }}</h3>
-    <small>Year: {{ a[2] }}</small>
-    <p>{{ a[3] }}</p>
+<div class="award-card {% if a[4] %}has-image{% endif %} reveal">
+
+    <div class="award-body">
+        <div class="award-year-badge">Year: {{ a[2] }}</div>
+        <div class="award-title-row">
+            <span class="award-trophy">🏆</span>
+            <h3>{{ a[1] }}</h3>
+        </div>
+        <p>{{ a[3] }}</p>
+    </div>
 
     {% if a[4] %}
-        <img src="/{{ a[4] }}" style="max-width:100%; border-radius:8px;">
+        {% if true %}
+        <div class="award-img-wrap">
+            <img src="/{{ a[4] }}">
+        </div>
+        {% endif %}
     {% endif %}
+
 </div>
 {% else %}
-<p>No awards listed yet.</p>
+<div class="empty-state reveal">
+    <span class="empty-icon">🏆</span>
+    <p>No awards listed yet.</p>
+</div>
 {% endfor %}
+
+</div>
+
+
+<script>
+(function(){
+    const els=document.querySelectorAll('.reveal');
+    const io=new IntersectionObserver((entries)=>{
+        entries.forEach((e,i)=>{
+            if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*100); io.unobserve(e.target); }
+        });
+    },{threshold:.06});
+    els.forEach(el=>io.observe(el));
+})();
+</script>
 
 {% endblock %}
