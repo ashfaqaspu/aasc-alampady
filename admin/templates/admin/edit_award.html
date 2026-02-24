@@ -1,0 +1,72 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Edit Award</h2>
+
+    <form method="post"
+          enctype="multipart/form-data"
+          action="{{ url_for('admin.edit_award', id=item.id) }}">
+
+        <div class="mb-3">
+            <input class="form-control"
+                   name="title"
+                   value="{{ item.title }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <input class="form-control"
+                   name="year"
+                   type="number"
+                   value="{{ item.year }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <textarea class="form-control"
+                      name="description"
+                      rows="5">{{ item.description }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <p><strong>Current Image</strong></p>
+            {% if item.image %}
+                <img src="{{ url_for('static', filename=item.image) }}"
+                     width="120"
+                     style="border-radius:6px;">
+            {% else %}
+                <p>No image</p>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <p><strong>Change Image (optional)</strong></p>
+            <input class="form-control"
+                   type="file"
+                   name="image"
+                   accept="image/*">
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="pinned"
+                   value="1"
+                   id="pinned"
+                   {% if item.pinned %}checked{% endif %}>
+            <label class="form-check-label" for="pinned">
+                📌 Pin this award
+            </label>
+        </div>
+
+        <button class="btn btn-primary">Update Award</button>
+        <a href="{{ url_for('admin.awards') }}"
+           class="btn btn-secondary">← Back</a>
+
+    </form>
+
+</div>
+
+{% endblock %}

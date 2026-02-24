@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ================================
+   PREMIUM MONTHLY REPORT STYLING
+================================ */
+
+.report-wrapper {
+  padding: 40px 20px;
+}
+
+/* Top Navigation */
+.top-nav {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: #0d47a1;
+  font-weight: 600;
+  margin: 0 8px;
+}
+
+.top-nav a:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.report-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0d47a1;
+  margin-bottom: 30px;
+}
+
+/* Filter Card */
+.filter-card {
+  max-width: 480px;
+  margin: 0 auto 30px;
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-card input[type="month"] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  font-size: 14px;
+}
+
+.filter-card button {
+  padding: 10px 18px;
+  background: linear-gradient(135deg,#0d47a1,#1976d2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-card button:hover {
+  background: #08306b;
+}
+
+/* Summary Section */
+.summary-grid {
+  max-width: 950px;
+  margin: 0 auto 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.summary-box {
+  background: #e3f2fd;
+  padding: 18px;
+  border-radius: 16px;
+  border-left: 6px solid #0d47a1;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Table Card */
+.table-card {
+  max-width: 950px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #0d47a1;
+}
+
+th {
+  color: white;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #edf2f7;
+  font-size: 14px;
+}
+
+tbody tr:hover td {
+  background: #f4f8ff;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 25px;
+  color: #78909c;
+  font-weight: 500;
+}
+
+/* Print Friendly */
+@media print {
+  .top-nav, .filter-card {
+    display: none;
+  }
+
+  body {
+    background: white;
+  }
+
+  .table-card {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  thead {
+    background: #ddd !important;
+  }
+
+  th {
+    color: black !important;
+  }
+}
+</style>
+
+<div class="report-wrapper">
+
+<!-- ===== TOP NAVIGATION ===== -->
+<div class="top-nav">
+  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}">
+    🏠 Mini Dashboard
+  </a> |
+
+  <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">
+    👥 Members
+  </a>
+
+  {% if month %}
+    |
+    <a href="{{ url_for('portal.yearly_report',
+                        cid=cid,
+                        year=month.split('-')[0]) }}">
+      📊 Yearly
+    </a>
+  {% endif %}
+</div>
+
+<hr>
+
+<div class="report-title">
+  📅 Monthly Attendance Report
+</div>
+
+<!-- ===== FILTER ===== -->
+<form method="get" class="filter-card">
+  <input type="month"
+         name="month"
+         value="{{ month or '' }}"
+         required>
+  <button type="submit">View</button>
+</form>
+
+<!-- ===== SUMMARY ===== -->
+<div class="summary-grid">
+
+  <div class="summary-box">
+    ⏱ Total Meeting Time:<br>
+    {{ total_meeting_time if total_meeting_time else "—" }} Minutes
+  </div>
+
+  <div class="summary-box">
+    👥 Total Attended Time:<br>
+    {{ total_attended_time if total_attended_time else "—" }} Minutes
+  </div>
+
+</div>
+
+<!-- ===== TABLE ===== -->
+<div class="table-card">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Total Minutes Attended</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% if data and data|length > 0 %}
+        {% for d in data %}
+        <tr>
+          <td>{{ d[0] }}</td>
+          <td>{{ d[1] }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="2" class="empty-state">
+            No attendance data available for selected month
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+{% endblock %}

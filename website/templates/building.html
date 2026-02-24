@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ================= BUILDING PAGE ================= */
+.building-page {
+    max-width: 1200px;
+    margin: auto;
+    padding-bottom: 40px;
+}
+
+.building-title {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.building-title h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #000;
+}
+
+/* ================= HERO IMAGE ================= */
+.building-hero {
+    width: 100%;
+    height: 420px;
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 35px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+.building-hero {
+    width: 100%;
+    height: 520px; /* increased height = zoomed out feel */
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 35px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    background: #f4f6f9; /* neutral background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.building-hero img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 🔥 shows full building */
+}
+
+
+/* ================= IMAGE GRID ================= */
+.building-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+}
+
+.building-grid img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.building-grid img:hover {
+    transform: scale(1.04);
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+    .building-hero {
+        height: 260px;
+    }
+
+    .building-title h1 {
+        font-size: 26px;
+    }
+}
+</style>
+
+<div class="building-page">
+
+    <!-- Title -->
+    <div class="building-title">
+        <h1>AASC Club Building</h1>
+    </div>
+
+    <!-- Hero Image -->
+    <div class="building-hero">
+        <img src="/static/images/slideshow/building1.jpeg" alt="AASC Club Building">
+    </div>
+
+    <!-- Image Gallery -->
+    <div class="building-grid">
+        <img src="/static/images/slideshow/building2.jpeg" alt="AASC Club Building">
+        <img src="/static/images/slideshow/building3.jpeg" alt="AASC Club Building">
+        <img src="/static/images/slideshow/building4.jpeg" alt="AASC Club Building">
+        <img src="/static/images/slideshow/building5.jpeg" alt="AASC Club Building">
+        <img src="/static/images/slideshow/building6.jpeg" alt="AASC Club Building">
+    </div>
+
+</div>
+
+{% endblock %}

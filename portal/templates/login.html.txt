@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>AASC ALAMPADY 🤍 Login</h2>
+<form method="POST">
+  <input name="phone" placeholder="Phone">
+  <input name="password" type="password" placeholder="Password">
+  <button>Login</button>
+</form>
+</body>
+</html>

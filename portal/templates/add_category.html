@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ===== PAGE BACKGROUND ===== */
+
+.category-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg,#eef4ff,#e3f2fd,#f4f9ff);
+}
+
+/* ===== CARD ===== */
+
+.category-card {
+    width: 100%;
+    max-width: 650px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 40px 45px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+    border: 1px solid #e6edf5;
+}
+
+/* ===== TITLE ===== */
+
+.category-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin-bottom: 35px;
+    letter-spacing: 0.3px;
+}
+
+/* ===== FORM GROUP ===== */
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a237e;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1px solid #d6dde8;
+    background: #f9fbff;
+    font-size: 14.5px;
+    transition: 0.25s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #1976d2;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(25,118,210,0.12);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* ===== HELPER TEXT ===== */
+
+.helper-text {
+    font-size: 12.5px;
+    color: #607d8b;
+    margin-top: 6px;
+}
+
+/* ===== BUTTON ===== */
+
+.save-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    background: linear-gradient(135deg,#1976d2,#42a5f5);
+    color: white;
+    transition: 0.3s ease;
+    box-shadow: 0 10px 25px rgba(25,118,210,0.25);
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(25,118,210,0.35);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 600px) {
+    .category-card {
+        padding: 30px 25px;
+    }
+}
+</style>
+
+<div class="category-wrapper">
+
+    <div class="category-card">
+
+        <h2 class="category-title">
+            ➕ Add Equipment Category
+        </h2>
+
+        <form method="POST">
+
+            <div class="form-group">
+                <label class="form-label">Category Name</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Prefix (Example: WC, WB, OX)</label>
+                <input type="text" name="prefix" class="form-control" required>
+                <div class="helper-text">
+                    This prefix will generate codes like WC001, WB010, etc.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+
+            <button type="submit" class="save-btn">
+                💾 Save Category
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

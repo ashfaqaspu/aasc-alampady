@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Receipt</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 15px;
+            color: #222;
+        }
+
+        .receipt {
+            max-width: 700px;
+            margin: auto;
+            background: #ffffff;
+            padding: 32px 30px;
+            border-radius: 14px;
+            border: 2px solid #0d47a1;
+            box-shadow: 0 14px 35px rgba(0,0,0,0.15);
+        }
+
+        /* HEADER */
+        .receipt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            height: 68px;
+            object-fit: contain;
+        }
+
+        .receipt-title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .receipt-title h2 {
+            margin: 0;
+            color: #0d47a1;
+            font-size: 22px;
+            letter-spacing: 0.6px;
+        }
+
+        .receipt-title p {
+            margin: 3px 0 0;
+            font-size: 13.5px;
+            color: #555;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dfe3eb;
+            margin: 18px 0;
+        }
+
+        /* DETAILS */
+        .row {
+            display: flex;
+            margin: 8px 0;
+            font-size: 14.5px;
+        }
+
+        .label {
+            width: 160px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .value {
+            flex: 1;
+        }
+
+        .highlight {
+            font-weight: 700;
+            color: #0d47a1;
+        }
+
+        /* AUTH */
+        .auth {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ACTIONS */
+        .actions {
+            text-align: center;
+            margin-top: 26px;
+        }
+
+        button {
+            padding: 10px 18px;
+            background: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(13,71,161,0.3);
+        }
+
+        button:hover {
+            background: #08306b;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #0d47a1;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* PRINT */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            button,
+            .back-btn {
+                display: none !important;
+            }
+
+            .receipt {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .logo {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="receipt">
+
+    <!-- HEADER -->
+    <div class="receipt-header">
+        <img src="{{ url_for('static', filename='aasc_logo.jpeg') }}"
+             class="logo">
+
+        <div class="receipt-title">
+            <h2>AASC ALAMPADY</h2>
+            <p>Alampady Arts & Sports Club</p>
+        </div>
+
+        <img src="{{ url_for('static', filename='gcc.jpeg') }}"
+             class="logo">
+    </div>
+
+    <hr>
+
+    <!-- RECEIPT META -->
+    <div class="row">
+        <div class="label">Receipt No</div>
+        <div class="value highlight">
+            {{ receipt.receipt_no }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="label">Issued Date</div>
+        <div class="value">
+            {{ receipt.issued_date }}
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- MEMBER -->
+    <div class="row">
+        <div class="label">Member Name</div>
+        <div class="value">
+            {{ receipt.user.name }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="label">Membership ID</div>
+        <div class="value">
+            {{ receipt.user.membership_id }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="label">Phone</div>
+        <div class="value">
+            {{ receipt.user.phone }}
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- PAYMENT -->
+    <div class="row">
+        <div class="label">Amount Paid</div>
+        <div class="value highlight">
+            ₹{{ receipt.amount }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="label">Validity</div>
+        <div class="value">
+            {{ receipt.membership_start }} → {{ receipt.membership_end }}
+        </div>
+    </div>
+
+    <hr>
+
+    <p class="auth">
+        Authorized By: <b>AASC Admin</b>
+    </p>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+        <button onclick="window.print()">
+            🖨 Print / Save Receipt
+        </button>
+
+        <br>
+
+        <a href="{{ url_for('portal.dashboard') }}"
+           class="back-btn">
+           ⬅ Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

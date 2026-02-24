@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>🏛 All Committees</h2>
+
+{% if committees %}
+<table class="table-style">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Members</th>
+        <th>Action</th>
+    </tr>
+
+    {% for c in committees %}
+    <tr>
+        <td>{{ c.id }}</td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.members|length }}</td>
+        <td>
+            <a href="{{ url_for('portal.committee_dashboard', cid=c.id) }}">View</a> |
+            <a href="{{ url_for('portal.delete_committee', cid=c.id) }}"
+               onclick="return confirm('Are you sure?');">
+               🗑 Delete
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No committees found.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,502 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+/* ===============================
+   GLOBAL LAYOUT
+================================ */
+
+.medical-wrapper {
+    min-height: 100vh;
+    padding: 40px 50px 80px 50px;
+    background: linear-gradient(135deg,#eef5fb,#f7fbff,#e8f2fb);
+}
+
+/* ===============================
+   HEADER
+================================ */
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.dashboard-header h2 {
+    font-size: 34px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin-bottom: 6px;
+}
+
+.dashboard-header p {
+    color: #607d8b;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+}
+
+/* ===============================
+   METRIC CARDS
+================================ */
+
+.metric-row {
+    margin-bottom: 40px;
+}
+
+.metric-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    border: 1px solid #edf2f7;
+    transition: 0.25s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.metric-label {
+    font-size: 13px;
+    color: #7a8ea3;
+    font-weight: 500;
+}
+
+.metric-value {
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.green { color:#2e7d32; }
+.orange { color:#f57c00; }
+.red { color:#c62828; }
+
+/* ===============================
+   ACTION BAR
+================================ */
+
+.action-bar {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.action-btn {
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 13px;
+    margin: 6px;
+    border: none;
+    text-decoration: none;
+    color: white;
+    transition: 0.2s ease;
+}
+
+.btn-blue { background: linear-gradient(135deg,#1e88e5,#42a5f5); }
+.btn-dark { background: linear-gradient(135deg,#455a64,#607d8b); }
+.btn-green { background: linear-gradient(135deg,#2e7d32,#66bb6a); }
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* ===============================
+   CATEGORY CARD
+================================ */
+
+.category-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 25px 28px;
+    margin-bottom: 35px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    border: 1px solid #edf2f7;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.category-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0d47a1;
+}
+
+.category-meta {
+    font-size: 12px;
+    color: #78909c;
+}
+
+.add-item-btn {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    background: linear-gradient(135deg,#1e88e5,#42a5f5);
+    color: white;
+    transition: 0.2s ease;
+}
+
+.add-item-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* ===============================
+   TABLE
+================================ */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.premium-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.premium-table thead {
+    background: #f1f6fb;
+}
+
+.premium-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #546e7a;
+    font-weight: 600;
+}
+
+.premium-table td {
+    padding: 16px;
+    border-top: 1px solid #eef3f8;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.premium-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+/* COLUMN WIDTHS */
+
+.col-code { width: 12%; }
+.col-status { width: 14%; }
+.col-condition { width: 14%; }
+.col-issue { width: 60%; }
+
+/* ===============================
+   STATUS PILLS
+================================ */
+
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.pill-available { background:#e8f5e9; color:#2e7d32; }
+.pill-issued { background:#fff3e0; color:#f57c00; }
+.pill-overdue { background:#ffebee; color:#c62828; }
+
+/* ===============================
+   ISSUE FORM
+================================ */
+
+.issue-flex {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.issue-flex input {
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #dbe5ef;
+    font-size: 13px;
+    background: #f9fbfd;
+}
+
+.issue-flex input:focus {
+    outline: none;
+    border-color: #1e88e5;
+    background: #ffffff;
+}
+
+.issue-btn {
+    background: linear-gradient(135deg,#fb8c00,#ff9800);
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: 0.2s ease;
+}
+
+.issue-btn:hover {
+    background: #ef6c00;
+}
+
+.disabled-text {
+    opacity: 0.5;
+    font-size: 12px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+
+@media(max-width: 992px) {
+
+    .medical-wrapper {
+        padding: 30px 20px;
+    }
+
+    .issue-flex {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .issue-btn {
+        width: 100%;
+    }
+
+    .category-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+</style>
+
+<div class="medical-wrapper">
+
+<div class="dashboard-header">
+    <h2>🏥 Medical Equipment Management</h2>
+    <p>Monitor equipment availability, manage issues, and track inventory efficiently.</p>
+</div>
+
+<a href="{{ url_for('portal.dashboard') }}"
+   class="main-back-btn">
+   ← Main Dashboard
+</a>
+
+<!-- METRICS -->
+<div class="container metric-row">
+<div class="row g-4 text-center">
+
+    <div class="col-md-2 col-6">
+        <div class="metric-card">
+            <div class="metric-label">Total Categories</div>
+            <div class="metric-value">{{ total_categories }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="metric-card">
+            <div class="metric-label">Total Items</div>
+            <div class="metric-value">{{ total_items }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="metric-card">
+            <div class="metric-label">Available</div>
+            <div class="metric-value green">{{ available }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="metric-card">
+            <div class="metric-label">Issued</div>
+            <div class="metric-value orange">{{ issued }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-6">
+        <div class="metric-card">
+            <div class="metric-label">Overdue</div>
+            <div class="metric-value red">{{ overdue }}</div>
+        </div>
+    </div>
+
+</div>
+</div>
+
+<!-- ACTION BAR -->
+<div class="action-bar">
+
+    <a href="{{ url_for('portal.add_category') }}"
+       class="action-btn btn-blue">
+       ➕ Add Category
+    </a>
+
+    <a href="{{ url_for('portal.view_movements') }}"
+       class="action-btn btn-dark">
+       📋 Movements
+    </a>
+
+    <a href="{{ url_for('portal.medical_analytics') }}"
+       class="action-btn btn-green">
+       📊 Analytics
+    </a>
+
+</div>
+
+<!-- CATEGORY SECTION -->
+{% if category_data and category_data|length > 0 %}
+
+{% for data in category_data %}
+<div class="category-card">
+
+    <div class="category-header">
+        <div>
+            <div class="category-title">{{ data["category"].name }}</div>
+            <div class="category-meta">{{ data["total"] }} items</div>
+        </div>
+
+        <a href="{{ url_for('portal.add_items',
+                            category_id=data['category'].id) }}"
+           class="add-item-btn">
+           ➕ Add Items
+        </a>
+    </div>
+
+    {% if data["items"]|length > 0 %}
+
+    <div class="table-wrapper">
+    <table class="premium-table">
+        <thead>
+            <tr>
+                <th class="col-code">Item Code</th>
+                <th class="col-status">Status</th>
+                <th class="col-condition">Condition</th>
+                <th class="col-issue">Issue Equipment</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for item in data["items"] %}
+        <tr>
+
+            <td class="code-cell">{{ item.item_code }}</td>
+
+            <td>
+                {% if item.status == "AVAILABLE" %}
+                    <span class="status-pill pill-available">Available</span>
+                {% elif item.status == "ISSUED" %}
+                    <span class="status-pill pill-issued">Issued</span>
+                {% elif item.status == "OVERDUE" %}
+                    <span class="status-pill pill-overdue">Overdue</span>
+                {% endif %}
+            </td>
+
+            <td>
+            <form method="POST"
+                  action="{{ url_for('portal.update_condition',
+                                     item_id=item.id) }}"
+                  style="margin:0;">
+
+                <select name="condition"
+                        onchange="this.form.submit()"
+                        style="padding:6px 10px;
+                               border-radius:8px;
+                               border:1px solid #dbe5ef;
+                               font-size:12px;
+                               background:#f9fbfd;
+                               cursor:pointer;">
+
+                    <option value="GOOD"
+                        {% if item.condition=="GOOD" %}selected{% endif %}>
+                        GOOD
+                    </option>
+
+                    <option value="FAIR"
+                        {% if item.condition=="FAIR" %}selected{% endif %}>
+                        FAIR
+                    </option>
+
+                    <option value="DAMAGED"
+                        {% if item.condition=="DAMAGED" %}selected{% endif %}>
+                        DAMAGED
+                    </option>
+
+                    <option value="BROKEN"
+                        {% if item.condition=="BROKEN" %}selected{% endif %}>
+                        BROKEN
+                    </option>
+
+                </select>
+            </form>
+            </td>
+
+            <td>
+                {% if item.status == "AVAILABLE" %}
+                <form method="POST"
+                      action="{{ url_for('portal.issue_item',
+                                         item_id=item.id) }}"
+                      class="issue-flex">
+
+                    <input type="text"
+                           name="name"
+                           placeholder="Name"
+                           required>
+
+                    <input type="text"
+                           name="phone"
+                           placeholder="Phone"
+                           required>
+
+                    <input type="date"
+                           name="return_date"
+                           required>
+
+                    <button type="submit"
+                            class="issue-btn">
+                        Issue
+                    </button>
+
+                </form>
+                {% else %}
+                    <span class="disabled-text">
+                        Not Available
+                    </span>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    {% else %}
+        <p style="color:#78909c;">No items added yet.</p>
+    {% endif %}
+
+</div>
+{% endfor %}
+
+{% else %}
+<div style="text-align:center;color:#78909c;">
+    No categories created yet.
+</div>
+{% endif %}
+
+</div>
+
+{% endblock %}

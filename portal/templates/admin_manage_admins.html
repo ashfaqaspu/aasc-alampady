@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin | Manage Admins</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0d47a1;
+            font-size: 26px;
+        }
+
+        h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #0d47a1;
+            font-size: 18px;
+        }
+
+        /* Cards */
+        .card {
+            background: #ffffff;
+            padding: 24px 22px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #e3f2fd;
+            color: #0d47a1;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 14.5px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eef1f5;
+            font-size: 14.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f5f8ff;
+        }
+
+        /* Form */
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe3;
+            background: #fafafa;
+            font-size: 14.5px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0d47a1;
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
+        }
+
+        button:hover {
+            background: #08306b;
+            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.25);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        /* Back link */
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #0d47a1;
+            font-size: 14.5px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>🔐 Manage Admins</h2>
+
+<div class="card">
+    <h3>Current Admins</h3>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+        </tr>
+        {% for a in admins %}
+<tr>
+    <td>{{ a.name }}</td>
+    <td>{{ a.phone }}</td>
+</tr>
+{% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h3>Make Member an Admin</h3>
+
+    <form method="POST">
+        <input name="phone"
+               placeholder="Member Phone Number"
+               required>
+
+        <!-- REQUIRED FOR PYTHON -->
+        <input type="hidden"
+               name="action"
+               value="add">
+
+        <button type="submit">Add Admin</button>
+    </form>
+</div>
+
+<a href="{{ url_for('portal.dashboard') }}" class="back">
+    ← Back to Dashboard
+</a>
+
+</body>
+</html>

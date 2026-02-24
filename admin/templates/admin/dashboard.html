@@ -1,0 +1,77 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 text-primary">Admin Dashboard</h2>
+
+    <div class="row g-4">
+
+        <!-- EVENTS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">📅 Events</h5>
+                    <p class="fs-5">Total: <strong>{{ event_count }}</strong></p>
+                    <a href="{{ url_for('admin.events') }}"
+                       class="btn btn-outline-primary btn-sm">
+                        Manage Events
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPORTS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">⚽ Sports</h5>
+                    <p class="fs-5">Total: <strong>{{ sports_count }}</strong></p>
+                    <a href="{{ url_for('admin.sports') }}"
+                       class="btn btn-outline-primary btn-sm">
+                        Manage Sports
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHARITY -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">❤️ Charity</h5>
+                    <p class="fs-5">Total: <strong>{{ charity_count }}</strong></p>
+                    <a href="{{ url_for('admin.charity') }}"
+                       class="btn btn-outline-primary btn-sm">
+                        Manage Charity
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AWARDS -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title">🏆 Awards</h5>
+                    <p class="fs-5">Total: <strong>{{ award_count }}</strong></p>
+                    <a href="{{ url_for('admin.awards') }}"
+                       class="btn btn-outline-primary btn-sm">
+                        Manage Awards
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('admin.logout') }}"
+           class="btn btn-danger">
+            🚪 Logout
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

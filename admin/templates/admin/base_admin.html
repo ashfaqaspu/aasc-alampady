@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Website Admin</title>
+</head>
+<body>
+
+<div style="background:#111;color:white;padding:15px;">
+    Website Admin Panel
+    <span style="float:right;">
+        <a href="{{ url_for('admin.dashboard') }}" style="color:white;">Dashboard</a> |
+        <a href="{{ url_for('admin.logout') }}" style="color:white;">Logout</a>
+    </span>
+</div>
+
+<div style="padding:30px;">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

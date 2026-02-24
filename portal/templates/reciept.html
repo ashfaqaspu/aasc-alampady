@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        .receipt {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #0d47a1;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+        }
+
+        .row {
+            margin: 8px 0;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .print-btn {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 8px 14px;
+            background: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media print {
+            button { display: none; }
+            body { background: white; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="receipt">
+    <h2>AASC ALAMPADY</h2>
+    <p style="text-align:center;">Alampady Arts & Social Club</p>
+
+    <hr>
+
+    <hr>
+
+<hr>
+
+<div class="row">
+    <span class="label">Receipt No:</span>
+    <div class="value highlight">{{ receipt.receipt_no }}</div>
+</div>
+
+<div class="row">
+    <span class="label">Date:</span>
+    <div class="value">{{ receipt.issued_date }}</div>
+</div>
+
+<hr>
+
+<div class="row">
+    <span class="label">Member Name:</span>
+    <div class="value">{{ receipt.user.name }}</div>
+</div>
+
+<div class="row">
+    <span class="label">Membership ID:</span>
+    <div class="value">{{ receipt.user.membership_id }}</div>
+</div>
+
+<div class="row">
+    <span class="label">Phone:</span>
+    <div class="value">{{ receipt.user.phone }}</div>
+</div>
+
+<hr>
+
+<div class="row">
+    <span class="label">Amount Paid:</span>
+    <div class="value">₹{{ receipt.amount }}</div>
+</div>
+
+<div class="row">
+    <span class="label">Validity:</span>
+    <div class="value">
+        {{ receipt.membership_start }} → {{ receipt.membership_end }}
+    </div>
+</div>
+
+<hr>
+
+    <p><b>Authorized By:</b> AASC Admin</p>
+
+    <div class="print-btn">
+        <button onclick="window.print()">🖨️ Print / Save PDF</button>
+    </div>
+</div>
+
+</body>
+</html>

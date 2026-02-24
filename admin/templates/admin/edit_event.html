@@ -1,0 +1,88 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Edit Event</h2>
+
+    <form method="post"
+          enctype="multipart/form-data"
+          action="{{ url_for('admin.edit_event', id=item.id) }}">
+
+        <div class="mb-3">
+            <input class="form-control"
+                   name="title"
+                   value="{{ item.title }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <input class="form-control"
+                   name="event_date"
+                   type="date"
+                   value="{{ item.event_date }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <textarea class="form-control"
+                      name="description"
+                      rows="5">{{ item.description }}</textarea>
+        </div>
+
+        <!-- EXISTING IMAGES -->
+        <div class="mb-3">
+            <p><strong>Existing Images</strong></p>
+
+            <div class="d-flex flex-wrap gap-2">
+                {% if item.image %}
+                    {% for img in item.image.split(",") %}
+                        <img src="{{ url_for('static', filename=img) }}"
+                             width="100"
+                             height="70"
+                             style="object-fit:cover;
+                                    border-radius:6px;
+                                    border:1px solid #ccc;">
+                    {% endfor %}
+                {% else %}
+                    <p>No images</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ADD MORE IMAGES -->
+        <div class="mb-3">
+            <p><strong>Add More Images (optional)</strong></p>
+            <input class="form-control"
+                   type="file"
+                   name="images[]"
+                   multiple
+                   accept="image/*">
+        </div>
+
+        <div class="mb-3 form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="pinned"
+                   value="1"
+                   id="pinned"
+                   {% if item.pinned %}checked{% endif %}>
+            <label class="form-check-label" for="pinned">
+                📌 Pin this event
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Update Event
+        </button>
+
+        <a href="{{ url_for('admin.events') }}"
+           class="btn btn-secondary">
+            ← Back
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

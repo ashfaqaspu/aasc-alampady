@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ================= COMMITTEE PAGE ================= */
+.committee-page {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.committee-page h1 {
+    text-align: center;
+    color: #0d47a1;
+    margin-bottom: 12px;
+    font-size: 34px;
+}
+
+.committee-page p {
+    text-align: center;
+    color: #444;
+    margin-bottom: 50px;
+    font-size: 16px;
+}
+
+/* ================= SECTION ================= */
+.committee-section {
+    margin-bottom: 70px;
+}
+
+.committee-section h2 {
+    color: #0d47a1;
+    border-left: 5px solid #ff9800;
+    padding-left: 12px;
+    margin-bottom: 25px;
+    font-size: 26px;
+}
+
+/* ================= GRID ================= */
+.committee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+}
+
+/* ================= CARD ================= */
+.committee-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    padding: 22px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.committee-card:hover {
+    transform: translateY(-6px);
+}
+
+.committee-card img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    background: #e0e0e0;
+}
+
+.committee-card h3 {
+    margin: 8px 0 4px;
+    font-size: 18px;
+    color: #222;
+}
+
+.committee-card span {
+    font-size: 14px;
+    color: #666;
+}
+
+/* ================= TOP LEADERSHIP ================= */
+.top-leadership {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* ================= DIVIDER ================= */
+.section-divider {
+    height: 4px;
+    width: 120px;
+    background: #ff9800;
+    margin: 70px auto;
+    border-radius: 4px;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+    .committee-section h2 {
+        font-size: 22px;
+    }
+}
+</style>
+
+<div class="committee-page">
+
+    <h1>👥 Committee Members</h1>
+    <p>
+        Our committees work collectively to strengthen leadership,
+        coordination, and service across India and GCC regions.
+    </p>
+
+    <!-- ================= CENTRAL COMMITTEE ================= -->
+    <div class="committee-section">
+        <h2>Central Committee 2025-2026</h2>
+
+        <!-- Leadership -->
+        <div class="top-leadership">
+            <div class="committee-card">
+                <img src="/static/images/committee/central/pr.jpeg">
+                <h3>sideeq m</h3>
+                <span>President</span>
+            </div>
+            <div class="committee-card">
+                <img src="/static/images/committee/central/gsec.jpeg">
+                <h3>Abdul khader Jeelani </h3>
+                <span>Secretary</span>
+            </div>
+            <div class="committee-card">
+                <img src="/static/images/committee/central/tr.jpeg">
+                <h3>Rafeek p k</h3>
+                <span>Treasurer</span>
+            </div>
+        </div>
+
+        <!-- Vice Presidents -->
+        <h2>Vice Presidents</h2>
+        <div class="committee-grid">
+            <div class="committee-card"><img src="/static/images/committee/central/vp1.jpeg"><h3>HAWAS</h3><span>Vice President</span></div>
+            <div class="committee-card"><img src="/static/images/committee/central/vp2.jpeg"><h3>HARIS S T</h3><span>Vice President</span></div>
+            <div class="committee-card"><img src="/static/images/committee/central/vp3.jpeg"><h3>MANIKANDAN</h3><span>Vice President</span></div>
+        </div>
+
+        <!-- Joint Secretaries -->
+        <h2>Joint Secretaries</h2>
+        <div class="committee-grid">
+            <div class="committee-card"><img src="/static/images/committee/central/js1.jpeg"><h3>ABDUL KHADER ASHFAQ K A</h3><span>Join Secretary</span></div>
+            <div class="committee-card"><img src="/static/images/committee/central/js2.jpeg"><h3>MUNAWIR</h3><span>Join Secretary</span></div>
+            <div class="committee-card"><img src="/static/images/committee/central/js3.jpeg"><h3>ADDI PATHRAM</h3><span>Join Secretary</span></div>
+        </div>
+
+        <!-- Executives -->
+        <h2>Executive Members</h2>
+<div class="committee-grid">
+    {% set central_executives = [
+        "Basheer m m",
+        "NIZAR P M",
+        "ASIF B A",
+        "KHADER KAAU",
+        "QAISAR MIHRAJ",
+        "SALAM LONDON",
+        "RIYAS T A",
+        "BATHISHA",
+        "LATHI MASTER",
+        "ABDUL KHADER"
+    ] %}
+
+    {% for name in central_executives %}
+    <div class="committee-card">
+        <img src="/static/images/committee/central/ex{{ loop.index }}.jpeg">
+        <h3>{{ name }}</h3>
+        <span>Executive Member</span>
+    </div>
+    {% endfor %}
+</div>
+
+
+    <!-- ================= DIVIDER ================= -->
+    <div class="section-divider"></div>
+
+    <!-- ================= GCC COMMITTEE ================= -->
+    <div class="committee-section">
+        <h2>GCC Committee 2025-2026</h2>
+
+        <!-- Leadership -->
+        <div class="top-leadership">
+            <div class="committee-card">
+                <img src="/static/images/committee/gcc/pr.jpeg">
+                <h3>Jabu Polit</h3>
+                <span>President</span>
+            </div>
+            <div class="committee-card">
+                <img src="/static/images/committee/gcc/sec.jpeg">
+                <h3>Yaseen C H </h3>
+                <span>Secretary</span>
+            </div>
+            <div class="committee-card">
+                <img src="/static/images/committee/gcc/tr.jpeg">
+                <h3>Davood Mihraj</h3>
+                <span>Treasurer</span>
+            </div>
+        </div>
+
+        <!-- Vice Presidents -->
+        <h2>Vice Presidents</h2>
+        <div class="committee-grid">
+            <div class="committee-card"><img src="/static/images/committee/gcc/vp1.jpeg"><h3>Siddiq Copa</h3><span>Vice President</span></div>
+            <div class="committee-card"><img src="/static/images/committee/gcc/vp2.jpeg"><h3>Naseer C H </h3><span>Vice President</span></div>
+            <div class="committee-card"><img src="/static/images/committee/gcc/vp3.jpeg"><h3>Kabeer Mihraj</h3><span>Vice President</span></div>
+        </div>
+
+        <!-- Joint Secretaries -->
+        <h2>Joint Secretaries</h2>
+        <div class="committee-grid">
+            <div class="committee-card"><img src="/static/images/committee/gcc/js1.jpeg"><h3>Faizal Arafa</h3><span>Joint Secretary</span></div>
+            <div class="committee-card"><img src="/static/images/committee/gcc/js2.jpeg"><h3>Ashkar Moulavi</h3><span>Joint Secretary</span></div>
+            <div class="committee-card"><img src="/static/images/committee/gcc/js3.jpeg"><h3>Adrama Adkathil</h3><span>Joint Secretary</span></div>
+        </div>
+
+        <!-- Executives -->
+       <h2>Executive Members</h2>
+<div class="committee-grid">
+    {% set gcc_executives = [
+        "ADHRA MENATH",
+        "IBRAHIM MIHRAJ",
+        "MOHAMMED JOUHAR",
+        "AZEEZ AJJU",
+        "MUNEER QATAR",
+        "AOUF KANNIKAD",
+        "SAMSI WELCOME",
+        "FAHI",
+        "ASHI NALTHADUKKA",
+        "ABDUL KHADER",
+        "ABDUL RAHMAN"
+    ] %}
+
+    {% for name in gcc_executives %}
+    <div class="committee-card">
+        <img src="/static/images/committee/gcc/ex{{ loop.index }}.jpeg">
+        <h3>{{ name }}</h3>
+        <span>Executive Member</span>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock %}

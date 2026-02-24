@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Portal | Dashboard</title>
+
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg,#0d47a1,#1565c0);
+        }
+
+        .overlay {
+            min-height: 100vh;
+            background: rgba(0,0,0,0.45);
+            padding-bottom: 40px;
+        }
+
+        /* HEADER */
+        .header {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .header h2 {
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* GRID */
+        .container {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* CARD */
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #0d47a1;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 18px 0;
+        }
+
+        /* PROFILE */
+        .id-photo {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    display: block;
+    margin-bottom: 15px;
+}
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: white;
+            margin-top: 8px;
+        }
+
+        .member { background:#757575; }
+        .admin { background:#0d47a1; }
+        .section { background:#2e7d32; }
+        .super { background:#d32f2f; }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 6px 6px 6px 0;
+            transition: 0.3s ease;
+            color: white;
+        }
+
+        .primary { background:#0d47a1; }
+        .success { background:#2e7d32; }
+        .danger { background:#c62828; }
+        .warning { background:#f57c00; }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* METRICS */
+        .metric {
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #f5f5f5;
+            margin-bottom: 8px;
+        }
+
+        .green { color:#2e7d32; }
+        .orange { color:#f57c00; }
+        .red { color:#c62828; }
+
+        /* ADMIN GRID */
+        .admin-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+            gap: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="overlay">
+
+<div class="header">
+    <h2>AASC ALAMPADY </h2>
+    <a href="{{ url_for('portal.logout') }}">Logout</a>
+</div>
+
+<div class="container">
+
+<!-- PROFILE CARD -->
+<div class="card">
+
+    <img
+        src="{{ url_for('static', filename=user.photo or 'default_avatar.png') }}"
+        class="id-photo"
+    >
+
+    <h3>{{ user.name }}</h3>
+
+    {% if is_super_admin %}
+        <span class="badge super">SUPER ADMIN</span>
+    {% elif is_admin %}
+        <span class="badge admin">ADMIN</span>
+    {% elif is_section_admin %}
+        <span class="badge section">SECTION ADMIN</span>
+    {% else %}
+        <span class="badge member">MEMBER</span>
+    {% endif %}
+
+    <hr>
+
+    <p><b>ID:</b> {{ user.membership_id }}</p>
+    <p><b>Phone:</b> {{ user.phone }}</p>
+    <p><b>Nativity:</b> {{ user.nativity }}</p>
+
+    <hr>
+
+    <a href="{{ url_for('portal.events') }}" class="btn primary">📅 Events</a>
+    <a href="{{ url_for('portal.membership_card') }}" class="btn primary">🧾 Card</a>
+    <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">📷 Update</a>
+    <a href="{{ url_for('portal.change_password') }}" class="btn warning">🔐 Password</a>
+    <a href="{{ url_for('portal.my_committees') }}" class="btn primary">📂 Committees</a>
+
+</div>
+
+<!-- ADDITIONAL INFO -->
+<div class="card">
+    <h3>Additional Information</h3>
+
+    <div class="metric">
+        <b>Address:</b><br>
+        {{ user.address if user.address else "—" }}
+    </div>
+
+    <div class="metric">
+        <b>Email:</b><br>
+        {{ user.email if user.email else "—" }}
+    </div>
+
+    <div class="metric">
+        <b>WhatsApp:</b><br>
+        {{ user.whatsapp if user.whatsapp else "—" }}
+    </div>
+
+    <div class="metric">
+        <b>Date of Birth:</b><br>
+        {{ user.dob if user.dob else "—" }}
+    </div>
+
+    <div class="metric">
+        <b>Age:</b><br>
+        {% if user.dob %}
+            {{ calculate_age(user.dob) }}
+        {% else %}
+            —
+        {% endif %}
+    </div>
+
+    <div class="metric">
+        <b>Blood Group:</b><br>
+        {{ user.blood_group if user.blood_group else "—" }}
+    </div>
+
+    <div class="metric">
+        <b>Interests:</b><br>
+        {{ user.interests if user.interests else "—" }}
+    </div>
+
+    <hr>
+
+    <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">
+    ✏️ Edit Information
+</a>
+</div>
+<!-- MEMBERSHIP -->
+<div class="card">
+    <h3>Membership</h3>
+    <div class="metric">Start: {{ user.membership_start }}</div>
+    <div class="metric">End: {{ user.membership_end }}</div>
+
+    {% if expired %}
+        <div class="metric red"><b>Status: Expired</b></div>
+    {% else %}
+        <div class="metric green"><b>Status: Active</b></div>
+    {% endif %}
+
+   {% if renewal_enabled %}
+    {% if renewal_status == "PENDING" %}
+        <div class="metric orange">Renewal Pending</div>
+
+    {% elif renewal_status == "APPROVED" %}
+        <a href="{{ url_for('portal.view_receipt') }}"
+           class="btn success">
+           Download Receipt
+        </a>
+
+    {% else %}
+        <a href="{{ url_for('portal.renew') }}"
+           class="btn primary">
+           Renew Membership
+        </a>
+    {% endif %}
+{% endif %}
+</div>
+
+<!-- ANNOUNCEMENTS -->
+<div class="card">
+    <h3>Announcements</h3>
+    {% for a in announcements %}
+        <p><b>{{ a.title }}</b><br>{{ a.message }}</p>
+        <hr>
+    {% else %}
+        <p>No announcements</p>
+    {% endfor %}
+</div>
+
+<!-- ADMIN PANEL -->
+{% if is_admin or is_super_admin or is_section_admin %}
+<div class="card">
+    <h3>Admin Panel</h3>
+
+    <!-- MEMBER STATS -->
+    <div class="metric">Total Members: {{ total_members }}</div>
+    <div class="metric">Active: {{ active_members }}</div>
+    <div class="metric red">Expired: {{ expired_members }}</div>
+
+    <hr>
+
+    <!-- MEDICAL STATS -->
+    <div class="metric">Medical Total: {{ total_medical_items }}</div>
+    <div class="metric green">Available: {{ available_medical }}</div>
+    <div class="metric orange">Issued: {{ issued_medical }}</div>
+    <div class="metric red">Overdue: {{ overdue_medical }}</div>
+
+    <hr>
+
+    <!-- ADMIN BUTTON GRID -->
+   <div class="admin-buttons">
+    <a href="{{ url_for('portal.admin_members') }}" class="btn primary">
+        👥 View Members
+    </a>
+
+    <a href="{{ url_for('portal.admin_add_member') }}" class="btn primary">
+        ➕ Add Member
+    </a>
+
+    <a href="{{ url_for('portal.admin_announcements') }}" class="btn primary">
+        📢 Announcements
+    </a>
+
+    <a href="{{ url_for('portal.admin_renewals') }}" class="btn primary">
+        💳 Renewals
+    </a>
+
+    <a href="{{ url_for('portal.admin_events') }}" class="btn primary">
+        📅 Events
+    </a>
+
+    <a href="{{ url_for('portal.admin_analytics') }}" class="btn primary">
+        📊 Analytics
+    </a>
+
+    <a href="{{ url_for('portal.blood_donors') }}" class="btn danger">
+        🚨 Blood Panel
+    </a>
+
+    <a href="{{ url_for('portal.medical_dashboard') }}" class="btn success">
+        🏥 Medical Panel
+    </a>
+</div>
+
+{% if is_super_admin %}
+<hr>
+<div class="admin-buttons">
+
+    <a href="{{ url_for('portal.admin_dashboard') }}" class="btn warning">
+        Full Dashboard
+    </a>
+
+    <a href="{{ url_for('portal.admin_committees') }}" class="btn warning">
+        All Committees
+    </a>
+
+    <a href="{{ url_for('portal.create_committee') }}" class="btn warning">
+        Create Committee
+    </a>
+
+    <a href="{{ url_for('portal.manage_admins') }}" class="btn warning">
+        Manage Admins
+    </a>
+
+</div>
+
+{% if is_admin or is_super_admin %}
+<hr>
+<h4 style="margin-bottom:10px; color:#0d47a1;">
+    Membership Control
+</h4>
+
+<div class="admin-buttons">
+    <form method="POST"
+          action="{{ url_for('portal.toggle_renewal') }}">
+
+        <input type="hidden"
+               name="value"
+               value="{{ '0' if renewal_enabled else '1' }}">
+
+        {% if renewal_enabled %}
+            <button type="submit" class="btn danger">
+                🔒 Disable Renewal
+            </button>
+        {% else %}
+            <button type="submit" class="btn success">
+                🔓 Enable Renewal
+            </button>
+        {% endif %}
+
+    </form>
+</div>
+{% endif %}   {# closes: if is_admin or is_super_admin #}
+
+{% endif %}   {# closes: if is_super_admin #}
+
+</div>        {# closes admin card #}
+{% endif %}   {# closes: if is_admin or is_super_admin or is_section_admin #}
+
+</div>        <!-- closes container -->
+</div>        <!-- closes overlay -->
+
+</body>
+</html>

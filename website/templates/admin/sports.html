@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Sports</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .add {
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        /* IMAGE THUMBNAILS */
+        .event-images {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .event-images img {
+            width: 70px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Sports Activities</h2>
+
+<a class="add" href="/admin/sports/add">➕ Add Sports Activity</a> |
+<a href="/admin/dashboard">Dashboard</a>
+
+<table>
+<tr>
+    <th>#</th>
+    <th>Title</th>
+    <th>Date</th>
+    <th>Images</th>
+    <th>📌</th>
+    <th>Action</th>
+</tr>
+
+{% for s in items %}
+<tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ s.title }}</td>
+    <td>{{ s.event_date }}</td>
+    <td>
+        {% if s.image %}
+            {% set images = s.image.split(",") %}
+            <div class="event-images">
+                {% for img in images %}
+                    <img src="/{{ img }}">
+                {% endfor %}
+            </div>
+        {% else %}
+            -
+        {% endif %}
+    </td>
+
+    <td>
+        {% if s.pinned %}
+            <a href="/admin/sports/unpin/{{ s.id }}">📌</a>
+        {% else %}
+            <a href="/admin/sports/pin/{{ s.id }}">📍</a>
+        {% endif %}
+    </td>
+
+    <td>
+        <a href="/admin/sports/edit/{{ s.id }}">✏️ Edit</a> |
+        <a href="/admin/sports/delete/{{ s.id }}"
+           onclick="return confirm('Delete this sports activity?')">
+           ❌ Delete
+        </a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

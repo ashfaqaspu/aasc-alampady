@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f4f6f9;
+        }
+
+        header {
+            background: linear-gradient(135deg, #203a43, #2c5364);
+            padding: 15px 40px;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    AASC ALAMPADY Portal
+</header>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

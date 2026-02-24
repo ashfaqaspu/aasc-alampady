@@ -1,0 +1,93 @@
+{% extends "admin/base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Sports Activities</h2>
+
+    <div class="mb-3">
+        <a class="btn btn-success"
+           href="{{ url_for('admin.add_sport') }}">
+            ➕ Add Sports Activity
+        </a>
+
+        <a class="btn btn-secondary"
+           href="{{ url_for('admin.dashboard') }}">
+            Dashboard
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Image</th>
+                    <th>📌</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for s in items %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ s.title }}</td>
+                    <td>{{ s.event_date }}</td>
+
+                    <!-- SINGLE IMAGE -->
+                    <td>
+                        {% if s.image %}
+                            <img src="{{ url_for('static', filename=s.image) }}"
+                                 width="70"
+                                 height="55"
+                                 style="object-fit:cover;
+                                        border-radius:6px;
+                                        border:1px solid #ccc;">
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <!-- PIN STATUS -->
+                    <td>
+                        {% if s.pinned %}
+                            <span class="text-success">📌</span>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- ACTION -->
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                           href="{{ url_for('admin.edit_sport', id=s.id) }}">
+                            ✏️ Edit
+                        </a>
+
+                        <!-- Only include this if you add delete route -->
+                        {# 
+                        <a class="btn btn-sm btn-danger"
+                           href="{{ url_for('admin.delete_sport', id=s.id) }}"
+                           onclick="return confirm('Delete this sports activity?')">
+                            ❌ Delete
+                        </a>
+                        #}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">No sports activities added yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

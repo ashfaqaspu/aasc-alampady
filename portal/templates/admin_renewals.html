@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Admin | Renewal Requests</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h2 {
+            color: #0d47a1;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+
+        /* Back link */
+        .back {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #0d47a1;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        /* Table wrapper */
+        .table-wrapper {
+            max-width: 1100px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+            padding: 14px;
+            text-align: center;
+            font-size: 14.5px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #eef1f5;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f5f8ff;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .approve {
+            background: #4caf50;
+            color: white;
+        }
+
+        .reject {
+            background: #f44336;
+            color: white;
+        }
+
+        .view {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Status */
+        .status-pending {
+            color: #ff9800;
+            font-weight: 700;
+        }
+
+        .status-approved {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .status-rejected {
+            color: #c62828;
+            font-weight: 700;
+        }
+
+        /* Screenshot */
+        img {
+            max-width: 60px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .btn, .back {
+                display: none !important;
+            }
+
+            .table-wrapper {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            th {
+                background: #ddd !important;
+                color: black !important;
+            }
+
+            h2 {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Admin | Renewal Requests</title>
+</head>
+
+<body>
+
+<h2>🔁 Renewal Requests</h2>
+
+<a href="{{ url_for('portal.dashboard') }}" class="back">
+    ← Back to Dashboard
+</a>
+
+<div class="table-wrapper">
+<table  cellpadding="10" cellspacing="0" width="100%">
+<tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Member ID</th>
+    <th>Amount</th>
+    <th>Screenshot</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+{% for r in renewals %}
+<tr>
+    <td>{{ loop.index }}</td>
+
+    <!-- Member Name -->
+    <td>{{ r.user.name }}</td>
+
+    <!-- Membership ID -->
+    <td>{{ r.user.membership_id }}</td>
+
+    <!-- Amount -->
+    <td>₹{{ r.amount }}</td>
+
+    <!-- Screenshot -->
+    <td>
+        {% if r.screenshot %}
+            <a href="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}"
+               target="_blank">
+                <img src="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}"
+                     width="60">
+            </a>
+        {% else %}
+            —
+        {% endif %}
+    </td>
+
+    <!-- Status -->
+    <td>
+        {% if r.status == 'PENDING' %}
+            <span style="color:orange; font-weight:bold;">PENDING</span>
+
+        {% elif r.status == 'APPROVED' %}
+            <span style="color:green; font-weight:bold;">APPROVED</span>
+
+        {% else %}
+            <span style="color:red; font-weight:bold;">REJECTED</span>
+        {% endif %}
+    </td>
+
+    <!-- Actions -->
+    <td>
+        {% if r.status == 'PENDING' %}
+
+            <a href="{{ url_for('portal.approve_renewal', rid=r.id, uid=r.user_id) }}"
+               onclick="return confirm('Approve this renewal?')">
+               ✔ Approve
+            </a>
+
+            |
+
+            <a href="{{ url_for('portal.reject_renewal', rid=r.id) }}"
+               onclick="return confirm('Reject this renewal?')">
+               ✖ Reject
+            </a>
+
+        {% elif r.status == 'APPROVED' %}
+
+            <a href="{{ url_for('portal.view_receipt', rid=r.id) }}"
+               target="_blank">
+               🧾 View Receipt
+            </a>
+
+        {% else %}
+            —
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Meeting Report</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 30px 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
+
+    /* Summary box */
+    .summary {
+      max-width: 700px;
+      margin: 0 auto 20px;
+      background: #e3f2fd;
+      padding: 16px 20px;
+      border-radius: 14px;
+      border-left: 6px solid #0d47a1;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    /* Table wrapper */
+    .table-wrapper {
+      max-width: 900px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #0d47a1;
+      color: #ffffff;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 14.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef1f5;
+      font-size: 14.5px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f5f8ff;
+    }
+
+    /* Back */
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #0d47a1;
+      font-size: 14.5px;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .summary {
+        border: none;
+        background: #f5f5f5;
+      }
+
+      .table-wrapper {
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      th {
+        background: #ddd !important;
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h2>📋 Meeting Attendance Report</h2>
+
+<!-- TOTAL TIME SUMMARY -->
+<div class="summary">
+  ⏱ <b>Total Meeting Time:</b> {{ total_time or "—" }}
+</div>
+
+<div class="table-wrapper">
+<table>
+<tr>
+  <th>Name</th>
+  <th>Scan Time</th>
+  <th>Minutes Attended</th>
+</tr>
+
+{% for r in records %}
+<tr>
+  <td>{{ r[0] }}</td>
+  <td>{{ r[1] }}</td>
+  <td>{{ r[2] }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<a href="{{ url_for('portal.committee_dashboard', cid=meeting.committee_id) }}"
+   class="back">
+   ← Back
+</a>
+
+</body>
+</html>

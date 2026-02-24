@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Member | AASC</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 30px 28px;
+            max-width: 420px;
+            margin: auto;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 22px;
+            color: #0d47a1;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 12px 14px;
+            margin-top: 14px;
+            font-size: 15px;
+            border-radius: 8px;
+        }
+
+        input,
+        select {
+            border: 1px solid #dcdfe3;
+            background: #fafafa;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #0d47a1;
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
+        }
+
+        button {
+            margin-top: 22px;
+            background: #0d47a1;
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition:  transform 0.1s, box-shadow 0.1s;
+        }
+
+        button:hover {
+            background: #09357a;
+            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.25);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 22px;
+            text-decoration: none;
+            color: #0d47a1;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>➕ Add Member</h2>
+
+    <form method="POST"
+          action="{{ url_for('portal.admin_add_member') }}">
+
+        <input type="text"
+               name="name"
+               placeholder="Full Name"
+               required>
+
+        <input type="text"
+               name="phone"
+               placeholder="Phone Number"
+               required>
+
+        <select name="nativity" required>
+            <option value="">Select Nativity</option>
+            <option value="Native">Native</option>
+            <option value="GCC">GCC</option>
+        </select>
+
+        <button type="submit">
+            Add Member
+        </button>
+
+    </form>
+
+    <a href="{{ url_for('portal.admin_members') }}"
+       class="back">
+       ← Back
+    </a>
+</div>
+
+</body>
+</html>

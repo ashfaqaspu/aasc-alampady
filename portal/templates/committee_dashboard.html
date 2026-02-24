@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Committee Dashboard</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+
+        h3 {
+            color: #0d47a1;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .actions {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .actions a {
+            display: inline-block;
+            margin: 6px;
+            padding: 10px 16px;
+            background: #e3f2fd;
+            color: #0d47a1;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .actions a:hover {
+            background: #bbdefb;
+        }
+
+        .danger {
+            display: inline-block;
+            margin-top: 10px;
+            color: #c62828;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .danger:hover { text-decoration: underline; }
+
+        .meetings {
+            max-width: 1000px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .meeting-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            position: relative;
+        }
+
+        .meeting-card b {
+            font-size: 17px;
+            color: #222;
+        }
+
+        .meeting-card small {
+            color: #666;
+            display: block;
+            margin-top: 6px;
+        }
+
+        .status {
+            margin-top: 8px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .status.scheduled { color: #f57c00; }
+        .status.ongoing { color: #2e7d32; }
+        .status.completed { color: #616161; }
+
+        .meeting-card img {
+            width: 140px;
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            margin: 15px 0;
+        }
+
+        .meeting-card a {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 14px;
+            background: #0d47a1;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .meeting-card a:hover {
+            background: #08306b;
+        }
+
+        .admin-actions a {
+            background: #2e7d32;
+        }
+
+        .admin-actions a.end {
+            background: #c62828;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #0d47a1;
+        }
+
+        .back:hover { text-decoration: underline; }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e5e8ec;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Committee Dashboard</h2>
+
+{% if is_admin %}
+<div class="actions">
+
+    <a href="{{ url_for('portal.create_meeting', cid=cid) }}">
+        ➕ Create Meeting
+    </a>
+
+    <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">
+        👥 Members
+    </a>
+
+    <a href="{{ url_for('portal.monthly_report', cid=cid) }}">
+        📊 Monthly Report
+    </a>
+
+    <a href="{{ url_for('portal.add_committee_member', cid=cid) }}">
+        ➕ Add Member
+    </a>
+
+    <br>
+
+    <a href="{{ url_for('portal.delete_committee', cid=cid) }}"
+       onclick="return confirm('⚠️ This will permanently delete the committee. Continue?')"
+       class="danger">
+       🗑 Delete Committee
+    </a>
+
+</div>
+{% endif %}
+
+<hr>
+<h3>Meetings</h3>
+
+{% if meetings %}
+<div class="meetings">
+
+{% for m in meetings %}
+    <div class="meeting-card">
+
+        <b>{{ m.title }}</b>
+        <small>{{ m.meeting_date }} | {{ m.start_time }} - {{ m.end_time }}</small>
+
+        {% if m.status == "SCHEDULED" %}
+            <div class="status scheduled">Status: Scheduled</div>
+        {% elif m.status == "ONGOING" %}
+            <div class="status ongoing">Status: Ongoing</div>
+        {% else %}
+            <div class="status completed">Status: Completed</div>
+        {% endif %}
+
+        {% if m.status != "SCHEDULED" %}
+    <img src="{{ url_for('static', filename='qrcodes/meeting_' ~ m.id ~ '.png') }}">
+{% endif %}
+
+<a href="{{ url_for('portal.meeting_report', mid=m.id) }}">
+    📊 View Report
+</a>
+
+{% if is_admin %}
+<div class="admin-actions">
+
+    {% if m.status == "SCHEDULED" %}
+        <a href="{{ url_for('portal.start_meeting', meeting_id=m.id) }}">
+            ▶ Start
+        </a>
+
+    {% elif m.status == "ONGOING" %}
+        <a href="{{ url_for('portal.end_meeting', meeting_id=m.id) }}"
+           class="end">
+            ⏹ End
+        </a>
+    {% endif %}
+
+</div>
+{% endif %}
+
+</div>
+{% endfor %}
+
+</div>
+{% else %}
+<p style="text-align:center; color:#777;">
+    No meetings created yet.
+</p>
+{% endif %}
+
+<a href="{{ url_for('portal.dashboard') }}"
+   class="back">
+   ← Back to Dashboard
+</a>
+
+</body>
+</html>

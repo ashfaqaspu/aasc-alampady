@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipts</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+
+        /* Table container */
+        .table-wrapper {
+            max-width: 1000px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0d47a1;
+            color: #ffffff;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 14.5px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eef1f5;
+            font-size: 14.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f5f8ff;
+        }
+
+        td:nth-child(4) {
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        /* Print friendly */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .table-wrapper {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            th {
+                background: #ddd !important;
+                color: black !important;
+            }
+
+            h2 {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>🧾 Receipts</h2>
+
+<div class="table-wrapper">
+    <table>
+        <tr>
+            <th>Receipt No</th>
+            <th>Name</th>
+            <th>Membership ID</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+
+      {% for receipt, user in receipts %}
+<tr>
+    <td>{{ receipt.receipt_no }}</td>
+    <td>{{ user.name }}</td>
+    <td>{{ user.membership_id }}</td>
+    <td>₹{{ receipt.amount }}</td>
+    <td>{{ receipt.issued_date }}</td>
+</tr>
+{% endfor %}
+    </table>
+</div>
+
+</body>
+</html>

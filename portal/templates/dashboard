@@ -1,0 +1,21 @@
+<h2>🧾 Receipts</h2>
+
+<table border="1" width="100%">
+<tr>
+    <th>Receipt No</th>
+    <th>Name</th>
+    <th>Membership ID</th>
+    <th>Amount</th>
+    <th>Date</th>
+</tr>
+
+{% for r in receipts %}
+<tr>
+    <td>{{ r[0] }}</td>
+    <td>{{ r[1] }}</td>
+    <td>{{ r[2] }}</td>
+    <td>₹{{ r[3] }}</td>
+    <td>{{ r[4] }}</td>
+</tr>
+{% endfor %}
+</table>

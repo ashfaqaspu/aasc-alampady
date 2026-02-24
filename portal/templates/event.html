@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC | Events</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(
+                to bottom,
+                #fdf6e3,
+                #f7f1dc
+            );
+            padding: 30px 20px;
+            color: #3e2723;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            color: #6d4c41;
+            margin-bottom: 30px;
+            letter-spacing: 0.4px;
+        }
+
+        /* Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* Event Card */
+        .card {
+            background: #fffdf7;
+            border-radius: 18px;
+            padding: 22px;
+            border: 1px solid #e6dcc8;
+            box-shadow: 0 10px 25px rgba(109,76,65,0.15);
+            position: relative;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            background: linear-gradient(
+                135deg,
+                rgba(255,183,77,0.08),
+                rgba(141,110,99,0.08)
+            );
+            pointer-events: none;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #4e342e;
+            font-size: 20px;
+        }
+
+        .card p {
+            margin: 6px 0;
+            font-size: 14.5px;
+            line-height: 1.6;
+        }
+
+        .card b {
+            color: #5d4037;
+        }
+
+        /* Status */
+        .status.active {
+            margin-top: 12px;
+            font-weight: 700;
+            color: #2e7d32;
+            background: #e8f5e9;
+            padding: 8px 12px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* Participate button */
+        .btn.print {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 10px 18px;
+            background: linear-gradient(
+                to right,
+                #8d6e63,
+                #6d4c41
+            );
+            color: #fff;
+            border-radius: 22px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 6px 14px rgba(109,76,65,0.35);
+        }
+
+        .btn.print:hover {
+            opacity: 0.9;
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            font-size: 15px;
+            color: #6d4c41;
+        }
+
+        /* Back */
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: 600;
+            color: #6d4c41;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h2>📅 Upcoming Events</h2>
+
+<div class="dashboard-grid">
+
+{% for e in events %}
+<div class="card">
+    <h3>{{ e[1] }}</h3>
+    <p>{{ e[2] }}</p>
+
+    <p>📆 <b>Date:</b> {{ e[3] }}</p>
+    <p>📍 <b>Location:</b> {{ e[4] }}</p>
+    <p>👥 <b>Participants:</b> {{ e[6] }}</p>
+
+    {% if e[0] in registered_ids %}
+        <p class="status active">✅ You are participating</p>
+    {% else %}
+        <a href="{{ url_for('portal.participate', event_id=e[0]) }}"
+           class="btn print">
+            🤝 Participate
+        </a>
+    {% endif %}
+</div>
+{% else %}
+<p class="empty">No events available</p>
+{% endfor %}
+
+</div>
+
+<a href="{{ url_for('portal.dashboard') }}"
+   class="back">
+   ← Back to Dashboard
+</a>
+
+</body>
+</html>

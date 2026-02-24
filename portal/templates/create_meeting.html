@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Meeting</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f4f6f9;
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 450px;
+      padding: 32px 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      text-align: center;
+      color: #0d47a1;
+      font-size: 26px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 10px;
+      border: 1px solid #dcdfe3;
+      background: #fafafa;
+      font-size: 14.5px;
+      margin-bottom: 20px;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0d47a1;
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(13,71,161,0.12);
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #0d47a1;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 15.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #08306b;
+      box-shadow: 0 12px 24px rgba(13,71,161,0.25);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .hint {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #0d47a1;
+      font-size: 14.5px;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <h2>📅 Create Meeting</h2>
+
+  <form method="post">
+
+    <label>📝 Title</label>
+    <input type="text" name="title" required>
+
+    <label>📆 Date</label>
+    <input type="date" name="meeting_date" required>
+
+    <div class="time-row">
+      <div>
+        <label>⏰ Start Time</label>
+        <input type="time" name="start_time" required>
+      </div>
+
+      <div>
+        <label>⏱ End Time</label>
+        <input type="time" name="end_time" required>
+      </div>
+    </div>
+
+    <button type="submit">
+      ✅ Create & Generate QR
+    </button>
+
+    <div class="hint">
+      📌 A QR code will be generated automatically for attendance
+    </div>
+
+  </form>
+
+  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
+   class="back">
+    ← Back
+</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AASC Alampady</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #0d47a1;
+            --secondary: #1565c0;
+            --accent: #ff9800;
+            --dark-text: #222;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ================= BODY BACKGROUND (OPTION 2) ================= */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-text);
+
+            /* 🌼 Clean cultural gradient */
+            background: linear-gradient(
+                135deg,
+                #fffaf0 0%,
+                #f1f8e9 30%,
+                #e3f2fd 60%,
+                #f4f6f9 100%
+            );
+
+            background-attachment: fixed;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #fff;
+            margin-left: 18px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* PORTAL BUTTON */
+        .portal-btn {
+            background: var(--accent);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #000 !important;
+            font-weight: 600;
+            margin-left: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .portal-btn:hover {
+            background: #e68900;
+        }
+
+        /* ================= CONTENT ================= */
+        .container {
+            padding: 35px 20px;
+            min-height: 80vh;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        /* ================= FOOTER ================= */
+        .footer {
+            background: linear-gradient(135deg, var(--primary), #0b3c91);
+            color: #eaeaea;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 16px 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                margin-top: 12px;
+            }
+
+            .nav-links a {
+                margin: 6px 14px 6px 0;
+            }
+
+            .portal-btn {
+                margin: 10px 0 0 0;
+            }
+        }
+        .side-branding {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* content stays clickable */
+  z-index: 10;
+}
+
+.side-logo {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 180px;              /* ideal size */
+  opacity: 0.95;
+}
+
+.side-logo.left {
+  left: 25px;
+}
+
+.side-logo.right {
+  right: 25px;
+}
+
+    </style>
+</head>
+<div class="side-branding">
+  <img src="/static/images/cc.jpeg" alt="AASC Logo Left" class="side-logo left">
+  <img src="/static/images/gcc.jpeg" alt="AASC Logo Right" class="side-logo right">
+</div>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <a class="logo" href="/">AASC ALAMPADY</a>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/events">Socio-Events</a>
+        <a href="/sports">Sports</a>
+        <a href="/charity">Charity</a>
+        <a href="/awards">Awards</a>
+        <a href="/committee">Committee</a>
+        <a href="/building">Building</a>
+        <a href="/contact">Contact</a>
+
+        <a href="/portal/login">Member Login</a>
+    </div>
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 <strong>AASC Alampady</strong> • Charity • Sports • Togetherness
+</div>
+<div style="text-align:center; margin-top:20px;">
+    <a href="{{ url_for('admin.login') }}"
+       style="font-size:13px; color:#888; text-decoration:none;">
+       Admin Panel
+    </a>
+</div>
+
+</body>
+</html>

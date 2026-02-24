@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Awards</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .add {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        img {
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Awards</h2>
+
+<a class="add" href="/admin/awards/add">➕ Add Award</a> |
+<a href="/admin/dashboard">Dashboard</a>
+
+<table>
+<tr>
+    <th>#</th>
+    <th>Title</th>
+    <th>Year</th>
+    <th>Image</th>
+    <th>📌</th>
+    <th>Action</th>
+</tr>
+
+{% for a in awards %}
+<tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ a.title }}</td>
+    <td>{{ a.year }}</td>
+    <td>
+        {% if a.image %}
+            <img src="/{{ a.image }}" width="80">
+        {% else %}
+            -
+        {% endif %}
+    </td>
+
+    <td>
+        {% if a.pinned %}
+            <a href="/admin/awards/unpin/{{ a.id }}">📌</a>
+        {% else %}
+            <a href="/admin/awards/pin/{{ a.id }}">📍</a>
+        {% endif %}
+    </td>
+
+    <td>
+        <a href="/admin/awards/edit/{{ a.id }}">✏️ Edit</a> |
+        <a href="/admin/awards/delete/{{ a.id }}"
+           onclick="return confirm('Delete this award?')">
+           ❌ Delete
+        </a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ===== PAGE BACKGROUND ===== */
+
+.analytics-wrapper {
+    min-height: 100vh;
+    padding: 60px 20px;
+    background: linear-gradient(135deg,#eef4ff,#e3f2fd,#f8fbff);
+}
+
+/* ===== MAIN CARD ===== */
+
+.analytics-card {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+    border: 1px solid #e6edf5;
+}
+
+/* ===== TITLE ===== */
+
+.analytics-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* ===== SECTION TITLE ===== */
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a237e;
+    margin-bottom: 20px;
+}
+
+/* ===== TABLE WRAPPER ===== */
+
+.table-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+}
+
+/* ===== TABLE ===== */
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background: linear-gradient(135deg,#0d47a1,#1565c0);
+    color: white;
+}
+
+.table th {
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 16px;
+    letter-spacing: 0.3px;
+}
+
+.table td {
+    padding: 16px;
+    font-size: 14px;
+}
+
+.table tbody tr {
+    transition: 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background: #f4f9ff;
+}
+
+/* ===== EMPTY STATE ===== */
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #607d8b;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+    .analytics-card {
+        padding: 25px;
+    }
+
+    .analytics-title {
+        font-size: 22px;
+    }
+}
+</style>
+
+<div class="analytics-wrapper">
+<div class="container">
+<div class="analytics-card">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    
+    <h2 class="analytics-title mb-0">
+        📊 Medical Equipment Analytics
+    </h2>
+<a href="{{ url_for('portal.medical_dashboard') }}"
+   class="back-btn">
+    ← Back to Dashboard
+</a>
+
+</div>
+
+<!-- ========================= -->
+<!-- USAGE BY CATEGORY -->
+<!-- ========================= -->
+
+<h4 class="section-title">Usage by Category</h4>
+
+{% if category_usage %}
+<div class="table-wrapper">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Total Usage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in category_usage %}
+        <tr>
+            <td><strong>{{ row[0] }}</strong></td>
+            <td>{{ row[1] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">
+    No category usage data available.
+</div>
+{% endif %}
+
+<!-- ========================= -->
+<!-- MONTHLY USAGE -->
+<!-- ========================= -->
+
+<h4 class="section-title">Monthly Usage</h4>
+
+{% if monthly_usage %}
+<div class="table-wrapper">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Total Issued</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in monthly_usage %}
+        <tr>
+            <td><strong>{{ row[0] }}</strong></td>
+            <td>{{ row[1] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% else %}
+<div class="empty-state">
+    No monthly usage data available.
+</div>
+{% endif %}
+
+</div>
+</div>
+</div>
+
+{% endblock %}

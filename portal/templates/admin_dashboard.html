@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.dashboard-container {
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+.dashboard-title {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c5364;
+}
+
+.stat-label {
+    font-size: 16px;
+    color: #777;
+}
+
+.section-box {
+    margin-top: 50px;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.create-btn {
+    background: linear-gradient(135deg, #203a43, #2c5364);
+    color: white;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+</style>
+
+<div class="dashboard-container">
+
+<div class="dashboard-title">🏛 Super Admin Dashboard</div>
+
+<a href="{{ url_for('portal.dashboard') }}"
+           class="back-btn">
+           ⬅ Back to Dashboard
+        </a>
+<!-- Stats Section -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ total_committees }}</div>
+        <div class="stat-label">Total Committees</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-number">{{ total_members }}</div>
+        <div class="stat-label">Total Members</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-number">{{ current_year }}</div>
+        <div class="stat-label">Current Year</div>
+    </div>
+</div>
+
+<!-- Create Committee -->
+<div class="section-box">
+    <h3>➕ Create New Committee</h3>
+
+    <form method="POST" action="/admin/create_committee">
+        <input type="text" name="name" placeholder="Committee Name" required>
+        <input type="text" name="year" placeholder="Year (e.g., 2026)" required>
+        <button type="submit" class="create-btn">Create</button>
+    </form>
+</div>
+
+<!-- Current Year Committees -->
+<div class="section-box">
+    <h3>📅 Committees for {{ current_year }}</h3>
+
+    {% if current_year_committees %}
+        <ul>
+            {% for c in current_year_committees %}
+                <li>{{ c.name }}</li>
+            {% endfor %}
+        </ul>
+
+       <a href="{{ url_for('portal.delete_year', year=current_year) }}"></a>
+            <button class="delete-btn">🗑 Delete All {{ current_year }} Committees</button>
+        </a>
+    {% else %}
+        <p>No committees for this year.</p>
+    {% endif %}
+</div>
+
+</div>
+
+{% endblock %}

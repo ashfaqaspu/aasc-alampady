@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Member</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f6f9;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        .card {
+            max-width: 420px;
+            background: #ffffff;
+            padding: 28px 26px;
+            border-radius: 16px;
+            margin: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #0d47a1;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-top: 14px;
+            font-size: 14.5px;
+            border-radius: 8px;
+            border: 1px solid #dcdfe3;
+            background: #fafafa;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0d47a1;
+            background: #ffffff;
+            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 12px;
+            background: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14.5px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
+        }
+
+        button:hover {
+            background: #08306b;
+            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.25);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            color: #0d47a1;
+            font-size: 14.5px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3>Edit Member</h3>
+
+    <form method="POST">
+
+        <input
+            type="text"
+            name="name"
+            value="{{ member.name }}"
+            placeholder="Name"
+            required>
+
+        <input
+            type="text"
+            name="phone"
+            value="{{ member.phone }}"
+            placeholder="Phone"
+            required>
+
+        <input
+            type="text"
+            name="nativity"
+            value="{{ member.nativity }}"
+            placeholder="Nativity"
+            required>
+
+        <button type="submit">Update Member</button>
+
+    </form>
+
+    <a href="{{ url_for('portal.admin_members') }}">← Back</a>
+</div>

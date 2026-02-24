@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ================= HERO ================= */
+.about-hero {
+    position: relative;
+    background:
+        linear-gradient(rgba(13,71,161,0.85), rgba(0,0,0,0.75)),
+        url("{{ url_for('static', filename='images/cbd.jpeg') }}") center/cover no-repeat;
+    padding: 120px 20px 90px;
+    color: #ffffff;
+}
+
+/* LOGOS */
+.about-logos {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 50px;
+}
+
+.about-logos img {
+    width: 85px;
+    opacity: 0.95;
+}
+
+/* HERO TEXT */
+.about-container {
+    max-width: 1000px;
+    margin: auto;
+    text-align: center;
+}
+
+.about-container h2 {
+    font-size: 40px;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+}
+
+.about-container p {
+    font-size: 18px;
+    line-height: 1.9;
+    color: #f2f2f2;
+}
+
+/* ================= CONTENT CARD ================= */
+.about-card {
+    background: #ffffff;
+    color: #333;
+    padding: 50px;
+    margin-top: 60px;
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+    text-align: left;
+}
+
+.about-card h3 {
+    font-size: 24px;
+    color: #0d47a1;
+    margin-top: 35px;
+    margin-bottom: 14px;
+}
+
+.about-card p {
+    font-size: 16.5px;
+    line-height: 1.85;
+    color: #444;
+}
+
+/* BULLETS */
+.about-highlights ul {
+    margin-top: 15px;
+    padding-left: 22px;
+}
+
+.about-highlights li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+/* ================= BUILDING MILESTONE ================= */
+.building-milestone {
+    background: linear-gradient(135deg, #f8fbff, #eef4ff);
+    padding: 65px 45px;
+    margin: 90px 0;
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+}
+
+.building-milestone h2 {
+    text-align: center;
+    font-size: 36px;
+    color: #0d47a1;
+    margin-bottom: 10px;
+}
+
+.building-milestone h4 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: #ff9800;
+    margin-bottom: 40px;
+}
+
+.building-milestone p {
+    font-size: 17px;
+    line-height: 1.9;
+    color: #333;
+    margin-bottom: 22px;
+}
+
+.building-highlight {
+    background: #ffffff;
+    border-left: 6px solid #0d47a1;
+    padding: 24px 28px;
+    border-radius: 12px;
+    margin: 35px 0;
+    font-style: italic;
+    font-size: 16.5px;
+}
+
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+    .about-container h2 { font-size: 30px; }
+    .about-card { padding: 35px 25px; }
+    .building-milestone { padding: 45px 25px; }
+    .about-logos img { width: 65px; }
+}
+</style>
+
+<section class="about-hero">
+
+    <div class="about-logos">
+        <img src="{{ url_for('static', filename='images/cc.jpeg') }}">
+        <img src="{{ url_for('static', filename='images/gcc.jpeg') }}">
+    </div>
+
+    <div class="about-container">
+        <h2>AASC Alampady</h2>
+        <p>
+            <strong>Alampady Arts & Sports Club (AASC)</strong> is a community-driven
+            institution rooted in unity, discipline, and social responsibility.
+            With a legacy spanning nearly four decades, AASC stands as a proud
+            pillar of cultural, athletic, and humanitarian growth in Alampady.
+        </p>
+
+        <div class="about-card">
+
+            <h3>About AASC</h3>
+            <p>
+                AASC is dedicated to nurturing talent, leadership, and collective
+                progress through arts, sports, and service. Built on systematic
+                growth and inclusive participation, the club provides a platform
+                where creativity flourishes, discipline is cultivated, and values
+                are strengthened.
+            </p>
+
+            <h3>Commitment to Society</h3>
+            <p>
+                Charity at AASC is a continuous responsibility, not an occasional
+                activity. The club believes that true development emerges when
+                sports, culture, and service move together in harmony.
+            </p>
+
+            <h3>Our History & Legacy</h3>
+            <p>
+                Registered on <strong>27 November 1991</strong> and registered under
+                <strong>Reg No. 255/91, NYK.012, Govt. of India</strong>, AASC has
+                evolved into a respected institution known for discipline,
+                leadership, and service.
+            </p>
+
+            <h3>Community & Charity</h3>
+            <p>
+                With the formation of the GCC Committee in <strong>2016</strong>,
+                AASC expanded its humanitarian reach internationally, strengthening
+                year-round charity and social welfare initiatives.
+            </p>
+
+            <h3>Our Strength</h3>
+            <div class="about-highlights">
+                <ul>
+                    <li>Nearly <strong>400 active members</strong> worldwide</li>
+                    <li>Strong <strong>GCC presence</strong> across countries</li>
+                    <li>Structured <strong>Central & GCC Committees</strong></li>
+                    <li>Government-recognized registered organization</li>
+                    <li>Year-round sports, cultural & charity programs</li>
+                </ul>
+            </div>
+
+            <!-- BUILDING -->
+            <section class="building-milestone">
+                <h2>AASC Own Building</h2>
+                <h4>A Permanent Home for Vision, Growth & Service</h4>
+
+                <p>
+                    On <strong>11 January 2026</strong>, AASC achieved a historic
+                    milestone with the inauguration of its own building on its
+                    own land — a symbol of unity, dedication, and long-term vision.
+                </p>
+
+                <div class="building-highlight">
+                    Inaugurated by <strong>Professor Gopinath Muthukad</strong>,
+                    marking the realization of a long-cherished dream.
+                </div>
+
+                <p>
+                    More than a structure, the building is a living space for
+                    training, creativity, charity, leadership, and community
+                    engagement — ensuring stability and independence for future
+                    generations.
+                </p>
+            </section>
+
+            <h3>Our Vision</h3>
+            <p>
+                To build a society where sports inspire discipline, charity
+                strengthens humanity, and unity shapes a better future —
+                <em>Better Together.</em>
+            </p>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

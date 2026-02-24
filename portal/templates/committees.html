@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Committees</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 30px 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
+
+    /* Committees container */
+    .committees {
+      max-width: 700px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .committee-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .committee-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+    }
+
+    .committee-card a {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      color: #0d47a1;
+    }
+
+    .committee-card a:hover {
+      text-decoration: underline;
+    }
+
+    /* Empty state */
+    .empty {
+      max-width: 500px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      text-align: center;
+      color: #666;
+      font-size: 15px;
+    }
+
+    /* Back */
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #0d47a1;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h2>My Committees</h2>
+
+{% if committees %}
+  <div class="committees">
+  {% for c in committees %}
+    <div class="committee-card">
+      <a href="{{ url_for('portal.committee_dashboard', cid=c[0]) }}">
+        {{ c[1] }}
+      </a>
+    </div>
+  {% endfor %}
+  </div>
+{% else %}
+  <div class="empty">
+    You are not part of any committee.
+  </div>
+{% endif %}
+
+<a href="{{ url_for('portal.dashboard') }}" class="back">
+    ← Back to Dashboard
+</a>
+</body>
+</html>

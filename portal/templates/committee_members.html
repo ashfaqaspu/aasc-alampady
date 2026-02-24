@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Committee Members</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 30px 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
+
+    /* Table wrapper */
+    .table-wrapper {
+      max-width: 900px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #0d47a1;
+      color: white;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 14.5px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef1f5;
+      font-size: 14.5px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f5f8ff;
+    }
+
+    /* Role badge */
+    .role {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-transform: capitalize;
+      background: #e3f2fd;
+      color: #0d47a1;
+    }
+
+    /* Action */
+    .remove {
+      color: #c62828;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .remove:hover {
+      text-decoration: underline;
+    }
+
+    .self {
+      color: #999;
+      font-style: italic;
+    }
+
+    /* Back */
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #0d47a1;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Committee Members</h2>
+
+<div class="table-wrapper">
+<table>
+<tr>
+  <th>Name</th>
+  <th>Phone</th>
+  <th>Role</th>
+  <th>Action</th>
+</tr>
+
+{% for m in members %}
+<tr>
+  <td>{{ m[1] }}</td>
+  <td>{{ m[2] }}</td>
+  <td><span class="role">{{ m[3] }}</span></td>
+  <td>
+   {% if m[0] != session['user_id'] %}
+  <a class="remove"
+     href="{{ url_for('portal.remove_committee_member', cid=cid, uid=m[0]) }}"
+     onclick="return confirm('Remove this member from committee?')">
+     ❌ Remove
+  </a>
+{% else %}
+  <span class="self">—</span>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
+   class="back">
+   ← Back to Committee
+</a>
+</body>
+</html>

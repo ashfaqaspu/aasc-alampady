@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Additional Information</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .card {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 26px 28px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        p {
+            margin: 14px 0;
+            font-size: 14.5px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eef1f5;
+            padding-bottom: 10px;
+        }
+
+        p:last-child {
+            border-bottom: none;
+        }
+
+        b {
+            color: #555;
+            font-weight: 600;
+        }
+
+        .value {
+            color: #222;
+            font-weight: 500;
+        }
+
+        a {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            color: #0d47a1;
+            font-size: 14.5px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Additional Information</h2>
+
+<div class="card">
+    <p><b>Address:</b> <span class="value">{{ user[0] or "—" }}</span></p>
+    <p><b>Email:</b> <span class="value">{{ user[1] or "—" }}</span></p>
+    <p><b>WhatsApp:</b> <span class="value">{{ user[2] or "—" }}</span></p>
+    <p><b>DOB:</b> <span class="value">{{ user[3] or "—" }}</span></p>
+    <p><b>Age:</b> <span class="value">{{ age if age else "—" }}</span></p>
+    <p><b>Blood Group:</b> <span class="value">{{ user[4] or "—" }}</span></p>
+    <p><b>Interests:</b> <span class="value">{{ user[5] or "—" }}</span></p>
+</div>
+
+<a href="{{ url_for('portal.admin_members') }}">← Back</a>
+
+</body>
+</html>

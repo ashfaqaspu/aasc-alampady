@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AASC Admin | Members</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        h2 {
+            color: #0d47a1;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+
+        /* ---------- TABS ---------- */
+        .tabs {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tabs a {
+            padding: 10px 18px;
+            background: #e0e0e0;
+            margin: 4px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .tabs a.active {
+            background: #0d47a1;
+            color: white;
+        }
+
+        /* ---------- SEARCH ---------- */
+        .search-box {
+            width: 100%;
+            max-width: 420px;
+            padding: 12px 14px;
+            margin: 15px auto;
+            display: block;
+            border-radius: 10px;
+            border: 1px solid #dcdfe3;
+            font-size: 14.5px;
+            background: #ffffff;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #0d47a1;
+            box-shadow: 0 0 0 2px rgba(13,71,161,0.1);
+        }
+
+        /* ---------- EXPORT ---------- */
+        .print-btn {
+            background: #0d47a1;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .print-btn:hover {
+            background: #08306b;
+        }
+
+        /* ---------- TABLE ---------- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+            padding: 14px;
+            font-size: 14.5px;
+            text-align: center;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #eef1f5;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #f5f8ff;
+        }
+
+        /* ---------- STATUS ---------- */
+        .yes {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .no {
+            color: #c62828;
+            font-weight: 700;
+        }
+
+        /* ---------- BUTTONS ---------- */
+        .btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .edit {
+            background: #4caf50;
+            color: white;
+        }
+
+        .reset {
+            background: #ff9800;
+            color: white;
+        }
+
+        .info {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ---------- BACK ---------- */
+        a.back {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #0d47a1;
+        }
+
+        a.back:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------- PRINT ---------- */
+        @media print {
+            .tabs, .print-btn, .btn, .search-box, a {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            table {
+                font-size: 12px;
+                box-shadow: none;
+            }
+
+            th {
+                background: #ddd !important;
+                color: black !important;
+            }
+
+            h2 {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>👥 AASC Members</h2>
+
+<div class="tabs">
+    <a href="{{ url_for('portal.admin_members') }}"
+       class="{{ 'active' if view=='all' else '' }}">
+        All
+    </a>
+
+    <a href="{{ url_for('portal.admin_members_renewed') }}"
+       class="{{ 'active' if view=='renewed' else '' }}">
+        Renewed
+    </a>
+
+    <a href="{{ url_for('portal.admin_members_pending') }}"
+       class="{{ 'active' if view=='pending' else '' }}">
+        Pending
+    </a>
+
+    <a href="{{ url_for('portal.admin_members_not_renewed') }}"
+       class="{{ 'active' if view=='not_renewed' else '' }}">
+        Not Renewed
+    </a>
+</div>
+<input
+    type="text"
+    id="searchInput"
+    class="search-box"
+    placeholder="🔍 Search by name, phone, membership ID, nativity...">
+
+<button onclick="window.print()" class="print-btn">
+    📄 Export to PDF
+</button>
+
+
+<a href="{{ url_for('portal.dashboard') }}" class="back">
+    ← Back to Dashboard
+</a>
+
+<table id="membersTable">
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Nativity</th>
+        <th>Phone</th>
+        <th>Membership ID</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Admin</th>
+        <th>Section Admin</th>
+        <th>Actions</th>
+
+            {% if is_super_admin %}
+            <th>Admin Control</th>
+            {% endif %}
+    </tr>
+{% for m in members %}
+<tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ m.name }}</td>
+    <td>{{ m.nativity }}</td>
+    <td>{{ m.phone }}</td>
+    <td>{{ m.membership_id }}</td>
+    <td>{{ m.membership_start }}</td>
+    <td>{{ m.membership_end }}</td>
+
+    <td>
+        {% if m.is_admin %}
+            <span class="yes">YES</span>
+        {% else %}
+            <span class="no">NO</span>
+        {% endif %}
+    </td>
+
+    <td>
+        {% if m.section_admin %}
+            <span class="yes">YES</span>
+        {% else %}
+            <span class="no">NO</span>
+        {% endif %}
+    </td>
+
+    <td>
+        <a class="btn edit"
+           href="{{ url_for('portal.admin_edit_member', user_id=m.id) }}">
+           Edit
+        </a>
+
+        <a class="btn reset"
+           href="{{ url_for('portal.admin_reset_password', user_id=m.id) }}"
+           onclick="return confirm('Reset password to phone number?')">
+           Reset
+        </a>
+    </td>
+
+    {% if is_super_admin %}
+    <td>
+        {% if m.phone != SUPER_ADMIN_PHONE %}
+            <a class="btn info"
+               href="{{ url_for('portal.toggle_admin', user_id=m.id) }}">
+               {% if m.is_admin %}
+                   Remove Admin
+               {% else %}
+                   Make Admin
+               {% endif %}
+            </a>
+
+            <br><br>
+
+            <a class="btn edit"
+               href="{{ url_for('portal.toggle_section_admin', user_id=m.id) }}">
+               {% if m.section_admin %}
+                   Remove Section Admin
+               {% else %}
+                   Make Section Admin
+               {% endif %}
+            </a>
+        {% else %}
+            —
+        {% endif %}
+    </td>
+    {% endif %}
+</tr>
+{% endfor %}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Event</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        form {
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* IMAGE PREVIEW */
+        #preview {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #preview img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add Event</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <input name="title" placeholder="Event Title" required>
+    <input name="event_date" type="date" required>
+    <textarea name="description" placeholder="Description" rows="5"></textarea>
+
+    <!-- IMAGE INPUT -->
+    <label><strong>Event Images (Max 6)</strong></label>
+    <input type="file"
+           name="images[]"
+           id="images"
+           multiple
+           accept="image/*"
+           onchange="previewImages()">
+
+    <!-- IMAGE PREVIEW -->
+    <div id="preview"></div>
+
+    <label style="display:block; margin-top:10px;">
+        <input type="checkbox" name="pinned" value="1">
+        📌 Pin this event to top
+    </label>
+
+    <button type="submit">Save Event</button>
+</form>
+
+<br>
+<a href="/admin/events">← Back</a>
+
+<script>
+function previewImages() {
+    const preview = document.getElementById("preview");
+    const files = document.getElementById("images").files;
+
+    preview.innerHTML = "";
+
+    if (files.length > 6) {
+        alert("You can upload a maximum of 6 images.");
+        document.getElementById("images").value = "";
+        return;
+    }
+
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+</script>
+
+</body>
+</html>

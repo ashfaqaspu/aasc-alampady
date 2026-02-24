@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ===== PAGE BACKGROUND ===== */
+
+.movements-wrapper {
+    min-height: 100vh;
+    padding: 60px 20px;
+    background: linear-gradient(135deg,#eef4ff,#e3f2fd,#f8fbff);
+}
+
+/* ===== MAIN CARD ===== */
+
+.movements-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 22px;
+    padding: 40px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.08);
+    border: 1px solid #e6edf5;
+}
+
+/* ===== HEADER SECTION ===== */
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.movements-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin: 0;
+}
+
+/* ===== BACK BUTTON ===== */
+
+.back-btn {
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1px solid #1976d2;
+    background: white;
+    color: #1976d2;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s ease;
+}
+
+.back-btn:hover {
+    background: #1976d2;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ===== TABLE ===== */
+
+.table-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background: linear-gradient(135deg,#0d47a1,#1565c0);
+    color: white;
+}
+
+.table th {
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 16px;
+    letter-spacing: 0.3px;
+}
+
+.table td {
+    padding: 16px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.table tbody tr {
+    transition: 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background: #f4f9ff;
+}
+
+/* ===== STATUS BADGES ===== */
+
+.badge {
+    padding: 7px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.bg-danger {
+    background: #ffebee !important;
+    color: #c62828 !important;
+}
+
+.bg-warning {
+    background: #fff8e1 !important;
+    color: #f57c00 !important;
+}
+
+.bg-success {
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
+}
+
+/* ===== ACTION BUTTON ===== */
+
+.return-btn {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(135deg,#2e7d32,#43a047);
+    color: white;
+    border: none;
+    transition: 0.25s ease;
+    text-decoration: none;
+}
+
+.return-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46,125,50,0.3);
+}
+
+/* ===== EMPTY STATE ===== */
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #607d8b;
+}
+
+.empty-state h5 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+    .movements-card {
+        padding: 25px;
+    }
+
+    .movements-title {
+        font-size: 22px;
+    }
+
+    .header-section {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}
+</style>
+
+<div class="movements-wrapper">
+<div class="container">
+<div class="movements-card">
+
+<div class="header-section">
+    <h2 class="movements-title">📦 Equipment Movements</h2>
+
+    <a href="{{ url_for('portal.medical_dashboard') }}"
+       class="back-btn">
+        ← Back to Dashboard
+    </a>
+</div>
+
+{% if movements %}
+
+<div class="table-wrapper">
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Item Code</th>
+            <th>Taker Name</th>
+            <th>Phone</th>
+            <th>Issue Date</th>
+            <th>Expected Return</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for m in movements %}
+        <tr>
+            <td><strong>{{ m.item.item_code }}</strong></td>
+            <td>{{ m.taker_name }}</td>
+            <td>{{ m.taker_phone }}</td>
+            <td>{{ m.issue_date }}</td>
+            <td>{{ m.expected_return_date }}</td>
+
+            <td>
+                {% if m.status == "OVERDUE" %}
+                    <span class="badge bg-danger">Overdue</span>
+                {% elif m.status == "ISSUED" %}
+                    <span class="badge bg-warning">Issued</span>
+                {% else %}
+                    <span class="badge bg-success">Returned</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if m.status != "RETURNED" %}
+                    <a href="{{ url_for('portal.return_item',
+                                        movement_id=m.id) }}"
+                       class="return-btn">
+                        ✔ Mark Returned
+                    </a>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+</div>
+
+{% else %}
+
+<div class="empty-state">
+    <h5>No Equipment Movements Found</h5>
+    <p>Issue an equipment item to generate movement records.</p>
+</div>
+
+{% endif %}
+
+</div>
+</div>
+</div>
+
+{% endblock %}

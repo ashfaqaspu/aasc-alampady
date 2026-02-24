@@ -1,0 +1,334 @@
+/* =====================================================
+   LOGIN PAGE
+   ===================================================== */
+body.login-body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: url("/static/login_bg.jpg.jpeg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Dark overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* Login / Profile card */
+.login-card {
+    width: 480px;                 /* ⬅ increased width */
+    max-width: 92%;
+    padding: 32px 36px;
+    background: linear-gradient(135deg, #1f3c88, #1da1f2);
+    color: white;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    height: auto;                 /* ⬅ auto height */
+}
+
+.login-card img {
+    width: 90px;
+    margin-bottom: 10px;
+}
+
+.login-card input,
+.login-card select,
+.login-card textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+}
+
+/* Address spacing fix */
+.login-card textarea {
+    min-height: 70px;
+    resize: none;
+}
+
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: #ffffff;
+    color: #1f3c88;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.login-card button:hover {
+    background: #e6e6e6;
+}
+
+.error {
+    color: #ffdede;
+    font-size: 14px;
+}
+
+/* Section divider */
+.divider {
+    margin: 22px 0;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.35);
+}
+
+/* Form labels */
+.form-label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #ffffff;
+    text-align: left;
+}
+
+/* Section title */
+.section-title {
+    margin-bottom: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Row layout (Blood + Interests) */
+.row {
+    display: flex;
+    gap: 18px;
+    margin-top: 12px;
+}
+
+.col {
+    flex: 1;
+}
+
+/* Interested Fields — SINGLE LINE */
+.checkbox-group {
+    display: flex;
+    justify-content: space-between;   /* ⬅ one line */
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: nowrap;                /* ⬅ prevent stacking */
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: white;
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   DASHBOARD
+   ===================================================== */
+.dashboard-body {
+    background: #f4f6f9;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-header {
+    background: #0d47a1;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.profile-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: block;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.status.active {
+    color: green;
+    font-weight: bold;
+}
+
+.status.expired {
+    color: red;
+    font-weight: bold;
+}
+
+.announcement {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+
+/* =====================================================
+   ADMIN TABLES & BUTTONS
+   ===================================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #0d47a1;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.btn.edit { background: #4caf50; color: white; }
+.btn.reset { background: #ff9800; color: white; }
+.btn.print { background: #0d47a1; color: white; }
+.btn.info  { background: #2196f3; color: white; }
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   SEARCH INPUT (ADMIN MEMBERS)
+   ===================================================== */
+.search-box {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   RECEIPT
+   ===================================================== */
+.receipt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.receipt-title {
+    text-align: center;
+    flex: 1;
+}
+
+.receipt-title h2 {
+    margin: 0;
+    color: #0d47a1;
+}
+
+.receipt-title p {
+    margin: 4px 0 0;
+    font-size: 14px;
+}
+
+.receipt-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.receipt-logo.left { margin-right: 10px; }
+.receipt-logo.right { margin-left: 10px; }
+
+
+/* =====================================================
+   PRINT MODE
+   ===================================================== */
+@media print {
+    body { background: white; padding: 0; }
+
+    .btn,
+    .dashboard-header,
+    a {
+        display: none !important;
+    }
+
+    table { font-size: 12px; }
+
+    th {
+        background: #ddd !important;
+        color: black !important;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+@media (max-width: 600px) {
+    .login-card {
+        width: 94%;
+        padding: 26px;
+    }
+
+    .dashboard-grid {
+        padding: 15px;
+    }
+
+    /* On mobile allow wrapping */
+    .checkbox-group {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Award</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        form {
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* IMAGE PREVIEW */
+        #preview {
+            margin-top: 15px;
+        }
+
+        #preview img {
+            width: 150px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add Award</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <input name="title" placeholder="Award Title" required>
+
+    <input name="year" type="number" placeholder="Year (e.g. 2024)" required>
+
+    <textarea name="description" placeholder="Description" rows="5"></textarea>
+
+    <label><strong>Award Image</strong></label>
+    <input type="file"
+           name="image"
+           id="image"
+           accept="image/*"
+           onchange="previewImage()">
+
+    <div id="preview"></div>
+
+    <label style="display:block; margin-top:10px;">
+        <input type="checkbox" name="pinned" value="1">
+        📌 Pin this award to top
+    </label>
+
+    <button type="submit">Save Award</button>
+</form>
+
+<br>
+<a href="/admin/awards">← Back</a>
+
+<script>
+function previewImage() {
+    const preview = document.getElementById("preview");
+    const file = document.getElementById("image").files[0];
+
+    preview.innerHTML = "";
+
+    if (!file || !file.type.startsWith("image/")) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>

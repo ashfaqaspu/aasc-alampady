@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* EVENT CARD */
+.event-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* MAIN IMAGE */
+.event-main-img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* SCROLL CONTAINER */
+.event-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-top: 12px;
+    scroll-behavior: smooth;
+}
+
+/* Hide scrollbar (optional but nice) */
+.event-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+.event-scroll::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 10px;
+}
+
+/* THUMBNAILS */
+.event-scroll img {
+    min-width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+</style>
+
+<h1>📅 Events</h1>
+
+{% for e in events %}
+<div class="event-card">
+
+    <h3>{{ e[1] }}</h3>
+    <small>{{ e[2] }}</small>
+    <p>{{ e[3] }}</p>
+
+    {% if e[4] %}
+        {% set images = e[4].split(",") %}
+
+        <!-- Main Image -->
+        <img src="/{{ images[0] }}" class="event-main-img">
+
+        <!-- Scrollable Images -->
+        {% if images|length > 1 %}
+       <div class="event-scroll">
+    {% for img in images[1:] %}
+        <img src="/{{ img }}">
+    {% endfor %}
+</div>
+
+        {% endif %}
+    {% endif %}
+
+</div>
+{% else %}
+<p>No events added yet.</p>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+/* ================= CONTACT PAGE ================= */
+.contact-page {
+    max-width: 900px;
+    margin: auto;
+}
+
+.contact-page h1 {
+    text-align: center;
+    font-size: 34px;
+    color: #0d47a1;
+    margin-bottom: 30px;
+}
+
+.contact-section {
+    background: #ffffff;
+    padding: 30px;
+    margin-bottom: 35px;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.contact-section h2 {
+    color: #0d47a1;
+    margin-bottom: 12px;
+    font-size: 24px;
+}
+
+.contact-section p {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+/* ================= BUTTON ================= */
+.contact-btn {
+    display: inline-block;
+    background: #25d366;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    margin-right: 12px;
+}
+
+/* Email button variant */
+.contact-btn.email {
+    background: #0d47a1;
+}
+
+.contact-btn:hover {
+    opacity: 0.9;
+}
+
+/* ================= INFO ================= */
+.contact-info p {
+    margin: 6px 0;
+    font-size: 15px;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+    .contact-page h1 {
+        font-size: 26px;
+    }
+
+    .contact-section {
+        padding: 22px;
+    }
+
+    .contact-btn {
+        margin-bottom: 10px;
+    }
+}
+</style>
+
+<div class="contact-page">
+
+    <h1>📞 Contact & Support</h1>
+
+    <!-- ABOUT AASC -->
+    <div class="contact-section">
+        <h2>About AASC Alampady</h2>
+        <p>
+            Alampady Arts & Sports Club (AASC) is a community-driven organization
+            based in Alampady, Kasaragod district, Kerala. For decades, AASC has
+            been actively involved in sports development, social responsibility,
+            charity initiatives, and community welfare activities.
+        </p>
+        <p>
+            The club stands as a trusted support system for the local community,
+            responding to social needs with unity, discipline, and compassion.
+        </p>
+
+        <div class="contact-info">
+            <p>📍 Location: Alampady, Kasaragod, Kerala</p>
+            <p>📧 Email: aasc.alampady@gmail.com</p>
+        </div>
+
+        <!-- EMAIL BUTTON -->
+        <a class="contact-btn email"
+           href="mailto:aasc.alampady@gmail.com">
+            Email AASC Club
+        </a>
+    </div>
+
+    <!-- BLOOD DONATION SUPPORT -->
+    <div class="contact-section">
+        <h2>🩸 Blood Donation Support</h2>
+        <p>
+            AASC Alampady operates an active blood support network for the
+            Alampady and nearby regions. In case of medical emergencies,
+            accidents, or urgent blood requirements, our volunteers coordinate
+            quickly to arrange donors and assistance.
+        </p>
+        <p>
+            This service is available round-the-clock and is purely driven by
+            humanitarian values to save lives within our locality.
+        </p>
+
+        <a class="contact-btn"
+           href="https://wa.me/919995074439"
+           target="_blank">
+            Contact Blood Support Team
+        </a>
+    </div>
+
+    <!-- MEDICAL AID SUPPORT -->
+    <div class="contact-section">
+        <h2>🏥 Medical Aid Support</h2>
+        <p>
+            AASC Alampady also extends support for urgent medical assistance,
+            including guidance, coordination, medical equipmental relief and financial help for patients
+            from Alampady and surrounding areas who are facing critical health
+            situations.
+        </p>
+        <p>
+            Our medical aid initiatives focus on timely support, community
+            cooperation, and ensuring that no one is left alone during medical
+            emergencies.
+        </p>
+
+        <a class="contact-btn"
+           href="https://wa.me/919946533055"
+           target="_blank">
+            Contact Medical Aid Support
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

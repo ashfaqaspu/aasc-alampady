@@ -1,0 +1,257 @@
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: linear-gradient(-45deg, #0d47a1, #1565c0, #1e88e5, #42a5f5);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    position: relative;
+    padding: 50px 20px;
+}
+
+/* Animated Gradient */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Light Blobs */
+body::before,
+body::after {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.5;
+    z-index: 0;
+}
+
+body::before {
+    background: #90caf9;
+    top: -100px;
+    left: -100px;
+}
+
+body::after {
+    background: #bbdefb;
+    bottom: -100px;
+    right: -100px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* HEADER */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+    color: white;
+}
+
+.top-bar h2 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 1px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.top-bar a {
+    text-decoration: none;
+    font-weight: 600;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    transition: 0.3s ease;
+}
+
+.top-bar a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+/* GLASS CARD */
+.card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(18px);
+    border-radius: 24px;
+    padding: 35px;
+    margin-bottom: 35px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform: translateY(20px);}
+    to { opacity:1; transform: translateY(0);}
+}
+
+h3 {
+    margin-top: 0;
+    font-size: 22px;
+    letter-spacing: 0.5px;
+}
+
+/* FORM */
+label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 14px;
+    border: none;
+    margin-bottom: 20px;
+    font-size: 14.5px;
+    background: rgba(255,255,255,0.85);
+    color: #222;
+    transition: 0.25s ease;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(144,202,249,0.6);
+}
+
+textarea {
+    resize: vertical;
+}
+
+button {
+    padding: 14px 26px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 600;
+    font-size: 15px;
+    background: linear-gradient(135deg,#0d47a1,#1976d2);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.4);
+}
+
+/* ANNOUNCEMENT BLOCK */
+.announcement {
+    background: rgba(255,255,255,0.25);
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 22px;
+    backdrop-filter: blur(8px);
+    transition: 0.3s ease;
+}
+
+.announcement:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.35);
+}
+
+.announcement-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.announcement-img {
+    max-width: 380px;
+    width: 100%;
+    border-radius: 14px;
+    margin-top: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    transition: 0.3s ease;
+}
+
+.announcement-img:hover {
+    transform: scale(1.05);
+}
+
+small {
+    display: block;
+    margin-top: 8px;
+    opacity: 0.9;
+}
+
+@media(max-width:600px){
+    .card { padding: 25px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-bar">
+        <h2>📢 Manage Announcements</h2>
+        <a href="{{ url_for('portal.dashboard') }}">← Back to Dashboard</a>
+    </div>
+
+    <!-- ADD ANNOUNCEMENT -->
+    <div class="card">
+        <h3>Add New Announcement</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+            <label>Title</label>
+            <input type="text" name="title" placeholder="Announcement title" required>
+
+            <label>Message</label>
+            <textarea name="message" rows="4" placeholder="Announcement message" required></textarea>
+
+            <label>Upload Image (optional)</label>
+            <input type="file" name="image" accept="image/*">
+
+            <button type="submit">Publish Announcement</button>
+        </form>
+    </div>
+
+    <!-- EXISTING ANNOUNCEMENTS -->
+    <div class="card">
+        <h3>Published Announcements</h3>
+
+        {% if announcements %}
+            {% for a in announcements %}
+                <div class="announcement">
+                    <div class="announcement-title">{{ a[1] }}</div>
+                    <p>{{ a[2] }}</p>
+
+                    {% if a[3] %}
+                        <img src="/{{ a[3] }}" class="announcement-img">
+                    {% endif %}
+
+                    <small>📅 {{ a[4] }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No announcements published yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
