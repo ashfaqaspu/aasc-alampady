@@ -1,394 +1,1096 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>AASC Portal | Dashboard</title>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AASC Portal | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --red-900: #7f0000;
+            --red-800: #b71c1c;
+            --red-700: #c62828;
+            --red-600: #d32f2f;
+            --red-500: #e53935;
+            --red-400: #ef5350;
+            --red-300: #e57373;
+            --red-100: #ffcdd2;
+            --red-50: #fff5f5;
+            --white: #ffffff;
+            --off-white: #fafafa;
+            --gray-100: #f5f5f5;
+            --gray-200: #eeeeee;
+            --gray-400: #bdbdbd;
+            --gray-600: #757575;
+            --gray-800: #424242;
+            --green: #2e7d32;
+            --green-light: #e8f5e9;
+            --orange: #e65100;
+            --orange-light: #fff3e0;
+            --shadow-lg: 0 20px 60px rgba(127, 0, 0, 0.18);
+            --shadow-md: 0 8px 30px rgba(127, 0, 0, 0.12);
+            --shadow-sm: 0 2px 12px rgba(127, 0, 0, 0.08);
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
         body {
-            margin: 0;
-            background: linear-gradient(135deg,#0d47a1,#1565c0);
-        }
-
-        .overlay {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--red-900);
             min-height: 100vh;
-            background: rgba(0,0,0,0.45);
-            padding-bottom: 40px;
+            color: var(--gray-800);
+            overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* ===== ANIMATED BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(229, 57, 53, 0.35) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(183, 28, 28, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(127, 0, 0, 0.5) 0%, transparent 70%),
+                linear-gradient(135deg, #7f0000 0%, #b71c1c 40%, #c62828 70%, #7f0000 100%);
+            z-index: -2;
+        }
+
+        /* Floating orbs */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle 300px at 10% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+                radial-gradient(circle 200px at 90% 10%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+                radial-gradient(circle 400px at 60% 90%, rgba(229, 57, 53, 0.15) 0%, transparent 60%);
+            z-index: -1;
+            animation: float-bg 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes float-bg {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            100% {
+                transform: scale(1.05) rotate(2deg);
+            }
+        }
+
+        /* ===== HEADER ===== */
         .header {
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            padding: 18px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(127, 0, 0, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0 32px;
+            height: 68px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: white;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .header h2 {
-            margin: 0;
-            letter-spacing: 1px;
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
-        .header a {
-            color: white;
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--red-400), var(--white));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--red-800);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            color: var(--white);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-time {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
             text-decoration: none;
             font-weight: 600;
+            font-size: 14px;
+            padding: 9px 20px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
         }
 
-        /* GRID */
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== LAYOUT ===== */
         .container {
-            padding: 30px;
+            padding: 30px 28px 48px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 22px;
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
-        /* CARD */
+        /* ===== CARD ===== */
         .card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            transition: 0.3s ease;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red-700), var(--red-400), var(--red-700));
+            background-size: 200% 100%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         .card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
+            box-shadow: 0 30px 70px rgba(127, 0, 0, 0.25);
         }
 
         .card h3 {
-            margin-top: 0;
-            color: #0d47a1;
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid #e0e0e0;
-            margin: 18px 0;
-        }
-
-        /* PROFILE */
-        .id-photo {
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 4px solid white;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    display: block;
-    margin-bottom: 15px;
-}
-        .badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
-            color: white;
-            margin-top: 8px;
-        }
-
-        .member { background:#757575; }
-        .admin { background:#0d47a1; }
-        .section { background:#2e7d32; }
-        .super { background:#d32f2f; }
-
-        /* BUTTONS */
-        .btn {
-            display: inline-block;
-            padding: 10px 16px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 6px 6px 6px 0;
-            transition: 0.3s ease;
-            color: white;
-        }
-
-        .primary { background:#0d47a1; }
-        .success { background:#2e7d32; }
-        .danger { background:#c62828; }
-        .warning { background:#f57c00; }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        /* METRICS */
-        .metric {
-            padding: 10px 14px;
-            border-radius: 10px;
-            background: #f5f5f5;
-            margin-bottom: 8px;
-        }
-
-        .green { color:#2e7d32; }
-        .orange { color:#f57c00; }
-        .red { color:#c62828; }
-
-        /* ADMIN GRID */
-        .admin-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+            margin: 0 0 20px;
+            color: var(--red-800);
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
+        .card h3 .icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--red-700), var(--red-500));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(198, 40, 40, 0.35);
+        }
+
+        .divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--red-100), transparent);
+            margin: 20px 0;
+        }
+
+        /* ===== PROFILE CARD ===== */
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 4px;
+        }
+
+        .avatar-wrap {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .id-photo {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--white);
+            box-shadow: 0 0 0 4px var(--red-300), 0 12px 30px rgba(127, 0, 0, 0.3);
+            display: block;
+            transition: var(--transition);
+        }
+
+        .id-photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px var(--red-500), 0 16px 40px rgba(127, 0, 0, 0.4);
+        }
+
+        .avatar-online {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            width: 16px;
+            height: 16px;
+            background: #4caf50;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 6px;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: white;
+            margin-top: 4px;
+        }
+
+        .badge.member {
+            background: linear-gradient(135deg, #616161, #9e9e9e);
+            box-shadow: 0 4px 14px rgba(97, 97, 97, 0.4);
+        }
+
+        .badge.admin {
+            background: linear-gradient(135deg, var(--red-800), var(--red-600));
+            box-shadow: 0 4px 14px rgba(198, 40, 40, 0.45);
+        }
+
+        .badge.section {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            box-shadow: 0 4px 14px rgba(46, 125, 50, 0.4);
+        }
+
+        .badge.super {
+            background: linear-gradient(135deg, #7f0000, var(--red-600));
+            box-shadow: 0 4px 14px rgba(127, 0, 0, 0.5);
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-badge {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 14px rgba(127, 0, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 4px 25px rgba(127, 0, 0, 0.8);
+            }
+        }
+
+        /* ===== PROFILE INFO LIST ===== */
+        .info-list {
+            list-style: none;
+            margin-top: 4px;
+        }
+
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 14px;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--gray-800);
+            font-weight: 600;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.15);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, var(--red-800), var(--red-600));
+            color: white;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.4);
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 8px 25px rgba(198, 40, 40, 0.55);
+        }
+
+        .btn.success {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn.success:hover {
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.55);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #7f0000, var(--red-700));
+            color: white;
+            box-shadow: 0 4px 15px rgba(127, 0, 0, 0.5);
+        }
+
+        .btn.danger:hover {
+            box-shadow: 0 8px 25px rgba(127, 0, 0, 0.7);
+        }
+
+        .btn.warning {
+            background: linear-gradient(135deg, #bf360c, #e64a19);
+            color: white;
+            box-shadow: 0 4px 15px rgba(230, 74, 25, 0.4);
+        }
+
+        .btn.warning:hover {
+            box-shadow: 0 8px 25px rgba(230, 74, 25, 0.55);
+        }
+
+        /* ===== METRIC TILES ===== */
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: var(--gray-100);
+            margin-bottom: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .metric:hover {
+            background: var(--red-50);
+            border-left-color: var(--red-400);
+        }
+
+        .metric .metric-icon {
+            font-size: 18px;
+            min-width: 28px;
+        }
+
+        .metric.green {
+            color: var(--green);
+            background: var(--green-light);
+            border-left-color: var(--green);
+        }
+
+        .metric.orange {
+            color: var(--orange);
+            background: var(--orange-light);
+            border-left-color: var(--orange);
+        }
+
+        .metric.red {
+            color: var(--red-700);
+            background: #ffebee;
+            border-left-color: var(--red-700);
+        }
+
+        /* ===== STAT CHIPS (Admin numbers) ===== */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 4px 0 12px;
+        }
+
+        .stat-chip {
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .stat-chip .stat-num {
+            font-size: 26px;
+            font-weight: 800;
+            display: block;
+            line-height: 1.1;
+        }
+
+        .stat-chip.sc-total {
+            background: #fff5f5;
+            color: var(--red-800);
+        }
+
+        .stat-chip.sc-active {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .stat-chip.sc-expired {
+            background: #ffebee;
+            color: var(--red-700);
+        }
+
+        .stat-chip.sc-orange {
+            background: var(--orange-light);
+            color: var(--orange);
+        }
+
+        /* ===== ADMIN BUTTON GRID ===== */
+        .admin-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .admin-buttons .btn {
+            justify-content: center;
+            font-size: 12.5px;
+        }
+
+        /* ===== ANNOUNCEMENTS ===== */
+        .announcement-item {
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            background: var(--red-50);
+            border-left: 4px solid var(--red-500);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+
+        .announcement-item:hover {
+            background: #ffcdd2;
+            transform: translateX(4px);
+        }
+
+        .announcement-item h4 {
+            font-size: 14px;
+            color: var(--red-800);
+            margin-bottom: 4px;
+        }
+
+        .announcement-item p {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== MEMBERSHIP STATUS ===== */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .status-pill.active {
+            background: var(--green-light);
+            color: var(--green);
+            border: 1px solid rgba(46, 125, 50, 0.3);
+        }
+
+        .status-pill.expired {
+            background: #ffebee;
+            color: var(--red-700);
+            border: 1px solid rgba(198, 40, 40, 0.3);
+            animation: pulse-status 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-status {
+
+            0%,
+            100% {
+                box-shadow: none;
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(198, 40, 40, 0.3);
+            }
+        }
+
+        .membership-dates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .date-box {
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+        }
+
+        .date-box .date-label {
+            font-size: 11px;
+            color: var(--gray-600);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .date-box .date-val {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        /* ===== ADDITIONAL INFO METRICS ===== */
+        .info-metric {
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--gray-100);
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            transition: var(--transition);
+        }
+
+        .info-metric:hover {
+            background: var(--red-50);
+        }
+
+        .info-metric b {
+            color: var(--red-800);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-metric span {
+            color: var(--gray-700);
+        }
+
+        /* ===== SUPER ADMIN SECTION ===== */
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gray-400);
+            margin: 14px 0 8px;
+        }
+
+        /* ===== MEMBERSHIP CONTROL ===== */
+        .membership-control h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--red-800);
+            margin-bottom: 10px;
+        }
+
+        .membership-control form {
+            display: inline;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--red-400);
+            border-radius: 3px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .container {
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .header {
+                padding: 0 16px;
+            }
+
+            .header-title {
+                font-size: 16px;
+            }
+
+            .header-time {
+                display: none;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .membership-dates {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== ENTRANCE ANIMATION ===== */
+        .card {
+            animation: card-in 0.5s ease both;
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.05s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.12s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.19s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: 0.26s;
+        }
+
+        .card:nth-child(5) {
+            animation-delay: 0.33s;
+        }
+
+        @keyframes card-in {
+            from {
+                opacity: 0;
+                transform: translateY(28px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
     </style>
 </head>
 
 <body>
-<div class="overlay">
 
-<div class="header">
-    <h2>AASC ALAMPADY </h2>
-    <a href="{{ url_for('portal.logout') }}">Logout</a>
-</div>
+    <!-- ===================== HEADER ===================== -->
+    <header class="header">
+        <div class="header-brand">
+            <div class="header-logo">A</div>
+            <div>
+                <div class="header-title">AASC ALAMPADY</div>
+                <div class="header-subtitle">Member Portal</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="header-time" id="live-clock"></span>
+            <a href="{{ url_for('portal.logout') }}" class="logout-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Logout
+            </a>
+        </div>
+    </header>
 
-<div class="container">
+    <!-- ===================== MAIN GRID ===================== -->
+    <div class="container">
 
-<!-- PROFILE CARD -->
-<div class="card">
+        <!-- ===== PROFILE CARD ===== -->
+        <div class="card">
+            <div class="profile-header">
+                <div class="avatar-wrap">
+                    <img src="{{ url_for('static', filename=user.photo or 'default_avatar.png') }}" class="id-photo"
+                        alt="{{ user.name }}">
+                    <div class="avatar-online"></div>
+                </div>
+                <div class="profile-name">{{ user.name }}</div>
 
-    <img
-        src="{{ url_for('static', filename=user.photo or 'default_avatar.png') }}"
-        class="id-photo"
-    >
+                {% if is_super_admin %}
+                <span class="badge super">⭐ Super Admin</span>
+                {% elif is_admin %}
+                <span class="badge admin">🛡️ Admin</span>
+                {% elif is_section_admin %}
+                <span class="badge section">📋 Section Admin</span>
+                {% else %}
+                <span class="badge member">👤 Member</span>
+                {% endif %}
+            </div>
 
-    <h3>{{ user.name }}</h3>
+            <hr class="divider">
 
-    {% if is_super_admin %}
-        <span class="badge super">SUPER ADMIN</span>
-    {% elif is_admin %}
-        <span class="badge admin">ADMIN</span>
-    {% elif is_section_admin %}
-        <span class="badge section">SECTION ADMIN</span>
-    {% else %}
-        <span class="badge member">MEMBER</span>
-    {% endif %}
+            <ul class="info-list">
+                <li>
+                    <span class="info-label">Membership ID</span>
+                    <span class="info-value">{{ user.membership_id }}</span>
+                </li>
+                <li>
+                    <span class="info-label">Phone</span>
+                    <span class="info-value">{{ user.phone }}</span>
+                </li>
+                <li>
+                    <span class="info-label">Nativity</span>
+                    <span class="info-value">{{ user.nativity }}</span>
+                </li>
+            </ul>
 
-    <hr>
+            <hr class="divider">
 
-    <p><b>ID:</b> {{ user.membership_id }}</p>
-    <p><b>Phone:</b> {{ user.phone }}</p>
-    <p><b>Nativity:</b> {{ user.nativity }}</p>
+            <div class="btn-group">
+                <a href="{{ url_for('portal.events') }}" class="btn primary">📅 Events</a>
+                <a href="{{ url_for('portal.membership_card') }}" class="btn primary">🧾 Card</a>
+                <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">📷 Update</a>
+                <a href="{{ url_for('portal.change_password') }}" class="btn warning">🔐 Password</a>
+                <a href="{{ url_for('portal.my_committees') }}" class="btn primary">📂 Committees</a>
+            </div>
+        </div>
 
-    <hr>
+        <!-- ===== ADDITIONAL INFO CARD ===== -->
+        <div class="card">
+            <h3><span class="icon">ℹ️</span> Additional Information</h3>
 
-    <a href="{{ url_for('portal.events') }}" class="btn primary">📅 Events</a>
-    <a href="{{ url_for('portal.membership_card') }}" class="btn primary">🧾 Card</a>
-    <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">📷 Update</a>
-    <a href="{{ url_for('portal.change_password') }}" class="btn warning">🔐 Password</a>
-    <a href="{{ url_for('portal.my_committees') }}" class="btn primary">📂 Committees</a>
+            <div class="info-metric">
+                <b>Address</b>
+                <span>{{ user.address if user.address else "—" }}</span>
+            </div>
 
-</div>
+            <div class="info-metric">
+                <b>Email</b>
+                <span>{{ user.email if user.email else "—" }}</span>
+            </div>
 
-<!-- ADDITIONAL INFO -->
-<div class="card">
-    <h3>Additional Information</h3>
+            <div class="info-metric">
+                <b>WhatsApp</b>
+                <span>{{ user.whatsapp if user.whatsapp else "—" }}</span>
+            </div>
 
-    <div class="metric">
-        <b>Address:</b><br>
-        {{ user.address if user.address else "—" }}
-    </div>
+            <div class="info-metric">
+                <b>Date of Birth</b>
+                <span>{{ user.dob if user.dob else "—" }}</span>
+            </div>
 
-    <div class="metric">
-        <b>Email:</b><br>
-        {{ user.email if user.email else "—" }}
-    </div>
+            <div class="info-metric">
+                <b>Age</b>
+                <span>
+                    {% if user.dob %}{{ calculate_age(user.dob) }}{% else %}—{% endif %}
+                </span>
+            </div>
 
-    <div class="metric">
-        <b>WhatsApp:</b><br>
-        {{ user.whatsapp if user.whatsapp else "—" }}
-    </div>
+            <div class="info-metric">
+                <b>Blood Group</b>
+                <span>{{ user.blood_group if user.blood_group else "—" }}</span>
+            </div>
 
-    <div class="metric">
-        <b>Date of Birth:</b><br>
-        {{ user.dob if user.dob else "—" }}
-    </div>
+            <div class="info-metric">
+                <b>Interests</b>
+                <span>{{ user.interests if user.interests else "—" }}</span>
+            </div>
 
-    <div class="metric">
-        <b>Age:</b><br>
-        {% if user.dob %}
-            {{ calculate_age(user.dob) }}
-        {% else %}
-            —
-        {% endif %}
-    </div>
+            <hr class="divider">
 
-    <div class="metric">
-        <b>Blood Group:</b><br>
-        {{ user.blood_group if user.blood_group else "—" }}
-    </div>
+            <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">
+                ✏️ Edit Information
+            </a>
+        </div>
 
-    <div class="metric">
-        <b>Interests:</b><br>
-        {{ user.interests if user.interests else "—" }}
-    </div>
+        <!-- ===== MEMBERSHIP CARD ===== -->
+        <div class="card">
+            <h3><span class="icon">🪪</span> Membership</h3>
 
-    <hr>
+            <div class="membership-dates">
+                <div class="date-box">
+                    <div class="date-label">Start Date</div>
+                    <div class="date-val">{{ user.membership_start }}</div>
+                </div>
+                <div class="date-box">
+                    <div class="date-label">End Date</div>
+                    <div class="date-val">{{ user.membership_end }}</div>
+                </div>
+            </div>
 
-    <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">
-    ✏️ Edit Information
-</a>
-</div>
-<!-- MEMBERSHIP -->
-<div class="card">
-    <h3>Membership</h3>
-    <div class="metric">Start: {{ user.membership_start }}</div>
-    <div class="metric">End: {{ user.membership_end }}</div>
+            {% if expired %}
+            <span class="status-pill expired">❌ Expired</span>
+            {% else %}
+            <span class="status-pill active">✅ Active</span>
+            {% endif %}
 
-    {% if expired %}
-        <div class="metric red"><b>Status: Expired</b></div>
-    {% else %}
-        <div class="metric green"><b>Status: Active</b></div>
-    {% endif %}
+            {% if renewal_enabled %}
+            {% if renewal_status == "PENDING" %}
+            <div class="metric orange" style="margin-top:14px;">
+                <span class="metric-icon">⏳</span>
+                <span>Renewal request is pending approval</span>
+            </div>
 
-   {% if renewal_enabled %}
-    {% if renewal_status == "PENDING" %}
-        <div class="metric orange">Renewal Pending</div>
+            {% elif renewal_status == "APPROVED" %}
+            <div style="margin-top:14px;">
+                <a href="{{ url_for('portal.view_receipt') }}" class="btn success">
+                    📄 Download Receipt
+                </a>
+            </div>
 
-    {% elif renewal_status == "APPROVED" %}
-        <a href="{{ url_for('portal.view_receipt') }}"
-           class="btn success">
-           Download Receipt
-        </a>
+            {% else %}
+            <div style="margin-top:14px;">
+                <a href="{{ url_for('portal.renew') }}" class="btn primary">
+                    🔄 Renew Membership
+                </a>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
 
-    {% else %}
-        <a href="{{ url_for('portal.renew') }}"
-           class="btn primary">
-           Renew Membership
-        </a>
-    {% endif %}
-{% endif %}
-</div>
+        <!-- ===== ANNOUNCEMENTS CARD ===== -->
+        <div class="card">
+            <h3><span class="icon">📢</span> Announcements</h3>
 
-<!-- ANNOUNCEMENTS -->
-<div class="card">
-    <h3>Announcements</h3>
-    {% for a in announcements %}
-        <p><b>{{ a.title }}</b><br>{{ a.message }}</p>
-        <hr>
-    {% else %}
-        <p>No announcements</p>
-    {% endfor %}
-</div>
+            {% for a in announcements %}
+            <div class="announcement-item">
+                <h4>{{ a.title }}</h4>
+                <p>{{ a.message }}</p>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <p>No announcements at this time</p>
+            </div>
+            {% endfor %}
+        </div>
 
-<!-- ADMIN PANEL -->
-{% if is_admin or is_super_admin or is_section_admin %}
-<div class="card">
-    <h3>Admin Panel</h3>
+        <!-- ===== ADMIN PANEL CARD ===== -->
+        {% if is_admin or is_super_admin or is_section_admin %}
+        <div class="card">
+            <h3><span class="icon">⚙️</span> Admin Panel</h3>
 
-    <!-- MEMBER STATS -->
-    <div class="metric">Total Members: {{ total_members }}</div>
-    <div class="metric">Active: {{ active_members }}</div>
-    <div class="metric red">Expired: {{ expired_members }}</div>
+            <!-- Member Stats -->
+            <p class="section-label">Member Statistics</p>
+            <div class="stat-grid">
+                <div class="stat-chip sc-total">
+                    <span class="stat-num">{{ total_members }}</span>
+                    Total Members
+                </div>
+                <div class="stat-chip sc-active">
+                    <span class="stat-num">{{ active_members }}</span>
+                    Active
+                </div>
+                <div class="stat-chip sc-expired">
+                    <span class="stat-num">{{ expired_members }}</span>
+                    Expired
+                </div>
+            </div>
 
-    <hr>
+            <!-- Medical Stats -->
+            <p class="section-label">Medical Inventory</p>
+            <div class="stat-grid">
+                <div class="stat-chip sc-total">
+                    <span class="stat-num">{{ total_medical_items }}</span>
+                    Total Items
+                </div>
+                <div class="stat-chip sc-active">
+                    <span class="stat-num">{{ available_medical }}</span>
+                    Available
+                </div>
+                <div class="stat-chip sc-orange">
+                    <span class="stat-num">{{ issued_medical }}</span>
+                    Issued
+                </div>
+                <div class="stat-chip sc-expired">
+                    <span class="stat-num">{{ overdue_medical }}</span>
+                    Overdue
+                </div>
+            </div>
 
-    <!-- MEDICAL STATS -->
-    <div class="metric">Medical Total: {{ total_medical_items }}</div>
-    <div class="metric green">Available: {{ available_medical }}</div>
-    <div class="metric orange">Issued: {{ issued_medical }}</div>
-    <div class="metric red">Overdue: {{ overdue_medical }}</div>
+            <hr class="divider">
 
-    <hr>
+            <!-- Admin Actions -->
+            <p class="section-label">Quick Actions</p>
+            <div class="admin-buttons">
+                <a href="{{ url_for('portal.admin_members') }}" class="btn primary">👥 Members</a>
+                <a href="{{ url_for('portal.admin_add_member') }}" class="btn primary">➕ Add Member</a>
+                <a href="{{ url_for('portal.admin_announcements') }}" class="btn primary">📢 Announce</a>
+                <a href="{{ url_for('portal.admin_renewals') }}" class="btn primary">💳 Renewals</a>
+                <a href="{{ url_for('portal.admin_events') }}" class="btn primary">📅 Events</a>
+                <a href="{{ url_for('portal.admin_analytics') }}" class="btn primary">📊 Analytics</a>
+                <a href="{{ url_for('portal.blood_donors') }}" class="btn danger">🚨 Blood Panel</a>
+                <a href="{{ url_for('portal.medical_dashboard') }}" class="btn success">🏥 Medical</a>
+            </div>
 
-    <!-- ADMIN BUTTON GRID -->
-   <div class="admin-buttons">
-    <a href="{{ url_for('portal.admin_members') }}" class="btn primary">
-        👥 View Members
-    </a>
+            {% if is_super_admin %}
+            <hr class="divider">
 
-    <a href="{{ url_for('portal.admin_add_member') }}" class="btn primary">
-        ➕ Add Member
-    </a>
+            <p class="section-label">Super Admin Tools</p>
+            <div class="admin-buttons">
+                <a href="{{ url_for('portal.admin_dashboard') }}" class="btn warning">🖥️ Full Dashboard</a>
+                <a href="{{ url_for('portal.admin_committees') }}" class="btn warning">📂 All Committees</a>
+                <a href="{{ url_for('portal.create_committee') }}" class="btn warning">➕ Create Committee</a>
+                <a href="{{ url_for('portal.manage_admins') }}" class="btn warning">🛡️ Manage Admins</a>
+            </div>
 
-    <a href="{{ url_for('portal.admin_announcements') }}" class="btn primary">
-        📢 Announcements
-    </a>
+            {% if is_admin or is_super_admin %}
+            <hr class="divider">
 
-    <a href="{{ url_for('portal.admin_renewals') }}" class="btn primary">
-        💳 Renewals
-    </a>
+            <div class="membership-control">
+                <h4>🔑 Membership Control</h4>
+                <form method="POST" action="{{ url_for('portal.toggle_renewal') }}">
+                    <input type="hidden" name="value" value="{{ '0' if renewal_enabled else '1' }}">
+                    {% if renewal_enabled %}
+                    <button type="submit" class="btn danger">🔒 Disable Renewal</button>
+                    {% else %}
+                    <button type="submit" class="btn success">🔓 Enable Renewal</button>
+                    {% endif %}
+                </form>
+            </div>
+            {% endif %} {# closes: if is_admin or is_super_admin #}
 
-    <a href="{{ url_for('portal.admin_events') }}" class="btn primary">
-        📅 Events
-    </a>
+            {% endif %} {# closes: if is_super_admin #}
 
-    <a href="{{ url_for('portal.admin_analytics') }}" class="btn primary">
-        📊 Analytics
-    </a>
+        </div> {# closes admin card #}
+        {% endif %} {# closes: if is_admin or is_super_admin or is_section_admin #}
 
-    <a href="{{ url_for('portal.blood_donors') }}" class="btn danger">
-        🚨 Blood Panel
-    </a>
+    </div> <!-- closes .container -->
 
-    <a href="{{ url_for('portal.medical_dashboard') }}" class="btn success">
-        🏥 Medical Panel
-    </a>
-</div>
-
-{% if is_super_admin %}
-<hr>
-<div class="admin-buttons">
-
-    <a href="{{ url_for('portal.admin_dashboard') }}" class="btn warning">
-        Full Dashboard
-    </a>
-
-    <a href="{{ url_for('portal.admin_committees') }}" class="btn warning">
-        All Committees
-    </a>
-
-    <a href="{{ url_for('portal.create_committee') }}" class="btn warning">
-        Create Committee
-    </a>
-
-    <a href="{{ url_for('portal.manage_admins') }}" class="btn warning">
-        Manage Admins
-    </a>
-
-</div>
-
-{% if is_admin or is_super_admin %}
-<hr>
-<h4 style="margin-bottom:10px; color:#0d47a1;">
-    Membership Control
-</h4>
-
-<div class="admin-buttons">
-    <form method="POST"
-          action="{{ url_for('portal.toggle_renewal') }}">
-
-        <input type="hidden"
-               name="value"
-               value="{{ '0' if renewal_enabled else '1' }}">
-
-        {% if renewal_enabled %}
-            <button type="submit" class="btn danger">
-                🔒 Disable Renewal
-            </button>
-        {% else %}
-            <button type="submit" class="btn success">
-                🔓 Enable Renewal
-            </button>
-        {% endif %}
-
-    </form>
-</div>
-{% endif %}   {# closes: if is_admin or is_super_admin #}
-
-{% endif %}   {# closes: if is_super_admin #}
-
-</div>        {# closes admin card #}
-{% endif %}   {# closes: if is_admin or is_super_admin or is_section_admin #}
-
-</div>        <!-- closes container -->
-</div>        <!-- closes overlay -->
+    <script>
+        // Live clock in header
+        function updateClock() {
+            const now = new Date();
+            const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-IN', opts);
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
 
 </body>
+
 </html>
