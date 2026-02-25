@@ -2,83 +2,331 @@
 {% block content %}
 
 <style>
-/* EVENT CARD */
+:root {
+    --cream:#f7f0e6; --warm-white:#fdf8f2; --sand:#e8d5b7;
+    --amber:#b8751a; --amber-bright:#d4891f; --amber-pale:#e8c07a;
+    --terra:#8b4513; --terra-soft:#c0622a;
+    --teal:#2a7a72; --teal-light:#3d9e94; --teal-pale:#d4f0ec;
+    --ink:#1a1208; --ink-warm:#3d2e1a; --ink-mid:#6b5540; --ink-soft:#9a8270;
+    --shimmer: linear-gradient(105deg, #b8751a 0%, #e8c07a 25%, #d4891f 50%, #e8c07a 75%, #b8751a 100%);
+}
+
+@keyframes shimMove   { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+@keyframes fadeUp     { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn     { from{opacity:0} to{opacity:1} }
+@keyframes pulse      { from{transform:scale(1);opacity:.8} to{transform:scale(1.1);opacity:1} }
+@keyframes calFloat   { 0%,100%{transform:translateY(0) rotate(-4deg)} 50%{transform:translateY(-7px) rotate(4deg)} }
+
+.reveal {
+    opacity:0; transform:translateY(28px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ══════════════════════════════════════════
+   PAGE HERO
+══════════════════════════════════════════ */
+.events-hero {
+    position:relative; border-radius:28px; overflow:hidden;
+    padding:76px 72px 68px; text-align:center;
+    background:linear-gradient(140deg,
+        #f2e8d2 0%, #faf0de 30%, #f0f6f4 65%, #f5ece0 100%);
+    border:1px solid rgba(184,117,26,.22);
+    box-shadow:
+        0 40px 100px rgba(184,117,26,.16),
+        0 8px 32px rgba(0,0,0,.06),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    margin-bottom:52px;
+    animation:fadeIn .6s ease both;
+}
+
+.events-hero::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation:shimMove 5s linear infinite; border-radius:28px 28px 0 0;
+}
+
+/* dot-grid */
+.eh-pat {
+    position:absolute; inset:0; pointer-events:none;
+    background-image:radial-gradient(circle at 1px 1px, rgba(184,117,26,.055) 1px, transparent 0);
+    background-size:28px 28px; opacity:.5;
+}
+.eh-glow {
+    position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse 70% 80% at 50% 50%, rgba(232,192,122,.22) 0%, transparent 65%);
+}
+
+/* faint calendar watermark */
+.eh-wm {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:clamp(100px,18vw,200px);
+    opacity:.035; pointer-events:none; user-select:none; line-height:1;
+    animation:calFloat 7s ease-in-out infinite;
+}
+
+.brk-tl { position:absolute; top:20px; left:20px; width:42px; height:42px; border-top:2px solid rgba(184,117,26,.55); border-left:2px solid rgba(184,117,26,.55); pointer-events:none; }
+.brk-tr { position:absolute; top:20px; right:20px; width:42px; height:42px; border-top:2px solid rgba(184,117,26,.55); border-right:2px solid rgba(184,117,26,.55); pointer-events:none; }
+.brk-bl { position:absolute; bottom:20px; left:20px; width:42px; height:42px; border-bottom:2px solid rgba(184,117,26,.55); border-left:2px solid rgba(184,117,26,.55); pointer-events:none; }
+.brk-br { position:absolute; bottom:20px; right:20px; width:42px; height:42px; border-bottom:2px solid rgba(184,117,26,.55); border-right:2px solid rgba(184,117,26,.55); pointer-events:none; }
+
+.page-eyebrow {
+    display:inline-flex; align-items:center; gap:12px;
+    font-family:'Cinzel',serif; font-size:9.5px; letter-spacing:4px;
+    text-transform:uppercase; color:var(--amber); margin-bottom:18px;
+    animation:fadeUp .7s ease both .1s; position:relative;
+}
+.page-eyebrow::before { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,transparent,var(--amber)); }
+.page-eyebrow::after  { content:''; display:block; width:26px; height:1px; background:linear-gradient(90deg,var(--amber),transparent); }
+
+.events-page-title {
+    font-family:'Cinzel',serif; font-size:clamp(28px,5.5vw,62px); font-weight:700;
+    color:var(--ink); letter-spacing:6px; line-height:1.05; margin:0 0 8px;
+    animation:fadeUp .8s ease both .15s; position:relative;
+}
+.events-page-sub {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:clamp(14px,2vw,19px); font-weight:400;
+    color:var(--amber); letter-spacing:3px; margin-bottom:28px;
+    animation:fadeUp .8s ease both .2s; position:relative;
+}
+
+.hero-orn { display:flex; align-items:center; gap:14px; justify-content:center; animation:fadeIn 1s ease both .3s; position:relative; }
+.hero-orn-l { width:52px; height:1px; }
+.hero-orn-l:first-child { background:linear-gradient(90deg,transparent,rgba(184,117,26,.5)); }
+.hero-orn-l:last-child  { background:linear-gradient(90deg,rgba(184,117,26,.5),transparent); }
+.hero-orn-c { color:var(--amber); font-size:9px; display:flex; gap:7px; }
+
+/* ══════════════════════════════════════════
+   EVENT CARD
+══════════════════════════════════════════ */
 .event-card {
-    background: white;
-    padding: 20px;
-    margin-bottom: 25px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    background:rgba(253,248,242,.94);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-radius:24px;
+    border:1px solid rgba(184,117,26,.18);
+    box-shadow:
+        0 24px 65px rgba(184,117,26,.11),
+        0 6px 22px rgba(0,0,0,.05),
+        inset 0 1px 0 rgba(255,255,255,.9);
+    overflow:hidden; margin-bottom:36px; position:relative;
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1),
+               box-shadow .35s, border-color .35s;
 }
 
-/* MAIN IMAGE */
+.event-card:hover {
+    transform:translateY(-6px);
+    box-shadow:0 40px 90px rgba(184,117,26,.18), 0 10px 40px rgba(0,0,0,.07);
+    border-color:rgba(184,117,26,.35);
+}
+
+/* shimmer top on hover */
+.event-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--shimmer); background-size:300% 100%;
+    animation:shimMove 4s linear infinite;
+    opacity:0; transition:opacity .3s; z-index:2;
+    border-radius:24px 24px 0 0;
+}
+.event-card:hover::before { opacity:1; }
+
+/* left gradient ribbon */
+.event-card::after {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:5px;
+    background:linear-gradient(180deg, var(--amber), var(--amber-bright), var(--terra-soft));
+    border-radius:24px 0 0 24px;
+}
+
+/* ── card text body ── */
+.event-card-body { padding:36px 44px 36px 52px; }
+
+.event-card h3 {
+    font-family:'Cormorant Garamond',serif;
+    font-size:clamp(20px,2.5vw,26px); font-weight:700;
+    color:var(--ink); letter-spacing:.5px; margin:0 0 10px; line-height:1.25;
+}
+
+.event-card small {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Cinzel',serif; font-size:9px; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--amber); margin-bottom:14px;
+}
+.event-card small::before { content:'◆'; font-size:6px; opacity:.7; }
+
+.event-card p {
+    font-family:'Raleway',sans-serif; font-size:14.5px;
+    line-height:1.95; color:var(--ink-mid); letter-spacing:.2px; margin:0;
+    max-width:800px;
+}
+
+/* ── image divider ── */
+.ev-img-rule {
+    height:1px; margin:0 44px 0 52px;
+    background:linear-gradient(90deg, transparent, rgba(184,117,26,.25), transparent);
+}
+
+/* ── MAIN IMAGE ── */
+.ev-main-wrap { overflow:hidden; position:relative; }
+
 .event-main-img {
-    width: 100%;
-    max-height: 360px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-top: 10px;
+    width:100%; max-height:400px;
+    object-fit:cover; display:block;
+    transition:transform .7s ease;
+    margin-top:0;
+    border-radius:0;
+}
+.event-card:hover .event-main-img { transform:scale(1.025); }
+
+/* bottom fade on main image */
+.ev-main-wrap::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:70px;
+    background:linear-gradient(transparent, rgba(253,248,242,.4));
+    pointer-events:none;
 }
 
-/* SCROLL CONTAINER */
+/* ── SCROLL STRIP ── */
+.ev-scroll-wrap { padding:18px 44px 28px 52px; }
+
+.ev-scroll-hd {
+    font-family:'Cinzel',serif; font-size:8.5px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--ink-soft);
+    margin-bottom:12px;
+    display:flex; align-items:center; gap:12px;
+}
+.ev-scroll-hd::before { content:'◆'; color:var(--amber-pale); font-size:7px; }
+.ev-scroll-hd::after  { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(184,117,26,.2),transparent); }
+
 .event-scroll {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding: 10px 0;
-    margin-top: 12px;
-    scroll-behavior: smooth;
+    display:flex; gap:14px; overflow-x:auto;
+    padding:4px 2px 12px; scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    margin-top:0;
 }
 
-/* Hide scrollbar (optional but nice) */
-.event-scroll::-webkit-scrollbar {
-    height: 6px;
-}
+.event-scroll::-webkit-scrollbar { height:4px; }
+.event-scroll::-webkit-scrollbar-track { background:rgba(184,117,26,.06); border-radius:4px; }
 .event-scroll::-webkit-scrollbar-thumb {
-    background: #bbb;
-    border-radius: 10px;
+    background:linear-gradient(90deg, var(--amber-pale), var(--amber));
+    border-radius:4px;
 }
 
-/* THUMBNAILS */
 .event-scroll img {
-    min-width: 180px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-    flex-shrink: 0;
-    cursor: pointer;
+    min-width:195px; height:132px; object-fit:cover;
+    border-radius:12px; flex-shrink:0; cursor:pointer;
+    border:1.5px solid rgba(184,117,26,.14);
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1),
+               box-shadow .3s, border-color .3s;
+    box-shadow:0 4px 16px rgba(0,0,0,.07);
+}
+.event-scroll img:hover {
+    transform:scale(1.07) translateY(-4px);
+    box-shadow:0 14px 40px rgba(184,117,26,.24);
+    border-color:rgba(184,117,26,.45);
+}
+
+/* ══════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════ */
+.empty-state {
+    text-align:center; padding:90px 40px;
+    border-radius:24px;
+    background:linear-gradient(135deg, rgba(245,232,200,.5), rgba(253,248,242,.8));
+    border:1px solid rgba(184,117,26,.18);
+    box-shadow:0 8px 40px rgba(184,117,26,.08);
+}
+.empty-icon {
+    font-size:52px; display:block; margin-bottom:20px;
+    animation:calFloat 3s ease-in-out infinite;
+}
+.empty-state p {
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:20px; color:var(--ink-soft); letter-spacing:1px;
+}
+
+/* mobile */
+@media(max-width:768px){
+    .events-hero    { padding:56px 28px 50px; }
+    .event-card-body { padding:26px 22px 26px 30px; }
+    .ev-img-rule    { margin:0 22px 0 30px; }
+    .ev-scroll-wrap { padding:14px 22px 22px 30px; }
+    .event-scroll img { min-width:155px; height:105px; }
 }
 </style>
 
-<h1>📅 Events</h1>
 
+<!-- ══ HERO ══ -->
+<div class="events-hero">
+    <div class="eh-pat"></div>
+    <div class="eh-glow"></div>
+    <div class="eh-wm">📅</div>
+    <div class="brk-tl"></div>
+    <div class="brk-tr"></div>
+    <div class="brk-bl"></div>
+    <div class="brk-br"></div>
+
+    <div class="page-eyebrow">Celebrations · Milestones · Memories</div>
+    <h1 class="events-page-title">Events</h1>
+    <p class="events-page-sub">Socio-Cultural Programmes</p>
+
+    <div class="hero-orn">
+        <div class="hero-orn-l"></div>
+        <div class="hero-orn-c"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
+        <div class="hero-orn-l"></div>
+    </div>
+</div>
+
+
+<!-- ══ EVENT CARDS ══ -->
 {% for e in events %}
-<div class="event-card">
+<div class="event-card reveal">
 
-    <h3>{{ e[1] }}</h3>
-    <small>{{ e[2] }}</small>
-    <p>{{ e[3] }}</p>
+    <div class="event-card-body">
+        <h3>{{ e[1] }}</h3>
+        <small>{{ e[2] }}</small>
+        <p>{{ e[3] }}</p>
+    </div>
 
     {% if e[4] %}
         {% set images = e[4].split(",") %}
 
-        <!-- Main Image -->
-        <img src="/{{ images[0] }}" class="event-main-img">
+        <div class="ev-img-rule"></div>
+        <div class="ev-main-wrap">
+            <img src="/{{ images[0] }}" class="event-main-img">
+        </div>
 
-        <!-- Scrollable Images -->
         {% if images|length > 1 %}
-       <div class="event-scroll">
-    {% for img in images[1:] %}
-        <img src="/{{ img }}">
-    {% endfor %}
-</div>
-
+        <div class="ev-scroll-wrap">
+            <div class="ev-scroll-hd">More Photos</div>
+            <div class="event-scroll">
+                {% for img in images[1:] %}
+                    <img src="/{{ img }}">
+                {% endfor %}
+            </div>
+        </div>
         {% endif %}
+
     {% endif %}
 
 </div>
 {% else %}
-<p>No events added yet.</p>
+<div class="empty-state reveal">
+    <span class="empty-icon">📅</span>
+    <p>No events added yet.</p>
+</div>
 {% endfor %}
+
+
+<script>
+(function(){
+    const els=document.querySelectorAll('.reveal');
+    const io=new IntersectionObserver((entries)=>{
+        entries.forEach((e,i)=>{
+            if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*100); io.unobserve(e.target); }
+        });
+    },{threshold:.06});
+    els.forEach(el=>io.observe(el));
+})();
+</script>
 
 {% endblock %}

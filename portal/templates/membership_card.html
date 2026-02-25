@@ -4,289 +4,595 @@
     <title>Digital Membership Card</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        @keyframes shimmer    { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+        @keyframes spinRing   { to{transform:rotate(360deg)} }
+        @keyframes pulseGlow  { from{opacity:.6;transform:scale(1)} to{opacity:1;transform:scale(1.06)} }
+        @keyframes cardIn     { from{opacity:0;transform:translateY(32px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes starFloat  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        @keyframes scanline   { 0%{top:-10%} 100%{top:110%} }
+        @keyframes borderGlow { 0%,100%{opacity:.6} 50%{opacity:1} }
 
         body {
-            background: linear-gradient(to bottom, #eef2f7, #f9fafc);
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            padding: 30px 15px;
-            color: #222;
-        }
-
-        /* CARD */
-        .id-card {
-            max-width: 390px;
-            margin: auto;
             background:
-                linear-gradient(135deg, #0d47a1, #1565c0);
-            color: white;
-            border-radius: 22px;
-            padding: 22px 22px 26px;
-            box-shadow: 0 18px 45px rgba(0,0,0,0.4);
+                radial-gradient(ellipse 90% 60% at 20% 20%, rgba(30,20,5,.95) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 80% at 80% 80%, rgba(15,30,25,.95) 0%, transparent 60%),
+                #080604;
+            font-family: 'Raleway', sans-serif;
+            min-height: 100vh;
+            padding: 50px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
-        /* subtle pattern overlay */
-        .id-card::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(255,255,255,0.15),
-                    transparent 45%
-                );
+        /* ── background particles ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(184,117,26,.12) 1px, transparent 0);
+            background-size: 40px 40px;
             pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                radial-gradient(ellipse 50% 40% at 10% 30%, rgba(184,117,26,.06) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 50% at 90% 70%, rgba(42,122,114,.05) 0%, transparent 55%);
+            pointer-events: none; z-index: 0;
         }
 
-        /* HEADER */
+        /* ══════════════════════
+           OUTER FRAME / STAGE
+        ══════════════════════ */
+        .card-stage {
+            position: relative; z-index: 10;
+            animation: cardIn .9s cubic-bezier(.16,1,.3,1) both .1s;
+        }
+
+        /* large decorative ring behind card */
+        .card-stage::before {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 520px; height: 520px;
+            border-radius: 50%;
+            border: 1px solid rgba(184,117,26,.08);
+            animation: spinRing 40s linear infinite;
+        }
+        .card-stage::after {
+            content: '';
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 480px; height: 480px;
+            border-radius: 50%;
+            border: 1px dashed rgba(184,117,26,.06);
+            animation: spinRing 28s linear infinite reverse;
+        }
+
+        /* ══════════════════════
+           THE CARD
+        ══════════════════════ */
+        .id-card {
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            background:
+                linear-gradient(160deg,
+                    #1c1409 0%,
+                    #0e1a17 35%,
+                    #120e06 60%,
+                    #0a1510 100%);
+            box-shadow:
+                0 0 0 1px rgba(184,117,26,.35),
+                0 0 0 2px rgba(184,117,26,.08),
+                0 40px 100px rgba(0,0,0,.9),
+                0 8px 40px rgba(0,0,0,.7),
+                inset 0 1px 0 rgba(232,192,122,.15),
+                inset 0 -1px 0 rgba(184,117,26,.08);
+        }
+
+        /* animated shimmer border */
+        .id-card::before {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 28px;
+            padding: 1.5px;
+            background: linear-gradient(135deg,
+                rgba(184,117,26,.7) 0%,
+                rgba(232,192,122,.9) 20%,
+                rgba(184,117,26,.3) 40%,
+                rgba(42,122,114,.4) 55%,
+                rgba(184,117,26,.3) 70%,
+                rgba(232,192,122,.9) 85%,
+                rgba(184,117,26,.7) 100%);
+            background-size: 300% 300%;
+            animation: shimmer 6s linear infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            pointer-events: none; z-index: 10;
+        }
+
+        /* subtle scanline sweep */
+        .id-card::after {
+            content: '';
+            position: absolute; left: 0; right: 0; height: 80px;
+            background: linear-gradient(transparent, rgba(232,192,122,.04), transparent);
+            animation: scanline 7s linear infinite;
+            pointer-events: none; z-index: 3;
+        }
+
+        /* inner content padding wrapper */
+        .card-inner {
+            position: relative; z-index: 5;
+            padding: 28px 28px 30px;
+        }
+
+        /* ── top shimmer bar ── */
+        .card-shimmer-bar {
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(184,117,26,.4) 20%,
+                rgba(232,192,122,.95) 50%,
+                rgba(184,117,26,.4) 80%,
+                transparent);
+            background-size: 300% 100%;
+            animation: shimmer 4s linear infinite;
+            border-radius: 28px 28px 0 0;
+        }
+
+        /* ── corner ornaments ── */
+        .corner { position: absolute; width: 32px; height: 32px; z-index: 6; }
+        .corner-tl { top: 14px; left: 14px; border-top: 1.5px solid rgba(232,192,122,.6); border-left: 1.5px solid rgba(232,192,122,.6); }
+        .corner-tr { top: 14px; right: 14px; border-top: 1.5px solid rgba(232,192,122,.6); border-right: 1.5px solid rgba(232,192,122,.6); }
+        .corner-bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid rgba(232,192,122,.4); border-left: 1.5px solid rgba(232,192,122,.4); }
+        .corner-br { bottom: 14px; right: 14px; border-bottom: 1.5px solid rgba(232,192,122,.4); border-right: 1.5px solid rgba(232,192,122,.4); }
+
+        /* ══════════════════════
+           HEADER
+        ══════════════════════ */
         .card-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 2;
+            margin-bottom: 22px;
+            gap: 10px;
         }
 
         .card-logo {
-            width: 44px;
-            height: 44px;
+            width: 46px; height: 46px;
             object-fit: contain;
-            background: white;
             border-radius: 50%;
-            padding: 4px;
+            border: 1.5px solid rgba(232,192,122,.45);
+            box-shadow:
+                0 0 18px rgba(184,117,26,.3),
+                inset 0 1px 0 rgba(255,255,255,.1);
+            background: rgba(232,192,122,.07);
+            padding: 3px;
+            flex-shrink: 0;
         }
 
         .card-title {
-            text-align: center;
-            flex: 1;
+            text-align: center; flex: 1;
         }
 
         .card-title h3 {
-            margin: 0;
-            font-size: 16.5px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
+            font-family: 'Cinzel', serif;
+            font-size: 14.5px; font-weight: 700;
+            letter-spacing: 3.5px;
+            background: linear-gradient(135deg, #c9981a, #f0d88a, #c9981a);
+            background-size: 200% 200%;
+            animation: shimmer 4s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
         }
 
         .card-title p {
-            margin: 2px 0 0;
-            font-size: 12px;
-            opacity: 0.9;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic; font-size: 11.5px;
+            color: rgba(232,192,122,.6); letter-spacing: 1.5px;
         }
 
-        /* PHOTO */
+        /* ── diamond divider ── */
+        .card-divider {
+            display: flex; align-items: center; gap: 10px;
+            margin: 4px 0 22px;
+        }
+        .card-divider-line {
+            flex: 1; height: 1px;
+        }
+        .card-divider-line:first-child { background: linear-gradient(90deg, transparent, rgba(184,117,26,.5)); }
+        .card-divider-line:last-child  { background: linear-gradient(90deg, rgba(184,117,26,.5), transparent); }
+        .card-divider-gem {
+            color: rgba(232,192,122,.7); font-size: 8px;
+            display: flex; gap: 5px;
+        }
+
+        /* ══════════════════════
+           PHOTO
+        ══════════════════════ */
+        .photo-ring-wrap {
+            position: relative;
+            width: 120px; height: 120px;
+            margin: 0 auto 18px;
+        }
+
+        /* spinning outer ring */
+        .photo-ring-outer {
+            position: absolute; inset: -10px;
+            border-radius: 50%;
+            border: 1px solid rgba(184,117,26,.3);
+            animation: spinRing 18s linear infinite;
+        }
+        .photo-ring-outer::before {
+            content: '◆ ◆ ◆ ◆';
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5px; letter-spacing: 24px;
+            color: rgba(232,192,122,.4);
+            white-space: nowrap;
+            animation: spinRing 18s linear infinite reverse;
+        }
+
+        /* mid ring */
+        .photo-ring-mid {
+            position: absolute; inset: -4px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(184,117,26,.5);
+            box-shadow: 0 0 20px rgba(184,117,26,.15);
+        }
+
         .id-photo {
-            width: 100px;
-            height: 100px;
+            width: 120px; height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #ffffff;
             display: block;
-            margin: 18px auto 10px;
-            background: #fff;
-            position: relative;
-            z-index: 2;
+            border: 3px solid rgba(232,192,122,.5);
+            box-shadow:
+                0 0 30px rgba(184,117,26,.25),
+                inset 0 2px 0 rgba(255,255,255,.1);
+            background: rgba(20,12,4,.8);
+            position: relative; z-index: 2;
         }
 
-        /* NAME */
+        /* ══════════════════════
+           NAME
+        ══════════════════════ */
         .member-name {
             text-align: center;
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 14px;
-            letter-spacing: 0.3px;
-            position: relative;
-            z-index: 2;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px; font-weight: 600;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #c9981a, #f0d88a, #e8c07a, #c9981a);
+            background-size: 200% 200%;
+            animation: shimmer 5s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
         }
 
-        /* DETAILS */
+        /* ── diamond tier badge ── */
+        .tier-badge {
+            text-align: center; margin-bottom: 20px;
+        }
+        .tier-badge span {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(42,162,154,.9);
+            padding: 4px 14px; border-radius: 20px;
+            border: 1px solid rgba(42,122,114,.45);
+            background: rgba(42,122,114,.1);
+            animation: pulseGlow 3s ease-in-out infinite alternate;
+        }
+        .tier-badge span::before, .tier-badge span::after { content: '◆'; font-size: 6px; }
+
+        /* ══════════════════════
+           DETAILS
+        ══════════════════════ */
         .details {
-            font-size: 14px;
-            position: relative;
-            z-index: 2;
+            font-size: 13px; position: relative;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            margin: 7px 0;
+            align-items: center;
+            margin: 0;
             gap: 10px;
+            padding: 9px 14px;
+            border-radius: 8px;
+            transition: background .3s;
+            border-bottom: 1px solid rgba(184,117,26,.08);
+        }
+        .detail-row:last-of-type { border-bottom: none; }
+        .detail-row:hover { background: rgba(184,117,26,.06); }
+
+        .detail-label {
+            font-family: 'Cinzel', serif; font-size: 7.5px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(184,117,26,.65);
+            white-space: nowrap; flex-shrink: 0;
         }
 
-        .detail-row span {
-            opacity: 0.95;
+        .detail-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px; font-weight: 600;
+            color: rgba(247,240,230,.88);
+            text-align: right; letter-spacing: .3px;
         }
 
-        .detail-row span:last-child {
-            font-weight: 600;
-            text-align: right;
-        }
-
-        /* ADDRESS */
+        /* address */
         .address {
-            margin-top: 10px;
-            font-size: 13.5px;
-            line-height: 1.45;
-            opacity: 0.95;
+            margin-top: 8px; padding: 11px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(184,117,26,.1);
+            background: rgba(184,117,26,.04);
+        }
+        .address .detail-label { display: block; margin-bottom: 5px; }
+        .address .detail-value {
+            text-align: left; font-size: 13.5px;
+            line-height: 1.6; color: rgba(232,212,180,.75);
         }
 
-        /* STATUS */
+        /* ══════════════════════
+           STATUS
+        ══════════════════════ */
         .status {
-            margin-top: 14px;
-            text-align: center;
-            font-weight: 700;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 14px;
+            margin-top: 20px; text-align: center;
+            font-family: 'Cinzel', serif; font-size: 9.5px;
+            font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+            padding: 12px 18px; border-radius: 10px;
         }
 
         .active {
-            background: rgba(200,230,201,0.2);
-            color: #c8e6c9;
+            background: rgba(42,122,114,.12);
+            border: 1px solid rgba(42,122,114,.45);
+            color: rgba(100,220,200,.9);
+            box-shadow: 0 0 20px rgba(42,122,114,.15), inset 0 1px 0 rgba(100,220,200,.08);
+            animation: borderGlow 3s ease-in-out infinite;
         }
 
         .expired {
-            background: rgba(255,205,210,0.2);
-            color: #ffcdd2;
+            background: rgba(180,40,40,.1);
+            border: 1px solid rgba(180,40,40,.4);
+            color: rgba(255,140,140,.85);
+            box-shadow: 0 0 20px rgba(180,40,40,.12);
         }
 
-        /* FOOTER */
+        /* ══════════════════════
+           FOOTER
+        ══════════════════════ */
         .card-footer {
-            margin-top: 16px;
+            margin-top: 20px; padding-top: 16px;
+            border-top: 1px solid rgba(184,117,26,.12);
             text-align: center;
-            font-size: 12px;
-            opacity: 0.85;
-            position: relative;
-            z-index: 2;
+        }
+        .card-footer-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic; font-size: 11.5px;
+            color: rgba(184,117,26,.45); letter-spacing: 1px;
+        }
+        .card-footer-dots {
+            display: flex; justify-content: center; gap: 7px; margin-top: 10px;
+        }
+        .card-footer-dot {
+            width: 4px; height: 4px; border-radius: 50%;
+            background: rgba(184,117,26,.25);
+        }
+        .card-footer-dot:nth-child(2) {
+            width: 6px; height: 6px;
+            background: rgba(184,117,26,.45);
         }
 
-        /* PRINT */
+        /* ══════════════════════
+           BUTTONS
+        ══════════════════════ */
+        .action-row {
+            display: flex; gap: 14px; margin-top: 32px;
+            justify-content: center; flex-wrap: wrap;
+            position: relative; z-index: 10;
+        }
+
         .print-btn {
-            background: #0d47a1;
-            color: white;
-            padding: 11px 20px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(13,71,161,0.35);
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 30px;
+            font-family: 'Cinzel', serif; font-size: 9.5px;
+            letter-spacing: 2.5px; text-transform: uppercase;
+            font-weight: 600; cursor: pointer;
+            border: none; border-radius: 6px;
+            background: linear-gradient(135deg, #b8751a, #d4891f, #c0622a);
+            background-size: 200% 200%;
+            animation: shimmer 4s linear infinite;
+            color: rgba(253,248,242,.95);
+            box-shadow:
+                0 6px 28px rgba(184,117,26,.45),
+                inset 0 1px 0 rgba(255,255,255,.2);
+            position: relative; overflow: hidden;
+            transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
+        }
+        .print-btn::after {
+            content: '';
+            position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+            transform: skewX(-20deg);
+            transition: left .5s;
+        }
+        .print-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(184,117,26,.6), inset 0 1px 0 rgba(255,255,255,.2); }
+        .print-btn:hover::after { left: 150%; }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 26px; border-radius: 6px;
+            font-family: 'Cinzel', serif; font-size: 9px;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(184,117,26,.7);
+            text-decoration: none;
+            border: 1px solid rgba(184,117,26,.3);
+            background: rgba(184,117,26,.05);
+            transition: all .3s;
+        }
+        .back-link:hover {
+            border-color: rgba(184,117,26,.6);
+            color: rgba(232,192,122,.9);
+            background: rgba(184,117,26,.1);
         }
 
-        .print-btn:hover {
-            background: #08306b;
-        }
-
+        /* ══════════════════════
+           PRINT
+        ══════════════════════ */
         @media print {
-            body {
-                background: white;
-                padding: 0;
+            body { background: white; padding: 0; }
+            body::before, body::after { display: none; }
+            .card-stage::before, .card-stage::after { display: none; }
+            .print-btn, .action-row, .back-link { display: none !important; }
+            .id-card {
+                box-shadow: none;
+                border: 1.5px solid #c9981a;
+                background: #fff !important;
+                color: #1a1208 !important;
             }
+            .id-card::before, .id-card::after { display: none; }
+            .card-shimmer-bar { display: none; }
+            .card-title h3, .member-name { -webkit-text-fill-color: #b8751a !important; }
+            .detail-value { color: #1a1208 !important; }
+            .detail-label { color: #6b5540 !important; }
+            .address .detail-value { color: #6b5540 !important; }
+        }
 
-            .print-btn, a {
-                display: none !important;
-            }
+        /* ══════════════════════
+           MOBILE
+        ══════════════════════ */
+        @media (max-width: 500px) {
+            body { padding: 30px 12px 50px; }
+            .card-stage::before, .card-stage::after { display: none; }
         }
     </style>
 </head>
 
 <body>
 
+<div class="card-stage">
 <div class="id-card">
+    <!-- animated shimmer top bar -->
+    <div class="card-shimmer-bar"></div>
 
-    <!-- HEADER -->
-    <div class="card-header">
-        <img src="{{ url_for('static', filename='aasc_logo.jpeg') }}"
-             class="card-logo">
+    <!-- corner ornaments -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
 
-        <div class="card-title">
-            <h3>AASC ALAMPADY</h3>
-            <p>Alampady Arts & Sports Club</p>
+    <div class="card-inner">
+
+        <!-- HEADER -->
+        <div class="card-header">
+            <img src="{{ url_for('static', filename='aasc_logo.jpeg') }}" class="card-logo">
+
+            <div class="card-title">
+                <h3>AASC ALAMPADY</h3>
+                <p>Alampady Arts &amp; Sports Club</p>
+            </div>
+
+            <img src="{{ url_for('static', filename='gcc.jpeg') }}" class="card-logo">
         </div>
 
-        <img src="{{ url_for('static', filename='gcc.jpeg') }}"
-             class="card-logo">
-    </div>
-
-    <!-- PHOTO -->
-    <img
-        src="{{ url_for('static',
-                filename=user.photo if user.photo else 'default_avatar.png') }}"
-        class="id-photo"
-    >
-
-    <!-- NAME -->
-    <div class="member-name">
-        {{ user.name }}
-    </div>
-
-    <!-- DETAILS -->
-    <div class="details">
-
-        <div class="detail-row">
-            <span>Membership ID</span>
-            <span>{{ user.membership_id }}</span>
+        <!-- DIVIDER -->
+        <div class="card-divider">
+            <div class="card-divider-line"></div>
+            <div class="card-divider-gem"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
+            <div class="card-divider-line"></div>
         </div>
 
-        <div class="detail-row">
-            <span>Mobile</span>
-            <span>{{ user.phone }}</span>
+        <!-- PHOTO -->
+        <div class="photo-ring-wrap">
+            <div class="photo-ring-outer"></div>
+            <div class="photo-ring-mid"></div>
+            <img src="{{ url_for('static', filename=user.photo if user.photo else 'default_avatar.png') }}" class="id-photo">
         </div>
 
-        <div class="detail-row">
-            <span>Blood Group</span>
-            <span>{{ user.blood_group or '-' }}</span>
+        <!-- NAME -->
+        <div class="member-name">{{ user.name }}</div>
+
+        <!-- TIER BADGE -->
+        <div class="tier-badge">
+            <span>Premium Member</span>
         </div>
 
-        <div class="detail-row">
-            <span>Validity</span>
-            <span>
-                {{ user.membership_start }} → {{ user.membership_end }}
-            </span>
+        <!-- DETAILS -->
+        <div class="details">
+
+            <div class="detail-row">
+                <span class="detail-label">Membership ID</span>
+                <span class="detail-value">{{ user.membership_id }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Mobile</span>
+                <span class="detail-value">{{ user.phone }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Blood Group</span>
+                <span class="detail-value">{{ user.blood_group or '-' }}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Validity</span>
+                <span class="detail-value">{{ user.membership_start }} → {{ user.membership_end }}</span>
+            </div>
+
+            <div class="address">
+                <span class="detail-label">Address</span>
+                <div class="detail-value">{{ user.address or '-' }}</div>
+            </div>
+
         </div>
 
-        <div class="address">
-            <b>Address:</b><br>
-            {{ user.address or '-' }}
+        <!-- STATUS -->
+        {% if expired %}
+            <div class="status expired">❌ &nbsp; Membership Expired</div>
+        {% else %}
+            <div class="status active">✦ &nbsp; Active Member &nbsp; ✦</div>
+        {% endif %}
+
+        <!-- FOOTER -->
+        <div class="card-footer">
+            <div class="card-footer-text">Digitally generated membership card • AASC</div>
+            <div class="card-footer-dots">
+                <div class="card-footer-dot"></div>
+                <div class="card-footer-dot"></div>
+                <div class="card-footer-dot"></div>
+            </div>
         </div>
 
-    </div>
+    </div><!-- /card-inner -->
+</div><!-- /id-card -->
+</div><!-- /card-stage -->
 
-    <!-- STATUS -->
-    {% if expired %}
-        <div class="status expired">
-            ❌ Membership Expired
-        </div>
-    {% else %}
-        <div class="status active">
-            ✅ Active Member
-        </div>
-    {% endif %}
-
-    <!-- FOOTER -->
-    <div class="card-footer">
-        Digitally generated membership card • AASC
-    </div>
-
-</div>
-
-<br>
-
-<!-- PRINT BUTTON -->
-<div style="text-align:center; margin-top:20px;">
+<!-- ACTIONS -->
+<div class="action-row">
     <button onclick="window.print()" class="print-btn">
-        🖨️ Print Membership Card
+        🖨️ &nbsp; Print Card
     </button>
-</div>
-
-<!-- BACK BUTTON -->
-<div style="text-align:center; margin-top:10px;">
-    <a href="{{ url_for('portal.dashboard') }}">
-        ← Back to Dashboard
+    <a href="{{ url_for('portal.dashboard') }}" class="back-link">
+        ← &nbsp; Dashboard
     </a>
 </div>
 

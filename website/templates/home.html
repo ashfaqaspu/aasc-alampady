@@ -75,17 +75,50 @@
     pointer-events: none;
 }
 
-/* ── hero inner layout: two columns ── */
+/* ── hero inner layout: three columns ── */
 .hero-layout {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 260px 1fr 340px;
     gap: 0;
     min-height: 480px;
 }
 
+/* ── left image panel (cc.jpeg) ── */
+.hero-img-left {
+    position: relative; overflow: hidden;
+    border-right: 1px solid rgba(184,117,26,0.15);
+}
+.hero-img-left img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform .8s ease;
+    filter: brightness(.96) saturate(.9);
+}
+.hero-img-left::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg,
+        rgba(26,18,8,.12) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(247,240,230,.25) 100%);
+    pointer-events: none;
+}
+.hero-img-left:hover img { transform: scale(1.04); }
+
+/* label over left image */
+.hero-img-left-label {
+    position: absolute; bottom: 20px; left: 0; right: 0;
+    text-align: center; z-index: 2;
+    font-family: 'Cinzel', serif; font-size: 7.5px;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(253,248,242,.8);
+    text-shadow: 0 1px 6px rgba(26,18,8,.4);
+}
+
 /* left text col */
 .hero-text {
-    padding: 72px 60px 72px 72px;
+    padding: 72px 50px 72px 56px;
     display: flex; flex-direction: column;
     justify-content: center; gap: 0;
     position: relative; z-index: 1;
@@ -150,14 +183,60 @@
 .hero-badge::before { content: '◆'; font-size: 8px; }
 .hero-badge::after  { content: '◆'; font-size: 8px; }
 
-/* right decorative col */
+/* right decorative col — gcc image + stats */
 .hero-deco-col {
     position: relative; overflow: hidden;
     border-left: 1px solid rgba(184,117,26,0.15);
-    background: linear-gradient(180deg, rgba(232,192,122,0.2) 0%, rgba(42,122,114,0.08) 100%);
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 28px;
-    padding: 40px 28px;
+    align-items: center; justify-content: flex-end; gap: 0;
+    padding: 0;
+}
+
+/* gcc image fills top portion */
+.hero-img-right {
+    width: 100%; flex: 1; overflow: hidden; position: relative;
+    min-height: 200px;
+}
+.hero-img-right img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform .8s ease;
+    filter: brightness(.96) saturate(.9);
+}
+.hero-img-right::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+        transparent 50%,
+        rgba(247,240,230,.55) 100%);
+    pointer-events: none; z-index: 1;
+}
+.hero-img-right::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg,
+        rgba(247,240,230,.2) 0%,
+        transparent 40%);
+    pointer-events: none; z-index: 1;
+}
+.hero-deco-col:hover .hero-img-right img { transform: scale(1.04); }
+
+/* label over right image */
+.hero-img-right-label {
+    position: absolute; bottom: 10px; left: 0; right: 0;
+    text-align: center; z-index: 2;
+    font-family: 'Cinzel', serif; font-size: 7.5px;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(253,248,242,.8);
+    text-shadow: 0 1px 6px rgba(26,18,8,.4);
+}
+
+/* stats section below gcc image */
+.hero-stats-wrap {
+    width: 100%;
+    background: linear-gradient(180deg, rgba(232,192,122,0.15) 0%, rgba(42,122,114,0.06) 100%);
+    padding: 16px 20px 20px;
+    display: flex; flex-direction: column; gap: 10px;
 }
 
 /* large ornament circle */
@@ -378,6 +457,7 @@
 @media(max-width:900px){
     .hero-layout { grid-template-columns:1fr; }
     .hero-deco-col { display:none; }
+    .hero-img-left { display:none; }
     .hero-text { padding:56px 28px; }
     .about-card { padding:40px 28px; }
     .building-milestone { padding:50px 28px; }
@@ -392,7 +472,13 @@
     <div class="hero-bracket-br"></div>
 
     <div class="hero-layout">
-        <!-- LEFT: text -->
+        <!-- LEFT: cc.jpeg image panel -->
+        <div class="hero-img-left">
+            <img src="{{ url_for('static', filename='images/cc.jpeg') }}" alt="Central Committee">
+            <div class="hero-img-left-label">Central Committee</div>
+        </div>
+
+        <!-- MIDDLE: text -->
         <div class="hero-text">
             <div class="hero-eyebrow">Est. 1991 &nbsp;·&nbsp; Alampady, Kerala</div>
 
@@ -417,16 +503,13 @@
             <div class="hero-badge">Reg No. 255/91 &nbsp;·&nbsp; NYK.012 &nbsp;·&nbsp; Govt. of India</div>
         </div>
 
-        <!-- RIGHT: decorative -->
+        <!-- RIGHT: gcc.jpeg + stats -->
         <div class="hero-deco-col">
-            <div class="hero-orb">
-                <div class="orb-r"></div>
-                <div class="orb-r"></div>
-                <div class="orb-r"></div>
-                <div class="orb-r"></div>
-                <div class="orb-core">✦</div>
+            <div class="hero-img-right">
+                <img src="{{ url_for('static', filename='images/gcc.jpeg') }}" alt="GCC Committee">
+                <div class="hero-img-right-label">GCC Committee</div>
             </div>
-            <div class="hero-stats">
+            <div class="hero-stats-wrap">
                 <div class="stat-chip">
                     <span class="stat-icon">👥</span>
                     <div>

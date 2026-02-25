@@ -59,3 +59,4 @@ def committee():
 @website_bp.route("/contact")
 def contact():
     return render_template("contact.html")
+
