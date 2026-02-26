@@ -749,7 +749,7 @@ def committee_attendance_summary(cid):
     ).group_by(User.id).all()
 
     return render_template(
-        "attendance_summary.html",
+        "attendance_result.html",
         data=data,
         cid=cid
     )
@@ -1199,19 +1199,17 @@ def admin_receipts():
 
 @portal_bp.route("/admin/events", methods=["GET", "POST"])
 def admin_events():
+
     if not is_admin():
         return "Access Denied", 403
 
     if request.method == "POST":
 
-        event = Event(
+        event = PortalEvent(
             title=request.form["title"],
             description=request.form["description"],
-            event_date=datetime.strptime(
-                request.form["event_date"], "%Y-%m-%d"
-            ).date(),
-            location=request.form["location"],
-            created_at=date.today()
+            event_date=request.form["event_date"],
+            created_at=datetime.utcnow()
         )
 
         db.session.add(event)
@@ -1219,36 +1217,39 @@ def admin_events():
 
         return redirect(url_for("portal.admin_events"))
 
-    events = Event.query.order_by(Event.event_date.desc()).all()
+    events = PortalEvent.query.order_by(
+        PortalEvent.created_at.desc()
+    ).all()
 
-    return render_template("admin_events.html", events=events)
-
-
+    return render_template(
+        "admin_events.html",
+        events=events
+    )
 
 @portal_bp.route("/admin/events/<int:event_id>/participants")
 def event_participants(event_id):
+
     if not is_admin():
         return "Access Denied", 403
+
+    event = PortalEvent.query.get_or_404(event_id)
 
     participants = db.session.query(
         User.name,
         User.phone,
         User.membership_id
     ).join(
-        EventParticipant,
-        EventParticipant.user_id == User.id
+        PortalEventParticipant,
+        PortalEventParticipant.user_id == User.id
     ).filter(
-        EventParticipant.event_id == event_id
+        PortalEventParticipant.portal_event_id == event_id
     ).all()
-
-    event = Event.query.get_or_404(event_id)
 
     return render_template(
         "admin_event_participants.html",
         participants=participants,
         event=event
     )
-
 
 
 @portal_bp.route("/admin/analytics")

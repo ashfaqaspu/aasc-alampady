@@ -68,11 +68,11 @@
             </tr>
         </thead>
         <tbody>
-            {% if data %}
-                {% for d in data %}
+            {% if data and data|length > 0 %}
+                {% for name, minutes in data %}
                 <tr>
-                    <td>{{ d[0] }}</td>
-                    <td>{{ d[1] }}</td>
+                    <td>{{ name }}</td>
+                    <td>{{ minutes or 0 }}</td>
                 </tr>
                 {% endfor %}
             {% else %}

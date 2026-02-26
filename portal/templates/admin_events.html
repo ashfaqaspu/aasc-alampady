@@ -178,14 +178,13 @@
 
 <!-- EVENT LIST -->
 <div class="card">
-    <h3>All Events</h3>
+    <h3>All Portal Events</h3>
 
     <table>
         <tr>
             <th>#</th>
             <th>Title</th>
             <th>Date</th>
-            <th>Location</th>
             <th>Participants</th>
             <th>Action</th>
         </tr>
@@ -193,19 +192,21 @@
         {% for e in events %}
         <tr>
             <td>{{ loop.index }}</td>
-            <td>{{ e[1] }}</td>
-            <td>{{ e[3] }}</td>
-            <td>{{ e[4] }}</td>
+            <td>{{ e.title }}</td>
+            <td>{{ e.event_date }}</td>
             <td>
-                @portal_bp.route("/admin/events/<int:event_id>/participants")
-                    def event_participants(event_id):
+                {{ e.participants|length if e.participants else 0 }}
             </td>
             <td>
-                
+                <a href="{{ url_for('portal.event_participants', event_id=e.id) }}">
+                    View Participants
+                </a>
             </td>
         </tr>
         {% else %}
-        <tr><td colspan="6">No events created</td></tr>
+        <tr>
+            <td colspan="5">No portal events created</td>
+        </tr>
         {% endfor %}
     </table>
 </div>
@@ -213,6 +214,3 @@
 <a href="{{ url_for('portal.dashboard') }}" class="back">
     ← Back to Dashboard
 </a>
-
-</body>
-</html>
