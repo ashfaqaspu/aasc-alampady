@@ -15,7 +15,7 @@ from . import admin_bp
 # ===================================================
 
 def admin_logged_in():
-    return session.get("admin_logged_in")
+    return session.get("admin_id")
 # ===================================================
 # ADMIN LOGIN
 # ===================================================
