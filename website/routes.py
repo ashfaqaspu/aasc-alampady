@@ -15,6 +15,7 @@ def public_events():
     ).all()
 
     return render_template("events.html", events=events)
+
 @website_bp.route("/sports")
 def public_sports():
     sports = Sport.query.order_by(
