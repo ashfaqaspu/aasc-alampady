@@ -818,7 +818,7 @@ def create_committee():
         db.session.add(cm)
         db.session.commit()
 
-        return redirect("/dashboard")
+        return redirect(url_for("portal.dashboard"))
 
     return render_template("create_committee.html")
 
@@ -907,14 +907,14 @@ def start_meeting(meeting_id):
         return "Meeting not found"
 
     if meeting.status != "SCHEDULED":
-        return redirect(url_for("committee_dashboard"))
+        return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
     meeting.actual_start = datetime.utcnow()
     meeting.status = "ONGOING"
 
     db.session.commit()
 
-    return redirect(url_for("committee_dashboard"))
+    return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
 @portal_bp.route("/admin/meeting/end/<int:meeting_id>")
 def end_meeting(meeting_id):
@@ -928,7 +928,7 @@ def end_meeting(meeting_id):
         return "Meeting not found"
 
     if meeting.status != "ONGOING":
-        return redirect(url_for("committee_dashboard", cid=meeting.committee_id))
+       return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
     meeting.actual_end = datetime.utcnow()
     meeting.status = "COMPLETED"
@@ -936,7 +936,7 @@ def end_meeting(meeting_id):
 
     db.session.commit()
 
-    return redirect(url_for("committee_dashboard", cid=meeting.committee_id))
+    return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
 
 @portal_bp.route("/committee/<int:cid>/create-meeting", methods=["GET", "POST"])
