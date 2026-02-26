@@ -118,6 +118,7 @@ class PortalEvent(db.Model):
         db.DateTime,
         default=datetime.utcnow
     )
+
 class PortalEvent(db.Model):
     __tablename__ = "portal_events"
 
@@ -128,8 +129,8 @@ class PortalEvent(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-    class PortalEventParticipant(db.Model):
-        __tablename__ = "portal_event_participants"
+class PortalEventParticipant(db.Model):   # ✅ NOT inside PortalEvent
+    __tablename__ = "portal_event_participants"
 
     id = db.Column(db.Integer, primary_key=True)
 
@@ -153,7 +154,6 @@ class PortalEvent(db.Model):
     __table_args__ = (
         db.UniqueConstraint("portal_event_id", "user_id"),
     )
-# ---------------- COMMITTEES ----------------
 
 # ---------------- MEDICAL ----------------
 
