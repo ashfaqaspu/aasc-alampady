@@ -879,7 +879,7 @@ def add_committee_member(cid):
             db.session.add(cm)
             db.session.commit()
 
-        return redirect(url_for("portal.committee_members", cid=cid))
+        return redirect(url_for("portal.committee_members_page", cid=cid))
 
     subquery = db.session.query(
         CommitteeMember.user_id
@@ -959,13 +959,13 @@ def create_meeting(cid):
         db.session.add(meeting)
         db.session.commit()
 
-        qr_url = f"http://127.0.0.1:5000/attendance/scan/{token}"
+        qr_url = url_for("portal.scan_attendance", token=token, _external=True)
         img = qrcode.make(qr_url)
 
         os.makedirs("static/qrcodes", exist_ok=True)
         img.save(f"static/qrcodes/meeting_{meeting.id}.png")
 
-        return redirect(f"/committee/{cid}")
+        return redirect(url_for("portal.committee_dashboard", cid=cid))
 
     return render_template("create_meeting.html", cid=cid)
 
