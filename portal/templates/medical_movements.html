@@ -1,7 +1,8 @@
-{% extends "base.html" %}
+{% extends "portal_base.html" %}
 {% block content %}
 
 <style>
+
 /* ===== PAGE BACKGROUND ===== */
 
 .movements-wrapper {
@@ -13,21 +14,24 @@
 /* ===== MAIN CARD ===== */
 
 .movements-card {
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(14px);
     border-radius: 22px;
     padding: 40px;
     box-shadow: 0 25px 60px rgba(0,0,0,0.08);
     border: 1px solid #e6edf5;
+    transition: 0.3s ease;
 }
 
-/* ===== HEADER SECTION ===== */
+/* ===== HEADER ===== */
 
 .header-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .movements-title {
@@ -48,6 +52,7 @@
     font-weight: 600;
     text-decoration: none;
     transition: 0.25s ease;
+    display: inline-block;
 }
 
 .back-btn:hover {
@@ -56,16 +61,25 @@
     transform: translateY(-2px);
 }
 
-/* ===== TABLE ===== */
+/* ===== TABLE WRAPPER (CRITICAL FOR MOBILE) ===== */
 
 .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
     border-radius: 16px;
-    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
+/* Force table to maintain proper structure */
 .table {
+    min-width: 950px;
     margin-bottom: 0;
+    background: white;
+    border-collapse: separate;
+    border-spacing: 0;
 }
+
+/* ===== TABLE HEAD ===== */
 
 .table thead {
     background: linear-gradient(135deg,#0d47a1,#1565c0);
@@ -77,12 +91,16 @@
     font-weight: 600;
     padding: 16px;
     letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
+/* ===== TABLE BODY ===== */
+
 .table td {
-    padding: 16px;
+    padding: 15px;
     font-size: 14px;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .table tbody tr {
@@ -96,10 +114,11 @@
 /* ===== STATUS BADGES ===== */
 
 .badge {
-    padding: 7px 12px;
+    padding: 6px 12px;
     font-size: 12px;
     border-radius: 20px;
     font-weight: 600;
+    display: inline-block;
 }
 
 .bg-danger {
@@ -127,8 +146,9 @@
     background: linear-gradient(135deg,#2e7d32,#43a047);
     color: white;
     border: none;
-    transition: 0.25s ease;
     text-decoration: none;
+    transition: 0.25s ease;
+    display: inline-block;
 }
 
 .return-btn:hover {
@@ -154,23 +174,47 @@
     opacity: 0.8;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ========================= */
+/* ===== RESPONSIVE ======== */
+/* ========================= */
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+
     .movements-card {
-        padding: 25px;
+        padding: 30px;
     }
 
     .movements-title {
-        font-size: 22px;
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .movements-wrapper {
+        padding: 40px 15px;
+    }
+
+    .movements-card {
+        padding: 22px;
+        border-radius: 18px;
+    }
+
+    .movements-title {
+        font-size: 20px;
     }
 
     .header-section {
         flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
+        align-items: stretch;
+    }
+
+    .back-btn {
+        width: 100%;
+        text-align: center;
     }
 }
+
 </style>
 
 <div class="movements-wrapper">

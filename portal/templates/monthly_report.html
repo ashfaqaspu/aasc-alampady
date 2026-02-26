@@ -1,11 +1,7 @@
-{% extends "base.html" %}
+{% extends "portal_base.html" %}
 {% block content %}
 
 <style>
-/* ================================
-   PREMIUM MONTHLY REPORT STYLING
-================================ */
-
 .report-wrapper {
   padding: 40px 20px;
 }
@@ -37,7 +33,7 @@
   margin-bottom: 30px;
 }
 
-/* Filter Card */
+/* Filter */
 .filter-card {
   max-width: 480px;
   margin: 0 auto 30px;
@@ -72,7 +68,7 @@
   background: #08306b;
 }
 
-/* Summary Section */
+/* Summary */
 .summary-grid {
   max-width: 950px;
   margin: 0 auto 30px;
@@ -90,7 +86,7 @@
   font-weight: 600;
 }
 
-/* Table Card */
+/* Table */
 .table-card {
   max-width: 950px;
   margin: auto;
@@ -126,7 +122,16 @@ tbody tr:hover td {
   background: #f4f8ff;
 }
 
-/* Empty State */
+/* Percentage Badge */
+.percent {
+  font-weight: 700;
+}
+
+.percent.high { color: #2e7d32; }
+.percent.medium { color: #f57c00; }
+.percent.low { color: #c62828; }
+
+/* Empty */
 .empty-state {
   text-align: center;
   padding: 25px;
@@ -134,7 +139,7 @@ tbody tr:hover td {
   font-weight: 500;
 }
 
-/* Print Friendly */
+/* Print */
 @media print {
   .top-nav, .filter-card {
     display: none;
@@ -161,15 +166,10 @@ tbody tr:hover td {
 
 <div class="report-wrapper">
 
-<!-- ===== TOP NAVIGATION ===== -->
+<!-- Top Nav -->
 <div class="top-nav">
-  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}">
-    🏠 Mini Dashboard
-  </a> |
-
-  <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">
-    👥 Members
-  </a>
+  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}">🏠 Mini Dashboard</a> |
+  <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">👥 Members</a>
 
   {% if month %}
     |
@@ -187,7 +187,6 @@ tbody tr:hover td {
   📅 Monthly Attendance Report
 </div>
 
-<!-- ===== FILTER ===== -->
 <form method="get" class="filter-card">
   <input type="month"
          name="month"
@@ -196,28 +195,29 @@ tbody tr:hover td {
   <button type="submit">View</button>
 </form>
 
-<!-- ===== SUMMARY ===== -->
-<div class="summary-grid">
+{% if month %}
 
+<!-- Summary -->
+<div class="summary-grid">
   <div class="summary-box">
     ⏱ Total Meeting Time:<br>
-    {{ total_meeting_time if total_meeting_time else "—" }} Minutes
+    {{ total_meeting_time }} Minutes
   </div>
 
   <div class="summary-box">
     👥 Total Attended Time:<br>
-    {{ total_attended_time if total_attended_time else "—" }} Minutes
+    {{ total_attended_time }} Minutes
   </div>
-
 </div>
 
-<!-- ===== TABLE ===== -->
+<!-- Table -->
 <div class="table-card">
   <table>
     <thead>
       <tr>
         <th>Name</th>
         <th>Total Minutes Attended</th>
+        <th>Attendance %</th>
       </tr>
     </thead>
 
@@ -227,11 +227,23 @@ tbody tr:hover td {
         <tr>
           <td>{{ d[0] }}</td>
           <td>{{ d[1] }}</td>
+
+          {% set percent = d[2] %}
+          <td>
+            {% if percent >= 75 %}
+              <span class="percent high">{{ percent }}%</span>
+            {% elif percent >= 40 %}
+              <span class="percent medium">{{ percent }}%</span>
+            {% else %}
+              <span class="percent low">{{ percent }}%</span>
+            {% endif %}
+          </td>
+
         </tr>
         {% endfor %}
       {% else %}
         <tr>
-          <td colspan="2" class="empty-state">
+          <td colspan="3" class="empty-state">
             No attendance data available for selected month
           </td>
         </tr>
@@ -239,6 +251,8 @@ tbody tr:hover td {
     </tbody>
   </table>
 </div>
+
+{% endif %}
 
 </div>
 

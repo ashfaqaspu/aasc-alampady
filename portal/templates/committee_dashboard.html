@@ -25,6 +25,7 @@
             margin-top: 30px;
             margin-bottom: 15px;
             font-size: 20px;
+            text-align: center;
         }
 
         .actions {
@@ -59,7 +60,7 @@
         .danger:hover { text-decoration: underline; }
 
         .meetings {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -97,7 +98,7 @@
         .status.completed { color: #616161; }
 
         .meeting-card img {
-            width: 140px;
+            width: 160px;
             border-radius: 10px;
             box-shadow: 0 6px 16px rgba(0,0,0,0.15);
             margin: 15px 0;
@@ -119,8 +120,13 @@
             background: #08306b;
         }
 
+        .admin-actions {
+            margin-top: 10px;
+        }
+
         .admin-actions a {
             background: #2e7d32;
+            margin: 5px;
         }
 
         .admin-actions a.end {
@@ -160,12 +166,20 @@
         👥 Members
     </a>
 
-    <a href="{{ url_for('portal.monthly_report', cid=cid) }}">
-        📊 Monthly Report
-    </a>
-
     <a href="{{ url_for('portal.add_committee_member', cid=cid) }}">
         ➕ Add Member
+    </a>
+
+    <a href="{{ url_for('portal.monthly_report', cid=cid) }}">
+        📅 Monthly Report
+    </a>
+
+    <a href="{{ url_for('portal.yearly_report', cid=cid, year=2026) }}">
+        📊 Yearly Report
+    </a>
+
+    <a href="{{ url_for('portal.committee_attendance_summary', cid=cid) }}">
+        📋 Attendance Summary
     </a>
 
     <br>
@@ -180,6 +194,7 @@
 {% endif %}
 
 <hr>
+
 <h3>Meetings</h3>
 
 {% if meetings %}
@@ -199,33 +214,38 @@
             <div class="status completed">Status: Completed</div>
         {% endif %}
 
-        {% if m.status != "SCHEDULED" %}
-    <img src="{{ url_for('static', filename='qrcodes/meeting_' ~ m.id ~ '.png') }}">
-{% endif %}
+        <!-- Show QR only when ONGOING -->
+        {% if m.status == "ONGOING" %}
+            <img src="{{ url_for('static',
+                     filename='qrcodes/meeting_' ~ m.id ~ '.png') }}">
+        {% endif %}
 
-<a href="{{ url_for('portal.meeting_report', mid=m.id) }}">
-    📊 View Report
-</a>
+        <!-- Show report only when COMPLETED -->
+        {% if m.status == "COMPLETED" %}
+            <a href="{{ url_for('portal.meeting_report', mid=m.id) }}">
+                📊 View Report
+            </a>
+        {% endif %}
 
-{% if is_admin %}
-<div class="admin-actions">
+        {% if is_admin %}
+        <div class="admin-actions">
 
-    {% if m.status == "SCHEDULED" %}
-        <a href="{{ url_for('portal.start_meeting', meeting_id=m.id) }}">
-            ▶ Start
-        </a>
+            {% if m.status == "SCHEDULED" %}
+                <a href="{{ url_for('portal.start_meeting', meeting_id=m.id) }}">
+                    ▶ Start
+                </a>
 
-    {% elif m.status == "ONGOING" %}
-        <a href="{{ url_for('portal.end_meeting', meeting_id=m.id) }}"
-           class="end">
-            ⏹ End
-        </a>
-    {% endif %}
+            {% elif m.status == "ONGOING" %}
+                <a href="{{ url_for('portal.end_meeting', meeting_id=m.id) }}"
+                   class="end">
+                    ⏹ End
+                </a>
+            {% endif %}
 
-</div>
-{% endif %}
+        </div>
+        {% endif %}
 
-</div>
+    </div>
 {% endfor %}
 
 </div>

@@ -6,13 +6,7 @@ import os
 from extensions import db
 from model import Event, Sport, Charity, Award, User
 
-admin_bp = Blueprint(
-    "admin",
-    __name__,
-    url_prefix="/admin",
-    template_folder="templates"
-)
-
+from . import admin_bp
 
 
  
@@ -99,17 +93,22 @@ def sports():
 @admin_bp.route("/sports/add", methods=["GET", "POST"])
 def add_sport():
     if not admin_logged_in():
-       return redirect(url_for("admin.login"))
+        return redirect(url_for("admin.login"))
 
     if request.method == "POST":
-        images = request.files.getlist("images")
+
+        image = request.files.get("image")
         image_path = None
 
         if image and image.filename:
-            os.makedirs("static/uploads/sports", exist_ok=True)
+            upload_folder = os.path.join("static", "uploads", "sports")
+            os.makedirs(upload_folder, exist_ok=True)
+
             filename = f"{datetime.now().timestamp()}_{image.filename}"
+            save_path = os.path.join(upload_folder, filename)
+
+            image.save(save_path)
             image_path = f"uploads/sports/{filename}"
-            image.save(f"static/{image_path}")
 
         sport = Sport(
             title=request.form["title"],
@@ -125,6 +124,7 @@ def add_sport():
         return redirect(url_for("admin.sports"))
 
     return render_template("admin/add_sport.html")
+
 
 @admin_bp.route("/sports/edit/<int:id>", methods=["GET", "POST"])
 def edit_sport(id):
@@ -203,25 +203,41 @@ def add_event():
 
     return render_template("admin/add_event.html")
 
+from werkzeug.utils import secure_filename
+
 @admin_bp.route("/events/edit/<int:id>", methods=["GET", "POST"])
 def edit_event(id):
     if not admin_logged_in():
-      return redirect(url_for("admin.login"))
+        return redirect(url_for("admin.login"))
 
     event = Event.query.get_or_404(id)
 
     if request.method == "POST":
+
         event.title = request.form["title"]
         event.description = request.form["description"]
         event.event_date = request.form["event_date"]
         event.pinned = True if request.form.get("pinned") else False
 
-        images = request.files.getlist("images")
-        if image and image.filename:
-            os.makedirs("static/uploads/events", exist_ok=True)
-            filename = f"{datetime.now().timestamp()}_{image.filename}"
-            image.save(f"static/uploads/events/{filename}")
-            event.image = f"uploads/events/{filename}"
+        # ✅ Get multiple uploaded images
+        images = request.files.getlist("images[]")
+        image_paths = []
+
+        # Create folder if not exists
+        upload_folder = os.path.join("static", "uploads", "events")
+        os.makedirs(upload_folder, exist_ok=True)
+
+        for image in images:
+            if image and image.filename:
+                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
+                save_path = os.path.join(upload_folder, filename)
+                image.save(save_path)
+
+                image_paths.append(f"uploads/events/{filename}")
+
+        # 🔥 If new images uploaded → replace old ones
+        if image_paths:
+            event.image = ",".join(image_paths)
 
         db.session.commit()
         return redirect(url_for("admin.events"))
@@ -280,32 +296,39 @@ def add_charity():
 
     return render_template("admin/add_charity.html")
 
+
 @admin_bp.route("/charity/edit/<int:id>", methods=["GET", "POST"])
 def edit_charity(id):
     if not admin_logged_in():
-      return redirect(url_for("admin.login"))
+        return redirect(url_for("admin.login"))
 
     charity = Charity.query.get_or_404(id)
 
     if request.method == "POST":
+
         charity.title = request.form["title"]
         charity.description = request.form["description"]
         charity.event_date = request.form["event_date"]
         charity.pinned = True if request.form.get("pinned") else False
 
-        images = request.files.getlist("images")
+        # ✅ Correct single image handling
+        image = request.files.get("image")
+
         if image and image.filename:
-            os.makedirs("static/uploads/charity", exist_ok=True)
-            filename = f"{datetime.now().timestamp()}_{image.filename}"
-            image.save(f"static/uploads/charity/{filename}")
+            upload_folder = os.path.join("static", "uploads", "charity")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
+            save_path = os.path.join(upload_folder, filename)
+
+            image.save(save_path)
+
             charity.image = f"uploads/charity/{filename}"
 
         db.session.commit()
         return redirect(url_for("admin.charity"))
 
     return render_template("admin/edit_charity.html", item=charity)
-
-
 
 @admin_bp.route("/charity/delete/<int:id>")
 def delete_charity(id):
@@ -359,25 +382,34 @@ def add_award():
         return redirect(url_for("admin.awards"))
 
     return render_template("admin/add_award.html")
+from werkzeug.utils import secure_filename
 
 @admin_bp.route("/awards/edit/<int:id>", methods=["GET", "POST"])
 def edit_award(id):
     if not admin_logged_in():
-      return redirect(url_for("admin.login"))
+        return redirect(url_for("admin.login"))
 
     award = Award.query.get_or_404(id)
 
     if request.method == "POST":
+
         award.title = request.form["title"]
         award.year = request.form["year"]
         award.description = request.form["description"]
         award.pinned = True if request.form.get("pinned") else False
 
-        images = request.files.getlist("images")
+        # ✅ Correct single image handling
+        image = request.files.get("image")
+
         if image and image.filename:
-            os.makedirs("static/uploads/awards", exist_ok=True)
-            filename = f"{datetime.now().timestamp()}_{image.filename}"
-            image.save(f"static/uploads/awards/{filename}")
+            upload_folder = os.path.join("static", "uploads", "awards")
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
+            save_path = os.path.join(upload_folder, filename)
+
+            image.save(save_path)
+
             award.image = f"uploads/awards/{filename}"
 
         db.session.commit()

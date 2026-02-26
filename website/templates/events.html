@@ -278,17 +278,17 @@
 
 
 <!-- ══ EVENT CARDS ══ -->
-{% for e in events %}
+{% for event in events %}
 <div class="event-card reveal">
 
     <div class="event-card-body">
-        <h3>{{ e[1] }}</h3>
-        <small>{{ e[2] }}</small>
-        <p>{{ e[3] }}</p>
+        <h3>{{ event.title }}</h3>
+        <small>{{ event.event_date }}</small>
+        <p>{{ event.description }}</p>
     </div>
 
-    {% if e[4] %}
-        {% set images = e[4].split(",") %}
+    {% if event.image %}
+        {% set images = event.image.split(",") %}
 
         <div class="ev-img-rule"></div>
         <div class="ev-main-wrap">
@@ -305,7 +305,6 @@
             </div>
         </div>
         {% endif %}
-
     {% endif %}
 
 </div>

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "portal_base.html" %}
 {% block content %}
 
 <style>
@@ -9,7 +9,7 @@
 
 .medical-wrapper {
     min-height: 100vh;
-    padding: 40px 50px 80px 50px;
+    padding: 50px 40px 80px 40px;
     background: linear-gradient(135deg,#eef5fb,#f7fbff,#e8f2fb);
 }
 
@@ -23,7 +23,7 @@
 }
 
 .dashboard-header h2 {
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 700;
     color: #0d47a1;
     margin-bottom: 6px;
@@ -32,21 +32,38 @@
 .dashboard-header p {
     color: #607d8b;
     font-size: 14px;
-    letter-spacing: 0.4px;
+}
+
+/* ===============================
+   BACK BUTTON
+================================ */
+
+.main-back-btn {
+    display: inline-block;
+    margin-bottom: 35px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid #1e88e5;
+    background: white;
+    color: #1e88e5;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.main-back-btn:hover {
+    background: #1e88e5;
+    color: white;
 }
 
 /* ===============================
    METRIC CARDS
 ================================ */
 
-.metric-row {
-    margin-bottom: 40px;
-}
-
 .metric-card {
     background: #ffffff;
     border-radius: 16px;
-    padding: 22px;
+    padding: 20px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.05);
     border: 1px solid #edf2f7;
     transition: 0.25s ease;
@@ -60,11 +77,10 @@
 .metric-label {
     font-size: 13px;
     color: #7a8ea3;
-    font-weight: 500;
 }
 
 .metric-value {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
     margin-top: 6px;
 }
@@ -92,6 +108,7 @@
     text-decoration: none;
     color: white;
     transition: 0.2s ease;
+    display: inline-block;
 }
 
 .btn-blue { background: linear-gradient(135deg,#1e88e5,#42a5f5); }
@@ -121,6 +138,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .category-title {
@@ -155,10 +174,13 @@
 ================================ */
 
 .table-wrapper {
+    width: 100%;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .premium-table {
+    min-width: 950px;
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -174,6 +196,7 @@
     font-size: 13px;
     color: #546e7a;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .premium-table td {
@@ -181,18 +204,12 @@
     border-top: 1px solid #eef3f8;
     font-size: 13px;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .premium-table tbody tr:hover {
     background: #f8fbff;
 }
-
-/* COLUMN WIDTHS */
-
-.col-code { width: 12%; }
-.col-status { width: 14%; }
-.col-condition { width: 14%; }
-.col-issue { width: 60%; }
 
 /* ===============================
    STATUS PILLS
@@ -215,17 +232,18 @@
 
 .issue-flex {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
 .issue-flex input {
     flex: 1;
-    padding: 9px 12px;
+    padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid #dbe5ef;
-    font-size: 13px;
+    font-size: 12px;
     background: #f9fbfd;
+    min-width: 100px;
 }
 
 .issue-flex input:focus {
@@ -238,7 +256,7 @@
     background: linear-gradient(135deg,#fb8c00,#ff9800);
     color: white;
     border: none;
-    padding: 9px 18px;
+    padding: 8px 16px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
@@ -270,6 +288,10 @@
         align-items: stretch;
     }
 
+    .issue-flex input {
+        width: 100%;
+    }
+
     .issue-btn {
         width: 100%;
     }
@@ -277,7 +299,16 @@
     .category-header {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .action-bar {
+        display: flex;
+        flex-direction: column;
         gap: 10px;
+    }
+
+    .action-btn {
+        width: 100%;
     }
 }
 

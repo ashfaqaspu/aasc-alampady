@@ -1,99 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Attendance</title>
+    <title>Attendance Summary</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            font-family: "Segoe UI";
             background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
-
-        .card {
-            max-width: 480px;
-            margin: auto;
-            background: #ffffff;
-            padding: 28px 26px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            text-align: center;
+            padding: 30px;
         }
 
         h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
+            text-align: center;
             color: #0d47a1;
-            font-size: 24px;
         }
 
-        .info {
-            margin: 14px 0;
-            font-size: 15px;
-            padding: 12px;
-            border-radius: 10px;
-            background: #f5f8ff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .card {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         }
 
-        .label {
-            font-weight: 600;
-            color: #555;
-        }
-
-        .value {
-            font-weight: 600;
-            color: #222;
-        }
-
-        .highlight {
-            background: #e3f2fd;
-        }
-
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            font-weight: 700;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 20px;
-            padding: 14px;
-            border-radius: 12px;
+        }
+
+        th {
+            background: #0d47a1;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover td {
+            background: #f5f8ff;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #0d47a1;
         }
     </style>
 </head>
 <body>
 
+<h2>📋 Committee Attendance Summary</h2>
+
 <div class="card">
-
-    <h2>{{ message }}</h2>
-
-    <div class="info">
-        <span class="label">Time</span>
-        <span class="value">{{ time }}</span>
-    </div>
-
-    <div class="info highlight">
-        <span class="label">Duration Counted</span>
-        <span class="value">{{ minutes }} minutes</span>
-    </div>
-
-    <div class="info">
-        <span class="label">Total Event Time</span>
-        <span class="value">{{ total_time or "—" }}</span>
-    </div>
-
-    <div class="info">
-        <span class="label">Your Attended Time</span>
-        <span class="value">{{ attended_time or "—" }}</span>
-    </div>
-
+    <table>
+        <thead>
+            <tr>
+                <th>Member Name</th>
+                <th>Total Minutes Attended</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if data %}
+                {% for d in data %}
+                <tr>
+                    <td>{{ d[0] }}</td>
+                    <td>{{ d[1] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="2" style="text-align:center;">
+                        No attendance data found
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
 </div>
+
+<a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
+   class="back">
+   ← Back to Committee Dashboard
+</a>
 
 </body>
 </html>

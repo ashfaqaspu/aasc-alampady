@@ -99,14 +99,33 @@ class Event(db.Model):
         default=datetime.utcnow
     )
 
-class EventParticipant(db.Model):
-    __tablename__ = "event_participants"
+class PortalEvent(db.Model):
+    __tablename__ = "portal_events"
 
     id = db.Column(db.Integer, primary_key=True)
 
-    event_id = db.Column(
+    title = db.Column(db.String(255), nullable=False)
+    event_date = db.Column(db.String(20))
+    description = db.Column(db.Text)
+
+    committee_id = db.Column(
         db.Integer,
-        db.ForeignKey("events.id"),
+        db.ForeignKey("committee.id"),
+        nullable=True
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+class PortalEventParticipant(db.Model):
+    __tablename__ = "portal_event_participants"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    portal_event_id = db.Column(
+        db.Integer,
+        db.ForeignKey("portal_events.id"),
         nullable=False
     )
 
@@ -116,10 +135,13 @@ class EventParticipant(db.Model):
         nullable=False
     )
 
-    registered_at = db.Column(db.Date)
+    registered_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
     __table_args__ = (
-        db.UniqueConstraint("event_id", "user_id"),
+        db.UniqueConstraint("portal_event_id", "user_id"),
     )
 # ---------------- COMMITTEES ----------------
 

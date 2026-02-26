@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Yearly Report</title>
+  <title>Yearly Attendance Report</title>
 
   <style>
-    * { box-sizing: border-box; }
-
     body {
       font-family: "Segoe UI", Roboto, Arial, sans-serif;
       background: #f4f6f9;
@@ -16,14 +14,12 @@
     h2 {
       text-align: center;
       color: #0d47a1;
-      margin-bottom: 22px;
-      font-size: 26px;
+      margin-bottom: 20px;
     }
 
-    /* Filter */
     .filter {
       max-width: 420px;
-      margin: 0 auto 24px;
+      margin: 0 auto 25px;
       background: #ffffff;
       padding: 16px;
       border-radius: 14px;
@@ -34,10 +30,9 @@
     }
 
     input[type="number"] {
-      padding: 10px 12px;
+      padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 14px;
       width: 120px;
     }
 
@@ -51,23 +46,35 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #08306b;
-    }
-
-    /* Summary */
-    .summary {
+    .summary-box {
       max-width: 900px;
-      margin: 0 auto 20px;
-      background: #e3f2fd;
-      padding: 16px 18px;
-      border-radius: 14px;
-      border-left: 6px solid #0d47a1;
-      font-size: 15px;
-      font-weight: 600;
+      margin: 0 auto 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
     }
 
-    /* Table */
+    .summary-card {
+      background: white;
+      padding: 18px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .summary-card h4 {
+      margin: 0;
+      color: #607d8b;
+      font-size: 14px;
+    }
+
+    .summary-card p {
+      margin: 6px 0 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0d47a1;
+    }
+
     .table-wrapper {
       max-width: 900px;
       margin: auto;
@@ -85,44 +92,26 @@
     th {
       background: #0d47a1;
       color: white;
-      padding: 14px 16px;
+      padding: 14px;
       text-align: left;
-      font-size: 14.5px;
     }
 
     td {
-      padding: 14px 16px;
+      padding: 14px;
       border-bottom: 1px solid #eef1f5;
-      font-size: 14.5px;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
     }
 
     tr:hover td {
       background: #f5f8ff;
     }
 
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-
-      .filter {
-        display: none;
-      }
-
-      th {
-        background: #ddd !important;
-        color: black !important;
-      }
-
-      .table-wrapper {
-        box-shadow: none;
-        border-radius: 0;
-      }
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #0d47a1;
     }
   </style>
 </head>
@@ -131,61 +120,68 @@
 
 <h2>📊 Yearly Attendance Report</h2>
 
-<!-- FILTER -->
 <form method="get" class="filter">
   <input type="number"
          name="year"
          placeholder="2026"
          value="{{ request.args.get('year', '') }}"
          required>
-
   <button type="submit">View</button>
 </form>
 
-<!-- SUMMARY -->
-<div class="summary">
-  ⏱ <b>Total Meeting Time (Year):</b>
-  {{ total_meeting_time or "—" }}
+{% if year %}
+
+<div class="summary-box">
+
+  <div class="summary-card">
+    <h4>Total Meetings</h4>
+    <p>{{ total_meetings_count }}</p>
+  </div>
+
+  <div class="summary-card">
+    <h4>Total Meeting Minutes</h4>
+    <p>{{ total_meeting_time }}</p>
+  </div>
+
 </div>
 
-<!-- TABLE -->
 <div class="table-wrapper">
 <table>
   <thead>
     <tr>
       <th>Name</th>
-      <th>Total Meeting Time</th>
       <th>Total Minutes Attended</th>
+      <th>Attendance %</th>
     </tr>
   </thead>
-
   <tbody>
-    {% if data and data|length > 0 %}
+
+    {% if data %}
       {% for d in data %}
       <tr>
         <td>{{ d[0] }}</td>
-        <td>{{ total_meeting_time or "—" }}</td>
         <td>{{ d[1] }}</td>
+        <td>{{ d[2] }}%</td>
       </tr>
       {% endfor %}
     {% else %}
       <tr>
         <td colspan="3" style="text-align:center;">
-          No attendance data available for selected year
+          No attendance data available
         </td>
       </tr>
     {% endif %}
+
   </tbody>
 </table>
 </div>
 
-<!-- BACK BUTTON -->
-<div style="margin-top:20px;">
-  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
-     class="back">
-     ← Back to Committee Dashboard
-  </a>
-</div>
+{% endif %}
+
+<a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
+   class="back">
+   ← Back to Committee Dashboard
+</a>
 
 </body>
 </html>

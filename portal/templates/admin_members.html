@@ -220,16 +220,16 @@
         Not Renewed
     </a>
 </div>
-<input
-    type="text"
-    id="searchInput"
-    class="search-box"
-    placeholder="🔍 Search by name, phone, membership ID, nativity...">
+
 
 <button onclick="window.print()" class="print-btn">
     📄 Export to PDF
 </button>
 
+<form method="GET" action="{{ url_for('portal_bp.members') }}">
+    <input type="text" name="search" placeholder="Search by name">
+    <button type="submit">Search</button>
+</form>
 
 <a href="{{ url_for('portal.dashboard') }}" class="back">
     ← Back to Dashboard

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .portal-nav {
+            background: #203a43;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .portal-nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: 500;
+        }
+
+        .portal-nav a:hover {
+            text-decoration: underline;
+        }
+
+        .portal-content {
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="portal-nav">
+    
+
+    <div>
+        <a href="{{ url_for('portal.logout') }}">Logout</a>
+    </div>
+</div>
+
+<div class="portal-content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

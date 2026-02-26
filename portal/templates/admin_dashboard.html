@@ -1,125 +1,203 @@
-{% extends "base.html" %}
+{% extends "portal_base.html" %}
 {% block content %}
 
 <style>
-.dashboard-container {
-    max-width: 1100px;
+.dashboard-wrapper {
+    max-width: 1200px;
     margin: 40px auto;
 }
 
-.dashboard-title {
-    font-size: 30px;
-    font-weight: 700;
-    margin-bottom: 30px;
+/* Header */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
 }
 
+.dashboard-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.back-btn {
+    text-decoration: none;
+    background: #e5e7eb;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Stats */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
 }
 
 .stat-card {
     background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    text-align: center;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
 }
 
 .stat-number {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    color: #2c5364;
+    color: #2563eb;
+    margin-bottom: 5px;
 }
 
 .stat-label {
-    font-size: 16px;
-    color: #777;
+    font-size: 14px;
+    color: #6b7280;
 }
 
-.section-box {
-    margin-top: 50px;
+/* Section Card */
+.section-card {
     background: white;
     padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    margin-bottom: 40px;
 }
 
-button {
-    padding: 10px 20px;
-    border-radius: 25px;
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+/* Form */
+.form-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.form-row input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+    color: white;
     border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
 }
 
-.create-btn {
-    background: linear-gradient(135deg, #203a43, #2c5364);
+.btn-danger {
+    background: #dc2626;
     color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-.delete-btn {
-    background: #dc3545;
-    color: white;
+.committee-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.committee-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+    color: #374151;
+}
+
+/* Mobile */
+@media(max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 }
 </style>
 
-<div class="dashboard-container">
+<div class="dashboard-wrapper">
 
-<div class="dashboard-title">🏛 Super Admin Dashboard</div>
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="dashboard-title">🏛 Super Admin Dashboard</div>
 
-<a href="{{ url_for('portal.dashboard') }}"
-           class="back-btn">
-           ⬅ Back to Dashboard
+        <a href="{{ url_for('portal.dashboard') }}" class="back-btn">
+            ← Back to Main Dashboard
         </a>
-<!-- Stats Section -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-number">{{ total_committees }}</div>
-        <div class="stat-label">Total Committees</div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-number">{{ total_members }}</div>
-        <div class="stat-label">Total Members</div>
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_committees }}</div>
+            <div class="stat-label">Total Committees</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">{{ total_members }}</div>
+            <div class="stat-label">Total Members</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">{{ current_year }}</div>
+            <div class="stat-label">Current Year</div>
+        </div>
     </div>
 
-    <div class="stat-card">
-        <div class="stat-number">{{ current_year }}</div>
-        <div class="stat-label">Current Year</div>
+    <!-- Create Committee -->
+    <div class="section-card">
+        <div class="section-title">➕ Create New Committee</div>
+
+        <form method="POST" action="{{ url_for('portal.create_committee') }}">
+            <div class="form-row">
+                <input type="text" name="name" placeholder="Committee Name" required>
+                <input type="text" name="year" placeholder="Year (e.g., 2026)" required>
+                <button type="submit" class="btn-primary">Create Committee</button>
+            </div>
+        </form>
     </div>
-</div>
 
-<!-- Create Committee -->
-<div class="section-box">
-    <h3>➕ Create New Committee</h3>
+    <!-- Current Year Committees -->
+    <div class="section-card">
+        <div class="section-title">📅 Committees for {{ current_year }}</div>
 
-    <form method="POST" action="/admin/create_committee">
-        <input type="text" name="name" placeholder="Committee Name" required>
-        <input type="text" name="year" placeholder="Year (e.g., 2026)" required>
-        <button type="submit" class="create-btn">Create</button>
-    </form>
-</div>
+        {% if current_year_committees %}
+            <ul class="committee-list">
+                {% for c in current_year_committees %}
+                    <li>{{ c.name }}</li>
+                {% endfor %}
+            </ul>
 
-<!-- Current Year Committees -->
-<div class="section-box">
-    <h3>📅 Committees for {{ current_year }}</h3>
-
-    {% if current_year_committees %}
-        <ul>
-            {% for c in current_year_committees %}
-                <li>{{ c.name }}</li>
-            {% endfor %}
-        </ul>
-
-       <a href="{{ url_for('portal.delete_year', year=current_year) }}"></a>
-            <button class="delete-btn">🗑 Delete All {{ current_year }} Committees</button>
-        </a>
-    {% else %}
-        <p>No committees for this year.</p>
-    {% endif %}
-</div>
+            <div style="margin-top:20px;">
+                <a href="{{ url_for('portal.delete_year', year=current_year) }}">
+                    <button class="btn-danger">
+                        🗑 Delete All {{ current_year }} Committees
+                    </button>
+                </a>
+            </div>
+        {% else %}
+            <p style="color:#6b7280;">No committees created for this year.</p>
+        {% endif %}
+    </div>
 
 </div>
 

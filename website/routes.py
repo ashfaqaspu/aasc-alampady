@@ -1,11 +1,6 @@
-from flask import Blueprint, render_template
+from flask import  render_template
 from model import Event, Sport, Charity, Award
-
-website_bp = Blueprint(
-    "website",
-    __name__,
-    template_folder="templates"
-)
+from . import website_bp
 
 @website_bp.route("/")
 def home():
@@ -13,13 +8,13 @@ def home():
 
 @website_bp.route("/events")
 def public_events():
-    events = Event.query.order_by(
-        Event.pinned.desc(),
-        Event.event_date.desc(),
-        Event.created_at.desc()
-    ).all()
-    return render_template("events.html", events=events)
 
+    events = Event.query.order_by(
+        Event.pinned.desc(),        # Featured first
+        Event.created_at.desc()     # Newest first
+    ).all()
+
+    return render_template("events.html", events=events)
 @website_bp.route("/sports")
 def public_sports():
     sports = Sport.query.order_by(
