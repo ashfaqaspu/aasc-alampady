@@ -164,7 +164,7 @@ def portal_events():
     registered_ids = [r.portal_event_id for r in registered]
 
     return render_template(
-        "portal/event.html",
+        "event.html",
         events=events,
         registered_ids=registered_ids
     )
