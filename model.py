@@ -99,25 +99,6 @@ class Event(db.Model):
         default=datetime.utcnow
     )
 
-class PortalEvent(db.Model):
-    __tablename__ = "portal_events"
-
-    id = db.Column(db.Integer, primary_key=True)
-
-    title = db.Column(db.String(255), nullable=False)
-    event_date = db.Column(db.String(20))
-    description = db.Column(db.Text)
-
-    committee_id = db.Column(
-        db.Integer,
-        db.ForeignKey("committee.id"),
-        nullable=True
-    )
-
-    created_at = db.Column(
-        db.DateTime,
-        default=datetime.utcnow
-    )
 
 class PortalEvent(db.Model):
     __tablename__ = "portal_events"
