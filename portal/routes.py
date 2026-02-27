@@ -1690,12 +1690,18 @@ def admin_dashboard():
     )
 
 
+from sqlalchemy.orm import joinedload
+from flask import render_template
+
 @portal_bp.route("/admin/committees")
 def admin_committees():
+
     if not is_super_admin():
         return "Access Denied", 403
 
-    committees = Committee.query.order_by(Committee.id.desc()).all()
+    committees = Committee.query.options(
+        joinedload(Committee.members)
+    ).order_by(Committee.id.desc()).all()
 
     return render_template(
         "admin_committees.html",
