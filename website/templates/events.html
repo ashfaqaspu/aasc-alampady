@@ -285,9 +285,13 @@
         <h3>{{ event.title }}</h3>
 
         <small>
-            {% if event.event_date %}
-                {{ event.event_date.strftime('%d-%m-%Y') }}
-            {% endif %}
+    {% if event.event_date %}
+        {% if event.event_date.__class__.__name__ == 'date' %}
+            {{ event.event_date.strftime('%d-%m-%Y') }}
+        {% else %}
+            {{ event.event_date }}
+        {% endif %}
+    {% endif %}
         </small>
 
         <p>{{ event.description }}</p>

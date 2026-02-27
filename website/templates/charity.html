@@ -296,9 +296,13 @@
     <div class="event-card-body">
         <h3>{{ e.title }}</h3>
         <small>
-            {% if e.event_date %}
-                {{ e.event_date.strftime('%d-%m-%Y') }}
-            {% endif %}
+    {% if e.event_date %}
+        {% if e.event_date.__class__.__name__ == 'date' %}
+            {{ e.event_date.strftime('%d-%m-%Y') }}
+        {% else %}
+            {{ e.event_date }}
+        {% endif %}
+    {% endif %}
         </small>
         <p>{{ e.description }}</p>
     </div>

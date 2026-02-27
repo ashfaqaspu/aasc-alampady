@@ -80,11 +80,14 @@
     <td>{{ c.title }}</td>
 
     <td>
-        {% if c.event_date %}
-            {{ c.event_date.strftime('%d-%m-%Y') }}
-        {% endif %}
-    </td>
-
+{% if c.event_date %}
+    {% if c.event_date.__class__.__name__ == 'date' %}
+        {{ c.event_date.strftime('%d-%m-%Y') }}
+    {% else %}
+        {{ c.event_date }}
+    {% endif %}
+{% endif %}
+</td>
     <td>
         {% if c.image %}
             {% set images = c.image.split(",") %}
