@@ -242,33 +242,6 @@ tbody tr:hover td {
     <hr>
 
 <!-- ===== NATIVITY DISTRIBUTION ===== -->
-<h3>🌍 Nativity Distribution</h3>
-
-<table>
-    <thead>
-        <tr>
-            <th>Category</th>
-            <th>Count</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% if nativity and nativity|length > 0 %}
-            {% for n in nativity %}
-            <tr>
-                <td>{{ n[0] }}</td>
-                <td>{{ n[1] }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="2" style="text-align:center;">
-                    No nativity data available
-                </td>
-            </tr>
-        {% endif %}
-    </tbody>
-</table>
 
 <a href="{{ url_for('portal.dashboard') }}" class="back">
     ← Back to Dashboard
