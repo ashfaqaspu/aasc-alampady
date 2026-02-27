@@ -409,6 +409,12 @@ from sqlalchemy import func
 from app import db
 
 
+from datetime import datetime, timedelta
+from sqlalchemy import func
+from flask import session, redirect, render_template
+from app import db
+
+
 @portal_bp.route("/attendance/scan/<token>")
 def scan_attendance(token):
 
@@ -424,10 +430,9 @@ def scan_attendance(token):
             cid=None
         )
 
-    # ✅ Use UTC consistently
-    now = datetime.utcnow()
+    # Convert UTC to IST
+    now = datetime.utcnow() + timedelta(hours=5, minutes=30)
 
-    # Convert string time safely
     meeting_start = datetime.combine(
         meeting.meeting_date,
         datetime.strptime(meeting.start_time, "%H:%M").time()
@@ -438,7 +443,10 @@ def scan_attendance(token):
         datetime.strptime(meeting.end_time, "%H:%M").time()
     )
 
-    # If meeting not ongoing, stop
+    print("Now:", now)
+    print("Start:", meeting_start)
+    print("End:", meeting_end)
+
     if not (meeting_start <= now <= meeting_end):
         return render_template(
             "attendance_result.html",
@@ -446,7 +454,6 @@ def scan_attendance(token):
             cid=meeting.committee_id
         )
 
-    # Prevent duplicate attendance
     existing = CommitteeMeetingAttendance.query.filter_by(
         meeting_id=meeting.id,
         user_id=session["user_id"]
@@ -469,7 +476,6 @@ def scan_attendance(token):
         db.session.add(attendance)
         db.session.commit()
 
-    # Fetch attendance summary
     attendance_data = db.session.query(
         User.name,
         func.sum(CommitteeMeetingAttendance.attended_minutes)
@@ -485,6 +491,7 @@ def scan_attendance(token):
         data=attendance_data,
         cid=meeting.committee_id
     )
+
 
 @portal_bp.route("/admin/meeting/end/<int:meeting_id>")
 def end_meeting(meeting_id):
@@ -1337,9 +1344,9 @@ def admin_analytics():
     # ===============================
 
     nativity_counts = {
-        "Student": 0,
-        "GCC": 0,
-        "Native": 0,
+        "(STUDENT)": 0,
+        "(GCC)": 0,
+        "(Native)": 0,
         "Others": 0
     }
 
