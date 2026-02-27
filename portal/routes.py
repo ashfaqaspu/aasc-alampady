@@ -403,6 +403,12 @@ def start_meeting(meeting_id):
     return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
 
+from datetime import datetime
+from flask import session, redirect, render_template
+from sqlalchemy import func
+from app import db
+
+
 @portal_bp.route("/attendance/scan/<token>")
 def scan_attendance(token):
 
@@ -411,17 +417,17 @@ def scan_attendance(token):
 
     meeting = CommitteeMeeting.query.filter_by(token=token).first()
 
-    if not meeting or meeting.status != "ONGOING":
+    if not meeting:
         return render_template(
             "attendance_result.html",
             data=[],
             cid=None
         )
 
-    cid = meeting.committee_id
-    now = datetime.now()
+    # ✅ Use UTC consistently
+    now = datetime.utcnow()
 
-    # Convert string time to real time
+    # Convert string time safely
     meeting_start = datetime.combine(
         meeting.meeting_date,
         datetime.strptime(meeting.start_time, "%H:%M").time()
@@ -432,14 +438,15 @@ def scan_attendance(token):
         datetime.strptime(meeting.end_time, "%H:%M").time()
     )
 
+    # If meeting not ongoing, stop
     if not (meeting_start <= now <= meeting_end):
         return render_template(
             "attendance_result.html",
             data=[],
-            cid=cid
+            cid=meeting.committee_id
         )
 
-    # Prevent duplicate
+    # Prevent duplicate attendance
     existing = CommitteeMeetingAttendance.query.filter_by(
         meeting_id=meeting.id,
         user_id=session["user_id"]
@@ -447,7 +454,9 @@ def scan_attendance(token):
 
     if not existing:
 
-        attended_minutes = int((meeting_end - now).total_seconds() / 60)
+        attended_minutes = int(
+            (meeting_end - now).total_seconds() / 60
+        )
         attended_minutes = max(attended_minutes, 0)
 
         attendance = CommitteeMeetingAttendance(
@@ -460,7 +469,7 @@ def scan_attendance(token):
         db.session.add(attendance)
         db.session.commit()
 
-    # Fetch summary
+    # Fetch attendance summary
     attendance_data = db.session.query(
         User.name,
         func.sum(CommitteeMeetingAttendance.attended_minutes)
@@ -474,7 +483,7 @@ def scan_attendance(token):
     return render_template(
         "attendance_result.html",
         data=attendance_data,
-        cid=cid
+        cid=meeting.committee_id
     )
 
 @portal_bp.route("/admin/meeting/end/<int:meeting_id>")
@@ -1699,15 +1708,14 @@ def admin_committees():
     if not is_super_admin():
         return "Access Denied", 403
 
-    committees = Committee.query.options(
-        joinedload(Committee.members)
-    ).order_by(Committee.id.desc()).all()
+    committees = Committee.query.order_by(
+        Committee.id.desc()
+    ).all()
 
     return render_template(
         "admin_committees.html",
         committees=committees
     )
-
 
 @portal_bp.route("/admin/create-committee", methods=["GET", "POST"])
 def create_committee():
