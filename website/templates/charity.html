@@ -322,7 +322,7 @@
             <div class="ev-scroll-hd">More Photos</div>
             <div class="event-scroll">
                 {% for img in images[1:] %}
-                    <img src="{{ url_for('static', filename=img.strip()) }}">
+                   <img src="{{ img.strip() }}">
                 {% endfor %}
             </div>
         </div>

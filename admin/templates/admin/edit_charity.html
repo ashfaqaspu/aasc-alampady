@@ -88,7 +88,7 @@
         {% if item.image %}
             {% set images = item.image.split(",") %}
             {% for img in images %}
-                <img src="{{ url_for('static', filename=img.strip()) }}">
+               <img src="{{ img.strip() }}">
             {% endfor %}
         {% else %}
             No images

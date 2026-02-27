@@ -81,10 +81,14 @@
     <td>{{ s.title }}</td>
 
     <td>
-        {% if s.event_date %}
+    {% if s.event_date %}
+        {% if s.event_date.__class__.__name__ == 'date' %}
             {{ s.event_date.strftime('%d-%m-%Y') }}
+        {% else %}
+            {{ s.event_date }}
         {% endif %}
-    </td>
+    {% endif %}
+</td>
 
     <td>
         {% if s.image %}
