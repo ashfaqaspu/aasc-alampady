@@ -88,7 +88,7 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     title = db.Column(db.String(255), nullable=False)
-    event_date = db.Column(db.String(20))   # keep string for flexibility
+    event_date = db.Column(db.Date)   # keep string for flexibility
     description = db.Column(db.Text)
 
     image = db.Column(db.Text)              # used in website
@@ -200,6 +200,14 @@ class Committee(db.Model):
     name = db.Column(db.String(120), nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    # ✅ ADD THIS
+    members = db.relationship(
+        "CommitteeMember",
+        backref="committee",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
 
 class CommitteeMember(db.Model):
     __tablename__ = "committee_members"
@@ -209,6 +217,8 @@ class CommitteeMember(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     role = db.Column(db.String(20), default="member")
 
+    # (Optional but recommended if you have User model)
+    user = db.relationship("User", backref="committee_links")
 
 class CommitteeMeeting(db.Model):
     __tablename__ = "committee_meetings"
@@ -266,7 +276,7 @@ class Sport(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
-    event_date = db.Column(db.String(20))
+    event_date = db.Column(db.Date)
     description = db.Column(db.Text)
     image = db.Column(db.Text)
     pinned = db.Column(db.Boolean, default=False)
@@ -278,7 +288,7 @@ class Charity(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
-    event_date = db.Column(db.String(20))
+    event_date = db.Column(db.Date)
     description = db.Column(db.Text)
     image = db.Column(db.Text)
     pinned = db.Column(db.Boolean, default=False)

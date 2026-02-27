@@ -313,8 +313,10 @@
         {% set images = e[4].split(",") %}
 
         <div class="ev-img-rule"></div>
+
         <div class="ev-main-wrap">
-            <img src="/{{ images[0] }}" class="event-main-img">
+            <img src="{{ url_for('static', filename=images[0].strip()) }}"
+                 class="event-main-img">
         </div>
 
         {% if images|length > 1 %}
@@ -322,7 +324,7 @@
             <div class="ev-scroll-hd">More Photos</div>
             <div class="event-scroll">
                 {% for img in images[1:] %}
-                    <img src="/{{ img }}">
+                    <img src="{{ url_for('static', filename=img.strip()) }}">
                 {% endfor %}
             </div>
         </div>
@@ -337,7 +339,6 @@
     <p>No sport events added yet.</p>
 </div>
 {% endfor %}
-
 
 <script>
 (function(){

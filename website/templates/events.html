@@ -283,7 +283,13 @@
 
     <div class="event-card-body">
         <h3>{{ event.title }}</h3>
-        <small>{{ event.event_date }}</small>
+
+        <small>
+            {% if event.event_date %}
+                {{ event.event_date.strftime('%d-%m-%Y') }}
+            {% endif %}
+        </small>
+
         <p>{{ event.description }}</p>
     </div>
 
@@ -291,8 +297,10 @@
         {% set images = event.image.split(",") %}
 
         <div class="ev-img-rule"></div>
+
         <div class="ev-main-wrap">
-            <img src="/{{ images[0] }}" class="event-main-img">
+            <img src="{{ url_for('static', filename=images[0].strip()) }}"
+                 class="event-main-img">
         </div>
 
         {% if images|length > 1 %}
@@ -300,11 +308,12 @@
             <div class="ev-scroll-hd">More Photos</div>
             <div class="event-scroll">
                 {% for img in images[1:] %}
-                    <img src="/{{ img }}">
+                    <img src="{{ url_for('static', filename=img.strip()) }}">
                 {% endfor %}
             </div>
         </div>
         {% endif %}
+
     {% endif %}
 
 </div>

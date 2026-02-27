@@ -1346,7 +1346,7 @@ def admin_analytics():
     nativity_counts = {
         "(STUDENT)": 0,
         "(GCC)": 0,
-        "(Native)": 0,
+        "(NATIVE)": 0,
         "Others": 0
     }
 

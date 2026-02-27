@@ -33,11 +33,14 @@
 
         #preview {
             margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         #preview img {
-            width: 150px;
-            height: 120px;
+            width: 120px;
+            height: 100px;
             object-fit: cover;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -55,12 +58,13 @@
 
     <textarea name="description" placeholder="Description" rows="5"></textarea>
 
-    <label><strong>Award Image</strong></label>
+    <label><strong>Award Images (Max 6)</strong></label>
     <input type="file"
-           name="image"
-           id="image"
+           name="images[]"
+           id="images"
+           multiple
            accept="image/*"
-           onchange="previewImage()">
+           onchange="previewImages()">
 
     <div id="preview"></div>
 
@@ -76,21 +80,30 @@
 <a href="{{ url_for('admin.awards') }}">← Back</a>
 
 <script>
-function previewImage() {
+function previewImages() {
     const preview = document.getElementById("preview");
-    const file = document.getElementById("image").files[0];
+    const files = document.getElementById("images").files;
 
     preview.innerHTML = "";
 
-    if (!file || !file.type.startsWith("image/")) return;
+    if (files.length > 6) {
+        alert("Maximum 6 images allowed");
+        return;
+    }
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        preview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (!file.type.startsWith("image/")) continue;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
 }
 </script>
 

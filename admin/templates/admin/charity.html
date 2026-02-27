@@ -78,14 +78,19 @@
 <tr>
     <td>{{ loop.index }}</td>
     <td>{{ c.title }}</td>
-    <td>{{ c.event_date }}</td>
+
+    <td>
+        {% if c.event_date %}
+            {{ c.event_date.strftime('%d-%m-%Y') }}
+        {% endif %}
+    </td>
 
     <td>
         {% if c.image %}
             {% set images = c.image.split(",") %}
             <div class="event-images">
                 {% for img in images %}
-                    <img src="{{ url_for('static', filename=img) }}">
+                    <img src="{{ url_for('static', filename=img.strip()) }}">
                 {% endfor %}
             </div>
         {% else %}

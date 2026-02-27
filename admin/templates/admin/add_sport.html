@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add SPORT-Event</title>
+    <title>Add Sport Event</title>
     <style>
         body {
             font-family: Arial;
@@ -49,16 +49,19 @@
 </head>
 <body>
 
-<h2>Add Event</h2>
+<h2>Add Sport Event</h2>
 
 <form method="post" enctype="multipart/form-data">
-    <input name="title" placeholder="Event Title" required>
+
+    <input name="title" placeholder="Sport Title" required>
+
     <input name="event_date" type="date" required>
+
     <textarea name="description" placeholder="Description" rows="5"></textarea>
 
-    <label><strong>Event Images (Max 6)</strong></label>
+    <label><strong>Sport Images (Max 6)</strong></label>
     <input type="file"
-           name="images"
+           name="images[]"
            id="images"
            multiple
            accept="image/*"
@@ -68,25 +71,26 @@
 
     <label style="display:block; margin-top:10px;">
         <input type="checkbox" name="pinned" value="1">
-        📌 Pin this event to top
+        📌 Pin this sport to top
     </label>
 
-    <button type="submit">Save Event</button>
+    <button type="submit">Save Sport</button>
 </form>
 
 <br>
-<a href="{{ url_for('admin.events') }}">← Back</a>
+<a href="{{ url_for('admin.sports') }}">← Back</a>
 
 <script>
 function previewImages() {
     const preview = document.getElementById("preview");
-    const files = document.getElementById("images").files;
+    const input = document.getElementById("images");
+    const files = input.files;
 
     preview.innerHTML = "";
 
     if (files.length > 6) {
         alert("You can upload a maximum of 6 images.");
-        document.getElementById("images").value = "";
+        input.value = "";
         return;
     }
 

@@ -7,7 +7,7 @@
         form { max-width:600px; background:white; padding:25px; border-radius:8px; }
         input, textarea, button { width:100%; padding:10px; margin-top:10px; }
         button { background:#0d47a1; color:white; border:none; }
-        .imgs { margin-top:10px; }
+        .imgs { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
         .imgs img { width:120px; height:100px; object-fit:cover; border-radius:6px; }
     </style>
 </head>
@@ -16,6 +16,7 @@
 <h2>Edit Award</h2>
 
 <form method="post" enctype="multipart/form-data">
+
     <input name="title" value="{{ item.title }}" required>
 
     <input name="year"
@@ -25,17 +26,20 @@
 
     <textarea name="description" rows="5">{{ item.description }}</textarea>
 
-    <p><strong>Existing Image</strong></p>
+    <p><strong>Existing Images</strong></p>
     <div class="imgs">
         {% if item.image %}
-            <img src="{{ url_for('static', filename=item.image) }}">
+            {% set images = item.image.split(",") %}
+            {% for img in images %}
+                <img src="{{ url_for('static', filename=img.strip()) }}">
+            {% endfor %}
         {% else %}
             No image
         {% endif %}
     </div>
 
-    <p><strong>Change Image (optional)</strong></p>
-    <input type="file" name="image" accept="image/*">
+    <p><strong>Change Images (optional, max 6)</strong></p>
+    <input type="file" name="images[]" multiple accept="image/*">
 
     <label style="display:block; margin-top:10px;">
         <input type="checkbox" name="pinned" value="1"
@@ -44,6 +48,7 @@
     </label>
 
     <button type="submit">Update Award</button>
+
 </form>
 
 <br>

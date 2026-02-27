@@ -74,18 +74,23 @@
     <th>Action</th>
 </tr>
 
-{% for e in events %}
+{% for e in items %}
 <tr>
     <td>{{ loop.index }}</td>
     <td>{{ e.title }}</td>
-    <td>{{ e.event_date }}</td>
+
+    <td>
+        {% if e.event_date %}
+            {{ e.event_date.strftime('%d-%m-%Y') }}
+        {% endif %}
+    </td>
 
     <td>
         {% if e.image %}
             {% set images = e.image.split(",") %}
             <div class="event-images">
                 {% for img in images %}
-                    <img src="{{ url_for('static', filename=img) }}">
+                    <img src="{{ url_for('static', filename=img.strip()) }}">
                 {% endfor %}
             </div>
         {% else %}
@@ -114,6 +119,7 @@
     <td colspan="6">No events found</td>
 </tr>
 {% endfor %}
+
 
 </table>
 

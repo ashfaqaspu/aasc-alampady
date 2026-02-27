@@ -289,22 +289,28 @@
 </div>
 
 
-<!-- ══ EVENT CARDS ══ -->
+<!-- ══ CHARITY CARDS ══ -->
 {% for e in items %}
 <div class="event-card reveal">
 
     <div class="event-card-body">
-        <h3>{{ e[1] }}</h3>
-        <small>{{ e[2] }}</small>
-        <p>{{ e[3] }}</p>
+        <h3>{{ e.title }}</h3>
+        <small>
+            {% if e.event_date %}
+                {{ e.event_date.strftime('%d-%m-%Y') }}
+            {% endif %}
+        </small>
+        <p>{{ e.description }}</p>
     </div>
 
-    {% if e[4] %}
-        {% set images = e[4].split(",") %}
+    {% if e.image %}
+        {% set images = e.image.split(",") %}
 
         <div class="ev-img-rule"></div>
+
         <div class="ev-main-wrap">
-            <img src="/{{ images[0] }}" class="event-main-img">
+            <img src="{{ url_for('static', filename=images[0].strip()) }}"
+                 class="event-main-img">
         </div>
 
         {% if images|length > 1 %}
@@ -312,7 +318,7 @@
             <div class="ev-scroll-hd">More Photos</div>
             <div class="event-scroll">
                 {% for img in images[1:] %}
-                    <img src="/{{ img }}">
+                    <img src="{{ url_for('static', filename=img.strip()) }}">
                 {% endfor %}
             </div>
         </div>

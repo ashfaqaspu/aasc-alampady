@@ -56,13 +56,16 @@
 <h2>Add Event</h2>
 
 <form method="post" enctype="multipart/form-data">
+    
     <input name="title" placeholder="Event Title" required>
+
     <input name="event_date" type="date" required>
+
     <textarea name="description" placeholder="Description" rows="5"></textarea>
 
     <label><strong>Event Images (Max 6)</strong></label>
     <input type="file"
-           name="images"
+           name="images[]"
            id="images"
            multiple
            accept="image/*"
@@ -84,13 +87,14 @@
 <script>
 function previewImages() {
     const preview = document.getElementById("preview");
-    const files = document.getElementById("images").files;
+    const input = document.getElementById("images");
+    const files = input.files;
 
     preview.innerHTML = "";
 
     if (files.length > 6) {
         alert("You can upload a maximum of 6 images.");
-        document.getElementById("images").value = "";
+        input.value = "";
         return;
     }
 

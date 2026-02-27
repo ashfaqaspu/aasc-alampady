@@ -312,23 +312,26 @@
 <div class="awards-list">
 
 {% for a in awards %}
-<div class="award-card {% if a[4] %}has-image{% endif %} reveal">
+<div class="award-card {% if a.image %}has-image{% endif %} reveal">
 
     <div class="award-body">
-        <div class="award-year-badge">Year: {{ a[2] }}</div>
+        <div class="award-year-badge">Year: {{ a.year }}</div>
+
         <div class="award-title-row">
             <span class="award-trophy">🏆</span>
-            <h3>{{ a[1] }}</h3>
+            <h3>{{ a.title }}</h3>
         </div>
-        <p>{{ a[3] }}</p>
+
+        <p>{{ a.description }}</p>
     </div>
 
-    {% if a[4] %}
-        {% if true %}
+    {% if a.image %}
+        {% set images = a.image.split(",") %}
         <div class="award-img-wrap">
-            <img src="/{{ a[4] }}">
+            {% for img in images %}
+                <img src="{{ url_for('static', filename=img.strip()) }}">
+            {% endfor %}
         </div>
-        {% endif %}
     {% endif %}
 
 </div>
@@ -340,7 +343,6 @@
 {% endfor %}
 
 </div>
-
 
 <script>
 (function(){

@@ -6,9 +6,9 @@
         body { font-family:Arial; background:#f4f6f9; padding:40px; }
         form { max-width:600px; background:white; padding:25px; border-radius:8px; }
         input, textarea, button { width:100%; padding:10px; margin-top:10px; }
-        button { background:#0d47a1; color:white; border:none; }
+        button { background:#0d47a1; color:white; border:none; cursor:pointer; }
         .imgs { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-        .imgs img { width:100px; height:70px; object-fit:cover; border-radius:6px; }
+        .imgs img { width:100px; height:70px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -16,31 +16,47 @@
 <h2>Edit Charity</h2>
 
 <form method="post" enctype="multipart/form-data">
-    <input name="title" value="{{ item.title }}" required>
 
-    <input name="event_date"
-           type="date"
-           value="{{ item.event_date.strftime('%Y-%m-%d') if item.event_date else '' }}"
-           required>
+    <!-- Title -->
+    <input 
+        name="title" 
+        value="{{ item.title }}" 
+        required
+    >
 
+    <!-- Date (Now Safe Because Model is Date) -->
+    <input 
+        name="event_date"
+        type="date"
+        value="{% if item.event_date %}{{ item.event_date.strftime('%Y-%m-%d') }}{% endif %}"
+        required
+    >
+
+    <!-- Description -->
     <textarea name="description" rows="5">{{ item.description }}</textarea>
 
+    <!-- Existing Images -->
     <p><strong>Existing Images</strong></p>
     <div class="imgs">
         {% if item.image %}
-            {% for img in item.image.split(",") %}
-                <img src="{{ url_for('static', filename=img) }}">
+            {% set images = item.image.split(",") %}
+            {% for img in images %}
+                <img src="{{ url_for('static', filename=img.strip()) }}">
             {% endfor %}
         {% else %}
             No images
         {% endif %}
     </div>
 
-    <p><strong>Add More Images (optional)</strong></p>
+    <!-- Upload New Images -->
+    <p><strong>Add More Images (optional, max 6)</strong></p>
     <input type="file" name="images[]" multiple accept="image/*">
 
+    <!-- Pin Checkbox -->
     <label style="display:block; margin-top:10px;">
-        <input type="checkbox" name="pinned" value="1"
+        <input type="checkbox" 
+               name="pinned" 
+               value="1"
                {% if item.pinned %}checked{% endif %}>
         📌 Pin this charity
     </label>

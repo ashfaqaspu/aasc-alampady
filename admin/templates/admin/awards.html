@@ -71,7 +71,15 @@
 
     <td>
         {% if a.image %}
-            <img src="{{ url_for('static', filename=a.image) }}" width="80">
+            {% set images = a.image.split(",") %}
+            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+                {% for img in images %}
+                    <img src="{{ url_for('static', filename=img.strip()) }}"
+                         width="70"
+                         height="55"
+                         style="object-fit:cover; border-radius:6px;">
+                {% endfor %}
+            </div>
         {% else %}
             -
         {% endif %}
