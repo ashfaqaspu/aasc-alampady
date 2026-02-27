@@ -432,12 +432,12 @@ def scan_attendance(token):
     # 🔹 Validate time
     meeting_start = datetime.combine(
         meeting.meeting_date,
-        datetime.strptime(m.start_time, "%H:%M").time()
+        datetime.strptime(meeting.start_time, "%H:%M").time()
     )
 
     meeting_end = datetime.combine(
         meeting.meeting_date,
-        datetime.strptime(m.end_time, "%H:%M").time()
+        datetime.strptime(meeting.end_time, "%H:%M").time()
     )
 
     if now < meeting_start or now > meeting_end:
@@ -491,9 +491,7 @@ def scan_attendance(token):
         total_time=total_time,
         attended_time=attended_minutes
     )
-
-import os
-
+    
 @portal_bp.route("/admin/meeting/end/<int:meeting_id>")
 def end_meeting(meeting_id):
 
