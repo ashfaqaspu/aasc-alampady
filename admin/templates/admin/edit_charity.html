@@ -3,12 +3,52 @@
 <head>
     <title>Edit Charity</title>
     <style>
-        body { font-family:Arial; background:#f4f6f9; padding:40px; }
-        form { max-width:600px; background:white; padding:25px; border-radius:8px; }
-        input, textarea, button { width:100%; padding:10px; margin-top:10px; }
-        button { background:#0d47a1; color:white; border:none; cursor:pointer; }
-        .imgs { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-        .imgs img { width:100px; height:70px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
+        body { 
+            font-family: Arial; 
+            background: #f4f6f9; 
+            padding: 40px; 
+        }
+
+        form { 
+            max-width: 600px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        input, textarea, button { 
+            width: 100%; 
+            padding: 10px; 
+            margin-top: 10px; 
+        }
+
+        button { 
+            background: #0d47a1; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .imgs { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-top: 10px; 
+        }
+
+        .imgs img { 
+            width: 100px; 
+            height: 70px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            border: 1px solid #ccc; 
+        }
     </style>
 </head>
 <body>
@@ -19,16 +59,23 @@
 
     <!-- Title -->
     <input 
+        type="text"
         name="title" 
         value="{{ item.title }}" 
         required
     >
 
-    <!-- Date (Now Safe Because Model is Date) -->
+    <!-- Safe Date Field -->
     <input 
-        name="event_date"
         type="date"
-        value="{% if item.event_date %}{{ item.event_date.strftime('%Y-%m-%d') }}{% endif %}"
+        name="event_date"
+        value="{% if item.event_date %}
+                   {% if item.event_date.__class__.__name__ == 'date' %}
+                       {{ item.event_date.strftime('%Y-%m-%d') }}
+                   {% else %}
+                       {{ item.event_date }}
+                   {% endif %}
+               {% endif %}"
         required
     >
 
@@ -50,14 +97,21 @@
 
     <!-- Upload New Images -->
     <p><strong>Add More Images (optional, max 6)</strong></p>
-    <input type="file" name="images[]" multiple accept="image/*">
+    <input 
+        type="file" 
+        name="images[]" 
+        multiple 
+        accept="image/*"
+    >
 
     <!-- Pin Checkbox -->
-    <label style="display:block; margin-top:10px;">
-        <input type="checkbox" 
-               name="pinned" 
-               value="1"
-               {% if item.pinned %}checked{% endif %}>
+    <label style="display:block; margin-top:15px;">
+        <input 
+            type="checkbox" 
+            name="pinned" 
+            value="1"
+            {% if item.pinned %}checked{% endif %}
+        >
         📌 Pin this charity
     </label>
 
