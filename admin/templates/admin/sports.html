@@ -1,93 +1,122 @@
-{% extends "admin/base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Sports</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
 
-<div class="container mt-4">
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
 
-    <h2>Sports Activities</h2>
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+        }
 
-    <div class="mb-3">
-        <a class="btn btn-success"
-           href="{{ url_for('admin.add_sport') }}">
-            ➕ Add Sports Activity
-        </a>
+        th {
+            background: #0d47a1;
+            color: white;
+        }
 
-        <a class="btn btn-secondary"
-           href="{{ url_for('admin.dashboard') }}">
-            Dashboard
-        </a>
-    </div>
+        a {
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped text-center align-middle">
+        .add {
+            margin-bottom: 15px;
+            display: inline-block;
+        }
 
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>Image</th>
-                    <th>📌</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+        /* IMAGE THUMBNAILS */
+        .event-images {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-            <tbody>
-                {% for s in items %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ s.title }}</td>
-                    <td>{{ s.event_date }}</td>
+        .event-images img {
+            width: 70px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
 
-                    <!-- SINGLE IMAGE -->
-                    <td>
-                        {% if s.image %}
-                            <img src="{{ url_for('static', filename=s.image) }}"
-                                 width="70"
-                                 height="55"
-                                 style="object-fit:cover;
-                                        border-radius:6px;
-                                        border:1px solid #ccc;">
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
+<h2>Sports Activities</h2>
 
-                    <!-- PIN STATUS -->
-                    <td>
-                        {% if s.pinned %}
-                            <span class="text-success">📌</span>
-                        {% else %}
-                            <span class="text-muted">—</span>
-                        {% endif %}
-                    </td>
+<a class="add" href="{{ url_for('admin.add_sport') }}">
+    ➕ Add Sports Activity
+</a> |
+<a href="{{ url_for('admin.dashboard') }}">
+    Dashboard
+</a>
 
-                    <!-- ACTION -->
-                    <td>
-                        <a class="btn btn-sm btn-primary"
-                           href="{{ url_for('admin.edit_sport', id=s.id) }}">
-                            ✏️ Edit
-                        </a>
+<table>
+<tr>
+    <th>#</th>
+    <th>Title</th>
+    <th>Date</th>
+    <th>Images</th>
+    <th>📌</th>
+    <th>Action</th>
+</tr>
 
-                        <!-- Only include this if you add delete route -->
-                        {# 
-                        <a class="btn btn-sm btn-danger"
-                           href="{{ url_for('admin.delete_sport', id=s.id) }}"
-                           onclick="return confirm('Delete this sports activity?')">
-                            ❌ Delete
-                        </a>
-                        #}
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="6">No sports activities added yet.</td>
-                </tr>
+{% for s in items %}
+<tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ s.title }}</td>
+    <td>{{ s.event_date }}</td>
+
+    <td>
+        {% if s.image %}
+            {% set images = s.image.split(",") %}
+            <div class="event-images">
+                {% for img in images %}
+                    <img src="{{ url_for('static', filename=img) }}">
                 {% endfor %}
-            </tbody>
+            </div>
+        {% else %}
+            -
+        {% endif %}
+    </td>
 
-        </table>
-    </div>
+    <td>
+        {% if s.pinned %}
+            <a href="{{ url_for('admin.unpin_sport', id=s.id) }}">📌</a>
+        {% else %}
+            <a href="{{ url_for('admin.pin_sport', id=s.id) }}">📍</a>
+        {% endif %}
+    </td>
 
-</div>
+    <td>
+        <a href="{{ url_for('admin.edit_sport', id=s.id) }}">✏️ Edit</a> |
+        <a href="{{ url_for('admin.delete_sport', id=s.id) }}"
+           onclick="return confirm('Delete this sports activity?')">
+           ❌ Delete
+        </a>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="6">No sports activities found</td>
+</tr>
+{% endfor %}
 
-{% endblock %}
+</table>
+
+</body>
+</html>

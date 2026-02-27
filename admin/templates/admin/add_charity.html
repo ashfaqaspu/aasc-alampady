@@ -31,7 +31,6 @@
             font-weight: bold;
         }
 
-        /* IMAGE PREVIEW */
         #preview {
             margin-top: 15px;
             display: flex;
@@ -50,98 +49,60 @@
 </head>
 <body>
 
-{% extends "admin/base.html" %}
-{% block content %}
+<h2>Add Charity Work</h2>
 
-<div class="container mt-4">
+<form method="post" enctype="multipart/form-data">
+    <input name="title" placeholder="Charity Title" required>
+    <input name="event_date" type="date" required>
+    <textarea name="description" placeholder="Description" rows="5"></textarea>
 
-    <h2>Add Charity Work</h2>
+    <label><strong>Charity Images (Max 6)</strong></label>
+    <input type="file"
+           name="images"
+           id="images"
+           multiple
+           accept="image/*"
+           onchange="previewImages()">
 
-    <form method="post"
-          enctype="multipart/form-data"
-          action="{{ url_for('admin.add_charity') }}">
+    <div id="preview"></div>
 
-        <div class="mb-3">
-            <input class="form-control"
-                   name="title"
-                   placeholder="Charity Title"
-                   required>
-        </div>
+    <label style="display:block; margin-top:10px;">
+        <input type="checkbox" name="pinned" value="1">
+        📌 Pin this charity work to top
+    </label>
 
-        <div class="mb-3">
-            <input class="form-control"
-                   name="event_date"
-                   type="date"
-                   required>
-        </div>
+    <button type="submit">Save Charity</button>
+</form>
 
-        <div class="mb-3">
-            <textarea class="form-control"
-                      name="description"
-                      placeholder="Description"
-                      rows="5"></textarea>
-        </div>
-
-        <!-- IMAGE INPUT -->
-        <div class="mb-3">
-            <label class="form-label"><strong>Charity Image</strong></label>
-            <input class="form-control"
-                   type="file"
-                   name="image"
-                   id="image"
-                   accept="image/*"
-                   onchange="previewImage()">
-        </div>
-
-        <!-- IMAGE PREVIEW -->
-        <div id="preview" class="mb-3"></div>
-
-        <div class="form-check mb-3">
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="pinned"
-                   value="1"
-                   id="pinned">
-            <label class="form-check-label" for="pinned">
-                📌 Pin this charity work to top
-            </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            Save Charity
-        </button>
-
-        <a href="{{ url_for('admin.charity') }}"
-           class="btn btn-secondary">
-           ← Back
-        </a>
-
-    </form>
-
-</div>
+<br>
+<a href="{{ url_for('admin.charity') }}">← Back</a>
 
 <script>
-function previewImage() {
+function previewImages() {
     const preview = document.getElementById("preview");
-    const file = document.getElementById("image").files[0];
+    const files = document.getElementById("images").files;
 
     preview.innerHTML = "";
 
-    if (!file || !file.type.startsWith("image/")) return;
+    if (files.length > 6) {
+        alert("You can upload a maximum of 6 images.");
+        document.getElementById("images").value = "";
+        return;
+    }
 
-    const reader = new FileReader();
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith("image/")) return;
 
-    reader.onload = function (e) {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.style.width = "200px";
-        img.style.marginTop = "10px";
-        img.style.borderRadius = "8px";
-        preview.appendChild(img);
-    };
-
-    reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
 }
 </script>
 
-{% endblock %}
+</body>
+</html>

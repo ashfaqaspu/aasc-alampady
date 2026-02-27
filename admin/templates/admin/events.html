@@ -1,95 +1,121 @@
-{% extends "admin/base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Socio-Events</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
 
-<div class="container mt-4">
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
 
-    <h2>Events</h2>
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+        }
 
-    <div class="mb-3">
-        <a class="btn btn-success"
-           href="{{ url_for('admin.add_event') }}">
-            ➕ Add Event
-        </a>
+        th {
+            background: #0d47a1;
+            color: white;
+        }
 
-        <a class="btn btn-secondary"
-           href="{{ url_for('admin.dashboard') }}">
-            Dashboard
-        </a>
-    </div>
+        a {
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped text-center align-middle">
+        .add {
+            margin-bottom: 15px;
+            display: inline-block;
+        }
 
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>Images</th>
-                    <th>📌</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+        .event-images {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-            <tbody>
-                {% for e in events %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ e.title }}</td>
-                    <td>{{ e.event_date }}</td>
+        .event-images img {
+            width: 70px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
 
-                    <!-- MULTIPLE IMAGES -->
-                    <td>
-                        {% if e.image %}
-                            {% set images = e.image.split(",") %}
-                            <div class="d-flex flex-wrap justify-content-center gap-2">
-                                {% for img in images %}
-                                    <img src="{{ url_for('static', filename=img) }}"
-                                         width="70"
-                                         height="55"
-                                         style="object-fit:cover;
-                                                border-radius:6px;
-                                                border:1px solid #ccc;">
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
+<h2>Events</h2>
 
-                    <!-- PIN STATUS -->
-                    <td>
-                        {% if e.pinned %}
-                            <span class="text-success">📌</span>
-                        {% else %}
-                            <span class="text-muted">—</span>
-                        {% endif %}
-                    </td>
+<a class="add" href="{{ url_for('admin.add_event') }}">
+    ➕ Add Event
+</a> |
+<a href="{{ url_for('admin.dashboard') }}">
+    Dashboard
+</a>
 
-                    <!-- ACTION -->
-                    <td>
-                        <a class="btn btn-sm btn-primary"
-                           href="{{ url_for('admin.edit_event', id=e.id) }}">
-                            ✏️ Edit
-                        </a>
+<table>
+<tr>
+    <th>#</th>
+    <th>Title</th>
+    <th>Date</th>
+    <th>Images</th>
+    <th>📌</th>
+    <th>Action</th>
+</tr>
 
-                        <a class="btn btn-sm btn-danger"
-                           href="{{ url_for('admin.delete_event', id=e.id) }}"
-                           onclick="return confirm('Delete this event?')">
-                            ❌ Delete
-                        </a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="6">No events added yet.</td>
-                </tr>
+{% for e in events %}
+<tr>
+    <td>{{ loop.index }}</td>
+    <td>{{ e.title }}</td>
+    <td>{{ e.event_date }}</td>
+
+    <td>
+        {% if e.image %}
+            {% set images = e.image.split(",") %}
+            <div class="event-images">
+                {% for img in images %}
+                    <img src="{{ url_for('static', filename=img) }}">
                 {% endfor %}
-            </tbody>
+            </div>
+        {% else %}
+            -
+        {% endif %}
+    </td>
 
-        </table>
-    </div>
+    <td>
+        {% if e.pinned %}
+            <a href="{{ url_for('admin.unpin_event', id=e.id) }}">📌</a>
+        {% else %}
+            <a href="{{ url_for('admin.pin_event', id=e.id) }}">📍</a>
+        {% endif %}
+    </td>
 
-</div>
+    <td>
+        <a href="{{ url_for('admin.edit_event', id=e.id) }}">✏️ Edit</a> |
+        <a href="{{ url_for('admin.delete_event', id=e.id) }}"
+           onclick="return confirm('Delete this event?')">
+           ❌ Delete
+        </a>
+    </td>
+</tr>
+{% else %}
+<tr>
+    <td colspan="6">No events found</td>
+</tr>
+{% endfor %}
 
-{% endblock %}
+</table>
+
+</body>
+</html>

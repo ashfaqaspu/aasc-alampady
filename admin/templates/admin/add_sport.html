@@ -1,97 +1,108 @@
-{% extends "admin/base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add SPORT-Event</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
 
-<div class="container mt-4">
+        form {
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
 
-    <h2>Add Sport</h2>
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
 
-    <form method="post"
-          enctype="multipart/form-data"
-          action="{{ url_for('admin.add_sport') }}">
+        button {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-        <div class="mb-3">
-            <input class="form-control"
-                   name="title"
-                   placeholder="Sport Title"
-                   required>
-        </div>
+        #preview {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
-        <div class="mb-3">
-            <input class="form-control"
-                   name="event_date"
-                   type="date"
-                   required>
-        </div>
+        #preview img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
 
-        <div class="mb-3">
-            <textarea class="form-control"
-                      name="description"
-                      placeholder="Description"
-                      rows="5"></textarea>
-        </div>
+<h2>Add Event</h2>
 
-        <!-- IMAGE INPUT -->
-        <div class="mb-3">
-            <label class="form-label"><strong>Sport Image</strong></label>
-            <input class="form-control"
-                   type="file"
-                   name="image"
-                   id="image"
-                   accept="image/*"
-                   onchange="previewImage()">
-        </div>
+<form method="post" enctype="multipart/form-data">
+    <input name="title" placeholder="Event Title" required>
+    <input name="event_date" type="date" required>
+    <textarea name="description" placeholder="Description" rows="5"></textarea>
 
-        <!-- IMAGE PREVIEW -->
-        <div id="preview" class="mb-3"></div>
+    <label><strong>Event Images (Max 6)</strong></label>
+    <input type="file"
+           name="images"
+           id="images"
+           multiple
+           accept="image/*"
+           onchange="previewImages()">
 
-        <div class="form-check mb-3">
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="pinned"
-                   value="1"
-                   id="pinned">
-            <label class="form-check-label" for="pinned">
-                📌 Pin this sport to top
-            </label>
-        </div>
+    <div id="preview"></div>
 
-        <button type="submit" class="btn btn-primary">
-            Save Sport
-        </button>
+    <label style="display:block; margin-top:10px;">
+        <input type="checkbox" name="pinned" value="1">
+        📌 Pin this event to top
+    </label>
 
-        <a href="{{ url_for('admin.sports') }}"
-           class="btn btn-secondary">
-           ← Back
-        </a>
+    <button type="submit">Save Event</button>
+</form>
 
-    </form>
-
-</div>
+<br>
+<a href="{{ url_for('admin.events') }}">← Back</a>
 
 <script>
-function previewImage() {
+function previewImages() {
     const preview = document.getElementById("preview");
-    const file = document.getElementById("image").files[0];
+    const files = document.getElementById("images").files;
 
     preview.innerHTML = "";
 
-    if (!file || !file.type.startsWith("image/")) return;
+    if (files.length > 6) {
+        alert("You can upload a maximum of 6 images.");
+        document.getElementById("images").value = "";
+        return;
+    }
 
-    const reader = new FileReader();
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith("image/")) return;
 
-    reader.onload = function (e) {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.style.width = "150px";
-        img.style.height = "120px";
-        img.style.objectFit = "cover";
-        img.style.borderRadius = "10px";
-        img.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
-        preview.appendChild(img);
-    };
-
-    reader.readAsDataURL(file);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    });
 }
 </script>
 
-{% endblock %}
+</body>
+</html>
