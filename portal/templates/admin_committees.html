@@ -1,34 +1,181 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>🏛 All Committees</h2>
+<style>
+.page-wrapper {
+  padding: 40px 20px;
+}
 
-{% if committees %}
-<table class="table-style">
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0d47a1;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.table-card {
+  max-width: 1100px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #0d47a1;
+}
+
+th {
+  color: white;
+  padding: 16px 18px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf2f7;
+  font-size: 14px;
+}
+
+tbody tr:hover td {
+  background: #f4f8ff;
+}
+
+.badge {
+  background: #e3f2fd;
+  color: #0d47a1;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.actions a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  margin-right: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: 0.2s ease;
+}
+
+.view-btn {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.view-btn:hover {
+  background: #bbdefb;
+}
+
+.delete-btn {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.delete-btn:hover {
+  background: #ffcdd2;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px;
+  color: #78909c;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+  }
+
+  td {
+    padding: 10px;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+    color: #607d8b;
+  }
+}
+</style>
+
+<div class="page-wrapper">
+
+<div class="page-title">
+  🏛 All Committees
+</div>
+
+{% if committees and committees|length > 0 %}
+
+<div class="table-card">
+<table>
+  <thead>
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Members</th>
-        <th>Action</th>
+      <th>ID</th>
+      <th>Committee Name</th>
+      <th>Total Members</th>
+      <th>Actions</th>
     </tr>
+  </thead>
 
+  <tbody>
     {% for c in committees %}
     <tr>
-        <td>{{ c.id }}</td>
-        <td>{{ c.name }}</td>
-        <td>{{ c.members|length }}</td>
-        <td>
-            <a href="{{ url_for('portal.committee_dashboard', cid=c.id) }}">View</a> |
-            <a href="{{ url_for('portal.delete_committee', cid=c.id) }}"
-               onclick="return confirm('Are you sure?');">
-               🗑 Delete
-            </a>
-        </td>
+      <td data-label="ID">{{ c.id }}</td>
+      <td data-label="Committee Name">{{ c.name }}</td>
+      <td data-label="Members">
+        <span class="badge">{{ c.members|length }} Members</span>
+      </td>
+      <td data-label="Actions" class="actions">
+        <a href="{{ url_for('portal.committee_dashboard', cid=c.id) }}"
+           class="view-btn">
+           👁 View
+        </a>
+
+        <a href="{{ url_for('portal.delete_committee', cid=c.id) }}"
+           class="delete-btn"
+           onclick="return confirm('Are you sure you want to delete this committee?');">
+           🗑 Delete
+        </a>
+      </td>
     </tr>
     {% endfor %}
+  </tbody>
 </table>
+</div>
+
 {% else %}
-<p>No committees found.</p>
+
+<div class="empty-state">
+  🚫 No committees found.<br><br>
+  Create a committee to get started.
+</div>
+
 {% endif %}
+
+</div>
 
 {% endblock %}

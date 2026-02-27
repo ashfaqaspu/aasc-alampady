@@ -1,167 +1,184 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <title>Admin | Events</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+.page-wrapper {
+    padding: 40px 20px;
+}
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+/* Title */
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin-bottom: 30px;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #0d47a1;
-            font-size: 26px;
-        }
+/* Card */
+.card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    margin: auto;
+    margin-bottom: 30px;
+    max-width: 1100px;
+}
 
-        h3 {
-            margin-top: 0;
-            color: #0d47a1;
-            font-size: 18px;
-        }
+/* Form */
+input, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 14px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #dcdfe3;
+    background: #fafafa;
+    transition: 0.2s;
+}
 
-        /* Cards */
-        .card {
-            background: #ffffff;
-            padding: 26px 24px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            margin: auto;
-            margin-bottom: 30px;
-            max-width: 1000px;
-        }
+textarea {
+    resize: vertical;
+}
 
-        /* Form */
-        input,
-        textarea {
-            width: 100%;
-            padding: 12px 14px;
-            margin-top: 14px;
-            font-size: 14.5px;
-            border-radius: 8px;
-            border: 1px solid #dcdfe3;
-            background: #fafafa;
-            transition: border 0.2s, box-shadow 0.2s;
-        }
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #0d47a1;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(13,71,161,0.1);
+}
 
-        textarea {
-            resize: vertical;
-        }
+button {
+    margin-top: 20px;
+    padding: 12px 22px;
+    background: linear-gradient(135deg,#0d47a1,#1976d2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #0d47a1;
-            background: #ffffff;
-            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
-        }
+button:hover {
+    background: #08306b;
+    box-shadow: 0 6px 14px rgba(13,71,161,0.25);
+}
 
-        button {
-            margin-top: 20px;
-            padding: 12px 22px;
-            background: #0d47a1;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14.5px;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
-        }
+/* Table */
+.table-card {
+    overflow-x: auto;
+}
 
-        button:hover {
-            background: #08306b;
-            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.25);
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        button:active {
-            transform: scale(0.98);
-        }
+thead {
+    background: #0d47a1;
+}
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            margin-top: 15px;
-        }
+th {
+    color: white;
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 14px;
+}
 
-        th {
-            background: #0d47a1;
-            color: #ffffff;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 14.5px;
-        }
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eef1f5;
+    font-size: 14px;
+}
 
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #eef1f5;
-            font-size: 14.5px;
-        }
+tbody tr:hover td {
+    background: #f4f8ff;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+.badge {
+    background: #e3f2fd;
+    color: #0d47a1;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+.action-btn {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
 
-        td[colspan] {
-            text-align: center;
-            color: #777;
-            font-style: italic;
-        }
+.view-btn {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
 
-        /* Buttons / Links */
-        .btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-        }
+.view-btn:hover {
+    background: #bbdefb;
+}
 
-        .btn.info {
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #78909c;
+    font-style: italic;
+}
 
-        .btn.info:hover {
-            background: #bbdefb;
-        }
+/* Back */
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #0d47a1;
+}
 
-        /* Back link */
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #0d47a1;
-        }
+.back:hover {
+    text-decoration: underline;
+}
 
-        .back:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+/* Responsive */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
 
-<h2>📅 Manage Events</h2>
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 10px;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+        color: #607d8b;
+    }
+}
+</style>
+
+<div class="page-wrapper">
+
+<div class="page-title">
+    🎉 Manage Portal Events
+</div>
 
 <!-- CREATE EVENT -->
 <div class="card" style="max-width:600px;">
@@ -177,40 +194,87 @@
 </div>
 
 <!-- EVENT LIST -->
-<div class="card">
-    <h3>All Portal Events</h3>
+<div class="card table-card">
+    <h3>All Events</h3>
+
+    {% if events and events|length > 0 %}
 
     <table>
-        <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Participants</th>
-            <th>Action</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Participants</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
+        <tbody>
         {% for e in events %}
         <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ e.title }}</td>
-            <td>{{ e.event_date }}</td>
-            <td>
-                {{ e.participants|length if e.participants else 0 }}
+            <td data-label="#"> {{ loop.index }} </td>
+            <td data-label="Title"> {{ e.title }} </td>
+            <td data-label="Date"> {{ e.event_date }} </td>
+            <td data-label="Participants">
+                <span class="badge">
+                    {{ e.participant_count }}
+                </span>
             </td>
-            <td>
-                <a href="{{ url_for('portal.event_participants', event_id=e.id) }}">
-                    View Participants
+            <td data-label="Action">
+                <a href="{{ url_for('portal.event_participants', event_id=e.id) }}"
+                   class="action-btn view-btn">
+                   👥 View Participants
                 </a>
             </td>
         </tr>
-        {% else %}
-        <tr>
-            <td colspan="5">No portal events created</td>
-        </tr>
         {% endfor %}
+        </tbody>
     </table>
+
+    {% else %}
+        <div class="empty-state">
+            No portal events created yet.
+        </div>
+    {% endif %}
 </div>
+
+    <hr>
+
+<!-- ===== NATIVITY DISTRIBUTION ===== -->
+<h3>🌍 Nativity Distribution</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if nativity and nativity|length > 0 %}
+            {% for n in nativity %}
+            <tr>
+                <td>{{ n[0] }}</td>
+                <td>{{ n[1] }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="2" style="text-align:center;">
+                    No nativity data available
+                </td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
 
 <a href="{{ url_for('portal.dashboard') }}" class="back">
     ← Back to Dashboard
 </a>
+
+</div>
+
+{% endblock %}
+</html>

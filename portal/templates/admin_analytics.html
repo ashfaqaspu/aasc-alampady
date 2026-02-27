@@ -1,208 +1,257 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin | Analytics</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% extends "portal/base.html" %}
+{% block content %}
 
-    <style>
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<style>
+.page-wrapper {
+    padding: 40px 20px;
+}
 
-        h2 {
-            margin-bottom: 25px;
-            color: #0d47a1;
-            text-align: center;
-            font-size: 26px;
-        }
+/* Title */
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin-bottom: 35px;
+}
 
-        h3 {
-            margin-top: 35px;
-            margin-bottom: 15px;
-            color: #0d47a1;
-            font-size: 20px;
-        }
+/* Section container */
+.section {
+    margin-bottom: 45px;
+}
 
-        /* Stats cards */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 22px;
-            margin-bottom: 40px;
-        }
+/* Stats Grid */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 22px;
+}
 
-        .stat-card {
-            background: linear-gradient(135deg, #ffffff, #f9fbff);
-            padding: 26px 20px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
+/* Stat Cards */
+.stat-card {
+    background: linear-gradient(135deg, #ffffff, #f9fbff);
+    padding: 28px 20px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    transition: 0.2s ease;
+}
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.12);
-        }
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+}
 
-        .stat-card h2 {
-            margin: 0;
-            font-size: 36px;
-            color: #0d47a1;
-        }
+.stat-card h2 {
+    margin: 0;
+    font-size: 38px;
+    color: #0d47a1;
+}
 
-        .stat-card p {
-            margin-top: 10px;
-            font-weight: 600;
-            font-size: 15px;
-            color: #555;
-            letter-spacing: 0.3px;
-        }
+.stat-card p {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #555;
+}
 
-        /* Tables */
-        table {
-            width: 100%;
-            max-width: 600px;
-            border-collapse: collapse;
-            background: #ffffff;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            margin-bottom: 10px;
-        }
+/* Section Title */
+.section h3 {
+    margin-bottom: 18px;
+    color: #0d47a1;
+    font-size: 20px;
+}
 
-        th {
-            background: #0d47a1;
-            color: #ffffff;
-            text-align: left;
-            padding: 14px 16px;
-            font-size: 15px;
-        }
+/* Table Card */
+.table-card {
+    max-width: 650px;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
 
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #eef1f5;
-            font-size: 14.5px;
-        }
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+th {
+    background: #0d47a1;
+    color: white;
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 14px;
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eef1f5;
+    font-size: 14px;
+}
 
-        /* Back link */
-        a {
-            display: inline-block;
-            margin-top: 25px;
-            text-decoration: none;
-            color: #0d47a1;
-            font-weight: 600;
-            font-size: 15px;
-        }
+tr:last-child td {
+    border-bottom: none;
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+tr:hover td {
+    background: #f5f8ff;
+}
 
-<h2>📊 Admin Analytics</h2>
+/* Empty */
+.empty {
+    padding: 20px;
+    text-align: center;
+    color: #78909c;
+    font-style: italic;
+}
+
+/* Back button */
+.back {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 8px 16px;
+    background: #e3f2fd;
+    color: #0d47a1;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.back:hover {
+    background: #bbdefb;
+}
+</style>
+
+<div class="page-wrapper">
+
+<div class="page-title">
+    📊 Admin Analytics
+</div>
 
 <!-- ===== MEMBER STATS ===== -->
-<div class="stats">
-    <div class="stat-card">
-        <h2>{{ total }}</h2>
-        <p>Total Members</p>
-    </div>
+<div class="section">
+    <div class="stats">
+        <div class="stat-card">
+            <h2>{{ total }}</h2>
+            <p>Total Members</p>
+        </div>
 
-    <div class="stat-card">
-        <h2>{{ active }}</h2>
-        <p>Active Members</p>
-    </div>
+        <div class="stat-card">
+            <h2>{{ active }}</h2>
+            <p>Active Members</p>
+        </div>
 
-    <div class="stat-card">
-        <h2>{{ expired }}</h2>
-        <p>Expired Members</p>
+        <div class="stat-card">
+            <h2>{{ expired }}</h2>
+            <p>Expired Members</p>
+        </div>
     </div>
 </div>
 
-<hr>
+<!-- ===== BLOOD GROUP ===== -->
+<div class="section">
+    <h3>🩸 Blood Group Distribution</h3>
 
-<!-- ===== BLOOD GROUP DISTRIBUTION ===== -->
-<h3>🩸 Blood Group Distribution</h3>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Blood Group</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if blood_groups %}
+                    {% for group, count in blood_groups %}
+                    <tr>
+                        <td>{{ group }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="empty">
+                            No blood group data available
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Blood Group</th>
-            <th>Count</th>
-        </tr>
-    </thead>
+<!-- ===== INTERESTS ===== -->
+<div class="section">
+    <h3>🎯 Interests Distribution</h3>
 
-    <tbody>
-        {% if blood_groups and blood_groups|length > 0 %}
-            {% for b in blood_groups %}
-            <tr>
-                <td>{{ b[0] }}</td>
-                <td>{{ b[1] }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="2" style="text-align:center;">
-                    No blood group data available
-                </td>
-            </tr>
-        {% endif %}
-    </tbody>
-</table>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Interest</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if interests %}
+                    {% for interest, count in interests %}
+                    <tr>
+                        <td>{{ interest }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="empty">
+                            No interest data available
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<hr>
+<!-- ===== NATIVITY ===== -->
+<div class="section">
+    <h3>🌍 Nativity Distribution</h3>
 
-<!-- ===== INTEREST DISTRIBUTION ===== -->
-<h3>🎯 Interests Distribution</h3>
-
-<table>
-    <thead>
-        <tr>
-            <th>Interest</th>
-            <th>Count</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% if interests and interests|length > 0 %}
-            {% for i in interests %}
-            <tr>
-                <td>{{ i[0] }}</td>
-                <td>{{ i[1] }}</td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="2" style="text-align:center;">
-                    No interest data available
-                </td>
-            </tr>
-        {% endif %}
-    </tbody>
-</table>
-
-<hr>
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if nativity_counts %}
+                    {% for key, value in nativity_counts.items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="empty">
+                            No nativity data available
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <!-- ===== BACK BUTTON ===== -->
-<div style="margin-top:20px;">
-    <a href="{{ url_for('portal.dashboard') }}" class="back">
-        ← Back to Dashboard
-    </a>
+<a href="{{ url_for('portal.dashboard') }}" class="back">
+    ← Back to Dashboard
+</a>
+
 </div>
 
-</body>
-</html>
+{% endblock %}

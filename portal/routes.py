@@ -6,7 +6,7 @@ from model import *
 from flask import request, session, redirect, url_for, render_template, flash
 from helpers import *
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from sqlalchemy import func
 
 
 
@@ -341,6 +341,46 @@ import uuid
 import qrcode
 import os
 
+@portal_bp.route("/committee/<int:cid>/create-meeting", methods=["GET", "POST"])
+def create_meeting(cid):
+
+    if not is_committee_admin(cid):
+        return "Access Denied", 403
+
+    if request.method == "POST":
+
+        token = str(uuid.uuid4())
+
+        meeting = CommitteeMeeting(
+            committee_id=cid,
+            title=request.form["title"],
+            meeting_date=datetime.strptime(request.form["meeting_date"], "%Y-%m-%d").date(),
+            start_time=request.form["start_time"],  # Stored as string
+            end_time=request.form["end_time"],      # Stored as string
+            token=token,
+            status="SCHEDULED"
+        )
+
+        db.session.add(meeting)
+        db.session.commit()
+
+        # Generate QR
+        qr_url = url_for("portal.scan_attendance", token=token, _external=True)
+
+        os.makedirs("static/qrcodes", exist_ok=True)
+        qr_path = f"static/qrcodes/meeting_{meeting.id}.png"
+
+        qr = qrcode.QRCode(box_size=8, border=2)
+        qr.add_data(qr_url)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white")
+        img.save(qr_path)
+
+        return redirect(url_for("portal.committee_dashboard", cid=cid))
+
+    return render_template("create_meeting.html", cid=cid)
+
 @portal_bp.route("/admin/meeting/start/<int:meeting_id>")
 def start_meeting(meeting_id):
 
@@ -363,41 +403,6 @@ def start_meeting(meeting_id):
     return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
 
-
-
-
-@portal_bp.route("/committee/<int:cid>/create-meeting", methods=["GET", "POST"])
-def create_meeting(cid):
-    if not is_committee_admin(cid):
-        return "Access Denied", 403
-
-    if request.method == "POST":
-        token = str(uuid.uuid4())
-
-        meeting = CommitteeMeeting(
-            committee_id=cid,
-            title=request.form["title"],
-            meeting_date=request.form["meeting_date"],
-            start_time=request.form["start_time"],
-            end_time=request.form["end_time"],
-            token=token
-        )
-
-        db.session.add(meeting)
-        db.session.commit()
-
-        qr_url = url_for("portal.scan_attendance", token=token, _external=True)
-        img = qrcode.make(qr_url)
-
-        os.makedirs("static/qrcodes", exist_ok=True)
-        img.save(f"static/qrcodes/meeting_{meeting.id}.png")
-
-        return redirect(url_for("portal.committee_dashboard", cid=cid))
-
-    return render_template("create_meeting.html", cid=cid)
-
-
-
 @portal_bp.route("/attendance/scan/<token>")
 def scan_attendance(token):
 
@@ -406,30 +411,17 @@ def scan_attendance(token):
 
     meeting = CommitteeMeeting.query.filter_by(token=token).first()
 
-    if not meeting:
+    if not meeting or meeting.status != "ONGOING":
         return render_template(
             "attendance_result.html",
-            message="Invalid QR Code",
-            time="—",
-            minutes=0,
-            total_time=0,
-            attended_time=0
+            data=[],
+            cid=None
         )
 
+    cid = meeting.committee_id
     now = datetime.now()
 
-    # 🔹 Validate date
-    if now.date() != meeting.meeting_date:
-        return render_template(
-            "attendance_result.html",
-            message="Meeting is not scheduled for today",
-            time=now.strftime("%H:%M"),
-            minutes=0,
-            total_time=0,
-            attended_time=0
-        )
-
-    # 🔹 Validate time
+    # Convert string time to real time
     meeting_start = datetime.combine(
         meeting.meeting_date,
         datetime.strptime(meeting.start_time, "%H:%M").time()
@@ -440,58 +432,51 @@ def scan_attendance(token):
         datetime.strptime(meeting.end_time, "%H:%M").time()
     )
 
-    if now < meeting_start or now > meeting_end:
+    if not (meeting_start <= now <= meeting_end):
         return render_template(
             "attendance_result.html",
-            message="Meeting is not active",
-            time=now.strftime("%H:%M"),
-            minutes=0,
-            total_time=0,
-            attended_time=0
+            data=[],
+            cid=cid
         )
 
-    # 🔹 Prevent duplicate
+    # Prevent duplicate
     existing = CommitteeMeetingAttendance.query.filter_by(
         meeting_id=meeting.id,
         user_id=session["user_id"]
     ).first()
 
-    if existing:
-        return render_template(
-            "attendance_result.html",
-            message="Attendance already marked",
-            time=existing.scan_time.strftime("%H:%M"),
-            minutes=existing.attended_minutes,
-            total_time=0,
-            attended_time=existing.attended_minutes
+    if not existing:
+
+        attended_minutes = int((meeting_end - now).total_seconds() / 60)
+        attended_minutes = max(attended_minutes, 0)
+
+        attendance = CommitteeMeetingAttendance(
+            meeting_id=meeting.id,
+            user_id=session["user_id"],
+            scan_time=now,
+            attended_minutes=attended_minutes
         )
 
-    # 🔹 Calculate remaining minutes
-    attended_minutes = int((meeting_end - now).total_seconds() / 60)
-    attended_minutes = max(attended_minutes, 0)
+        db.session.add(attendance)
+        db.session.commit()
 
-    attendance = CommitteeMeetingAttendance(
-        meeting_id=meeting.id,
-        user_id=session["user_id"],
-        scan_time=now,
-        attended_minutes=attended_minutes
-    )
-
-    db.session.add(attendance)
-    db.session.commit()
-
-    # 🔹 Total meeting duration
-    total_time = int((meeting_end - meeting_start).total_seconds() / 60)
+    # Fetch summary
+    attendance_data = db.session.query(
+        User.name,
+        func.sum(CommitteeMeetingAttendance.attended_minutes)
+    ).join(
+        CommitteeMeetingAttendance,
+        User.id == CommitteeMeetingAttendance.user_id
+    ).filter(
+        CommitteeMeetingAttendance.meeting_id == meeting.id
+    ).group_by(User.name).all()
 
     return render_template(
         "attendance_result.html",
-        message="Attendance marked successfully ✅",
-        time=now.strftime("%H:%M"),
-        minutes=attended_minutes,
-        total_time=total_time,
-        attended_time=attended_minutes
+        data=attendance_data,
+        cid=cid
     )
-    
+
 @portal_bp.route("/admin/meeting/end/<int:meeting_id>")
 def end_meeting(meeting_id):
 
@@ -506,12 +491,10 @@ def end_meeting(meeting_id):
     if meeting.status != "ONGOING":
         return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
 
-    # 🔹 Update meeting status
     meeting.actual_end = datetime.utcnow()
     meeting.status = "COMPLETED"
-    meeting.token = None  # Disable QR scanning
+    meeting.token = None
 
-    # 🔹 Delete QR image file
     qr_path = f"static/qrcodes/meeting_{meeting.id}.png"
 
     if os.path.exists(qr_path):
@@ -520,6 +503,7 @@ def end_meeting(meeting_id):
     db.session.commit()
 
     return redirect(url_for("portal.committee_dashboard", cid=meeting.committee_id))
+
 
 
 @portal_bp.route("/committee/meeting/<int:mid>/report")
@@ -555,7 +539,10 @@ def meeting_report(mid):
         try:
             start = datetime.strptime(meeting.start_time, "%H:%M")
             end = datetime.strptime(meeting.end_time, "%H:%M")
-            total_time = int((end - start).total_seconds() / 60)
+
+            if end > start:
+                total_time = int((end - start).total_seconds() / 60)
+
         except:
             total_time = 0
 
@@ -565,8 +552,6 @@ def meeting_report(mid):
         records=records,
         total_time=total_time
     )
-
-
 
 @portal_bp.route("/committee/<int:cid>/monthly-report")
 def monthly_report(cid):
@@ -582,20 +567,35 @@ def monthly_report(cid):
     if not member or member.role != "admin":
         return "Access Denied", 403
 
-    data = []
     processed_data = []
     total_meeting_time = 0
     total_attended_time = 0
 
     if month:
 
-        # 🔹 Get all meetings for that month
+        # ✅ Convert month into date range
+        try:
+            start_date = datetime.strptime(month + "-01", "%Y-%m-%d").date()
+
+            if month.endswith("12"):
+                end_date = datetime.strptime(
+                    str(int(month[:4]) + 1) + "-01-01",
+                    "%Y-%m-%d"
+                ).date()
+            else:
+                next_month = datetime.strptime(month + "-01", "%Y-%m-%d")
+                end_date = (next_month.replace(day=28) + timedelta(days=4)).replace(day=1).date()
+        except:
+            return "Invalid month format", 400
+
+        # 🔹 Get meetings in that month
         meetings = CommitteeMeeting.query.filter(
             CommitteeMeeting.committee_id == cid,
-            db.func.to_char(CommitteeMeeting.meeting_date, 'YYYY-MM') == month
+            CommitteeMeeting.meeting_date >= start_date,
+            CommitteeMeeting.meeting_date < end_date
         ).all()
 
-        # 🔹 Calculate total scheduled meeting time (in minutes)
+        # 🔹 Calculate total scheduled meeting minutes
         for m in meetings:
             if m.start_time and m.end_time:
                 try:
@@ -609,9 +609,7 @@ def monthly_report(cid):
         # 🔹 Total attended minutes per user
         data = db.session.query(
             User.name,
-            db.func.coalesce(
-                db.func.sum(CommitteeMeetingAttendance.attended_minutes), 0
-            )
+            func.coalesce(func.sum(CommitteeMeetingAttendance.attended_minutes), 0)
         ).join(
             CommitteeMeetingAttendance,
             CommitteeMeetingAttendance.user_id == User.id
@@ -620,13 +618,12 @@ def monthly_report(cid):
             CommitteeMeeting.id == CommitteeMeetingAttendance.meeting_id
         ).filter(
             CommitteeMeeting.committee_id == cid,
-            db.func.to_char(CommitteeMeeting.meeting_date, 'YYYY-MM') == month
+            CommitteeMeeting.meeting_date >= start_date,
+            CommitteeMeeting.meeting_date < end_date
         ).group_by(User.id).all()
 
-        # 🔹 Calculate total attended minutes (all users combined)
         total_attended_time = sum([d[1] for d in data]) if data else 0
 
-        # 🔹 Calculate attendance percentage per user
         for name, attended in data:
             if total_meeting_time > 0:
                 percentage = round((attended / total_meeting_time) * 100, 2)
@@ -661,15 +658,20 @@ def yearly_report(cid):
     if not member or member.role != "admin":
         return "Access Denied", 403
 
-    # 🔹 Total meetings in that year
+    try:
+        start_date = datetime.strptime(year + "-01-01", "%Y-%m-%d").date()
+        end_date = datetime.strptime(str(int(year) + 1) + "-01-01", "%Y-%m-%d").date()
+    except:
+        return "Invalid year format", 400
+
+    # 🔹 Get meetings
     meetings = CommitteeMeeting.query.filter(
         CommitteeMeeting.committee_id == cid,
-        db.func.to_char(CommitteeMeeting.meeting_date, 'YYYY') == year
+        CommitteeMeeting.meeting_date >= start_date,
+        CommitteeMeeting.meeting_date < end_date
     ).all()
 
     total_meetings_count = len(meetings)
-
-    # 🔹 Calculate total scheduled meeting minutes
     total_meeting_time = 0
 
     for m in meetings:
@@ -682,12 +684,9 @@ def yearly_report(cid):
             except:
                 pass
 
-    # 🔹 Total attended minutes per user
     data = db.session.query(
         User.name,
-        db.func.coalesce(
-            db.func.sum(CommitteeMeetingAttendance.attended_minutes), 0
-        )
+        func.coalesce(func.sum(CommitteeMeetingAttendance.attended_minutes), 0)
     ).join(
         CommitteeMeetingAttendance,
         CommitteeMeetingAttendance.user_id == User.id
@@ -696,10 +695,10 @@ def yearly_report(cid):
         CommitteeMeeting.id == CommitteeMeetingAttendance.meeting_id
     ).filter(
         CommitteeMeeting.committee_id == cid,
-        db.func.to_char(CommitteeMeeting.meeting_date, 'YYYY') == year
+        CommitteeMeeting.meeting_date >= start_date,
+        CommitteeMeeting.meeting_date < end_date
     ).group_by(User.id).all()
 
-    # 🔹 Calculate attendance percentage
     processed_data = []
 
     for name, attended in data:
@@ -719,7 +718,6 @@ def yearly_report(cid):
         total_meetings_count=total_meetings_count
     )
 
-
 @portal_bp.route("/committee/<int:cid>/attendance-summary")
 def committee_attendance_summary(cid):
 
@@ -733,9 +731,7 @@ def committee_attendance_summary(cid):
 
     data = db.session.query(
         User.name,
-        db.func.coalesce(
-            db.func.sum(CommitteeMeetingAttendance.attended_minutes), 0
-        )
+        func.coalesce(func.sum(CommitteeMeetingAttendance.attended_minutes), 0)
     ).join(
         CommitteeMeetingAttendance,
         CommitteeMeetingAttendance.user_id == User.id
@@ -1194,7 +1190,6 @@ def admin_receipts():
     )
 
 
-
 @portal_bp.route("/admin/events", methods=["GET", "POST"])
 def admin_events():
 
@@ -1207,6 +1202,7 @@ def admin_events():
             title=request.form["title"],
             description=request.form["description"],
             event_date=request.form["event_date"],
+            location=request.form["location"],
             created_at=datetime.utcnow()
         )
 
@@ -1215,13 +1211,28 @@ def admin_events():
 
         return redirect(url_for("portal.admin_events"))
 
-    events = PortalEvent.query.order_by(
+    # 🔥 Add participant count to each event
+    events = db.session.query(
+        PortalEvent,
+        func.count(PortalEventParticipant.user_id).label("participant_count")
+    ).outerjoin(
+        PortalEventParticipant,
+        PortalEvent.id == PortalEventParticipant.portal_event_id
+    ).group_by(
+        PortalEvent.id
+    ).order_by(
         PortalEvent.created_at.desc()
     ).all()
 
+    # Convert tuple result into usable object list
+    event_list = []
+    for event, count in events:
+        event.participant_count = count
+        event_list.append(event)
+
     return render_template(
         "admin_events.html",
-        events=events
+        events=event_list
     )
 
 @portal_bp.route("/admin/events/<int:event_id>/participants")
@@ -1250,8 +1261,11 @@ def event_participants(event_id):
     )
 
 
+from sqlalchemy import func
+
 @portal_bp.route("/admin/analytics")
 def admin_analytics():
+
     if not is_admin():
         return "Access Denied", 403
 
@@ -1265,7 +1279,7 @@ def admin_analytics():
 
     blood_groups = db.session.query(
         User.blood_group,
-        db.func.count(User.id)
+        func.count(User.id)
     ).filter(
         User.blood_group.isnot(None)
     ).group_by(
@@ -1274,11 +1288,21 @@ def admin_analytics():
 
     interests = db.session.query(
         User.interests,
-        db.func.count(User.id)
+        func.count(User.id)
     ).filter(
         User.interests.isnot(None)
     ).group_by(
         User.interests
+    ).all()
+
+    # ✅ NEW: NATIVITY DISTRIBUTION
+    nativity = db.session.query(
+        User.nativity,
+        func.count(User.id)
+    ).filter(
+        User.nativity.isnot(None)
+    ).group_by(
+        User.nativity
     ).all()
 
     return render_template(
@@ -1287,9 +1311,9 @@ def admin_analytics():
         active=active,
         expired=expired,
         blood_groups=blood_groups,
-        interests=interests
+        interests=interests,
+        nativity=nativity  # 🔥 Pass to template
     )
-
 
 
 @portal_bp.route("/admin/blood-donors")

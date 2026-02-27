@@ -1,138 +1,202 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Yearly Attendance Report</title>
+{% extends "portal_base.html" %}
+{% block content %}
 
-  <style>
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f4f6f9;
-      padding: 30px 20px;
-      color: #333;
-    }
+<style>
+.report-wrapper {
+  padding: 40px 20px;
+}
 
-    h2 {
-      text-align: center;
-      color: #0d47a1;
-      margin-bottom: 20px;
-    }
+/* Header */
+.report-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0d47a1;
+  margin-bottom: 25px;
+}
 
-    .filter {
-      max-width: 420px;
-      margin: 0 auto 25px;
-      background: #ffffff;
-      padding: 16px;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
+/* Filter Card */
+.filter-card {
+  max-width: 450px;
+  margin: 0 auto 30px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
 
-    input[type="number"] {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 120px;
-    }
+.filter-card input[type="number"] {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  width: 130px;
+  font-size: 14px;
+}
 
-    button {
-      padding: 10px 18px;
-      background: #0d47a1;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-    }
+.filter-card button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg,#0d47a1,#1976d2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
 
-    .summary-box {
-      max-width: 900px;
-      margin: 0 auto 25px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-    }
+.filter-card button:hover {
+  background: #08306b;
+}
 
-    .summary-card {
-      background: white;
-      padding: 18px;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      text-align: center;
-    }
+/* Summary Grid */
+.summary-grid {
+  max-width: 1000px;
+  margin: 0 auto 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
 
-    .summary-card h4 {
-      margin: 0;
-      color: #607d8b;
-      font-size: 14px;
-    }
+.summary-card {
+  background: #e3f2fd;
+  padding: 20px;
+  border-radius: 16px;
+  border-left: 6px solid #0d47a1;
+  text-align: center;
+}
 
-    .summary-card p {
-      margin: 6px 0 0;
-      font-size: 20px;
-      font-weight: 700;
-      color: #0d47a1;
-    }
+.summary-card h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #607d8b;
+  font-weight: 600;
+}
 
-    .table-wrapper {
-      max-width: 900px;
-      margin: auto;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      overflow: hidden;
-    }
+.summary-card p {
+  margin-top: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0d47a1;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+/* Table */
+.table-card {
+  max-width: 1000px;
+  margin: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
 
-    th {
-      background: #0d47a1;
-      color: white;
-      padding: 14px;
-      text-align: left;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    td {
-      padding: 14px;
-      border-bottom: 1px solid #eef1f5;
-    }
+thead {
+  background: #0d47a1;
+}
 
-    tr:hover td {
-      background: #f5f8ff;
-    }
+th {
+  color: white;
+  padding: 15px 18px;
+  text-align: left;
+  font-size: 14px;
+}
 
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 25px;
-      font-weight: 600;
-      text-decoration: none;
-      color: #0d47a1;
-    }
-  </style>
-</head>
+td {
+  padding: 15px 18px;
+  border-bottom: 1px solid #edf2f7;
+  font-size: 14px;
+}
 
-<body>
+tbody tr:hover td {
+  background: #f4f8ff;
+}
 
-<h2>📊 Yearly Attendance Report</h2>
+/* Percentage Colors */
+.percent {
+  font-weight: 700;
+}
 
-<form method="get" class="filter">
+.percent.high { color: #2e7d32; }
+.percent.medium { color: #f57c00; }
+.percent.low { color: #c62828; }
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  color: #78909c;
+  font-weight: 500;
+}
+
+/* Back Button */
+.back {
+  display: block;
+  text-align: center;
+  margin-top: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #0d47a1;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+/* Print Mode */
+@media print {
+  .filter-card {
+    display: none;
+  }
+
+  body {
+    background: white;
+  }
+
+  .table-card {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  thead {
+    background: #ddd !important;
+  }
+
+  th {
+    color: black !important;
+  }
+
+  .back {
+    display: none;
+  }
+}
+</style>
+
+<div class="report-wrapper">
+
+<div class="report-title">
+  📊 Yearly Attendance Report
+</div>
+
+<form method="get" class="filter-card">
   <input type="number"
          name="year"
          placeholder="2026"
-         value="{{ request.args.get('year', '') }}"
+         value="{{ year or '' }}"
          required>
-  <button type="submit">View</button>
+  <button type="submit">View Report</button>
 </form>
 
 {% if year %}
 
-<div class="summary-box">
-
+<!-- Summary Section -->
+<div class="summary-grid">
   <div class="summary-card">
     <h4>Total Meetings</h4>
     <p>{{ total_meetings_count }}</p>
@@ -142,38 +206,45 @@
     <h4>Total Meeting Minutes</h4>
     <p>{{ total_meeting_time }}</p>
   </div>
-
 </div>
 
-<div class="table-wrapper">
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Total Minutes Attended</th>
-      <th>Attendance %</th>
-    </tr>
-  </thead>
-  <tbody>
-
-    {% if data %}
-      {% for d in data %}
+<!-- Attendance Table -->
+<div class="table-card">
+  <table>
+    <thead>
       <tr>
-        <td>{{ d[0] }}</td>
-        <td>{{ d[1] }}</td>
-        <td>{{ d[2] }}%</td>
+        <th>Name</th>
+        <th>Total Minutes Attended</th>
+        <th>Attendance %</th>
       </tr>
-      {% endfor %}
-    {% else %}
-      <tr>
-        <td colspan="3" style="text-align:center;">
-          No attendance data available
-        </td>
-      </tr>
-    {% endif %}
+    </thead>
 
-  </tbody>
-</table>
+    <tbody>
+      {% if data and data|length > 0 %}
+        {% for name, minutes, percent in data %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{{ minutes }}</td>
+          <td>
+            {% if percent >= 75 %}
+              <span class="percent high">{{ percent }}%</span>
+            {% elif percent >= 40 %}
+              <span class="percent medium">{{ percent }}%</span>
+            {% else %}
+              <span class="percent low">{{ percent }}%</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="3" class="empty-state">
+            No attendance data available for selected year
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
 </div>
 
 {% endif %}
@@ -183,5 +254,6 @@
    ← Back to Committee Dashboard
 </a>
 
-</body>
-</html>
+</div>
+
+{% endblock %}

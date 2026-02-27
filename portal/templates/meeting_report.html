@@ -27,11 +27,12 @@
       max-width: 700px;
       margin: 0 auto 20px;
       background: #e3f2fd;
-      padding: 16px 20px;
+      padding: 18px 22px;
       border-radius: 14px;
       border-left: 6px solid #0d47a1;
       font-size: 15px;
       font-weight: 600;
+      line-height: 1.6;
     }
 
     /* Table wrapper */
@@ -71,6 +72,13 @@
       background: #f5f8ff;
     }
 
+    .no-data {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-style: italic;
+    }
+
     /* Back */
     .back {
       display: block;
@@ -86,6 +94,7 @@
       text-decoration: underline;
     }
 
+    /* Print Style */
     @media print {
       body {
         background: white;
@@ -106,6 +115,10 @@
         background: #ddd !important;
         color: black !important;
       }
+
+      .back {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -113,32 +126,49 @@
 
 <h2>📋 Meeting Attendance Report</h2>
 
-<!-- TOTAL TIME SUMMARY -->
+<!-- Meeting Summary -->
 <div class="summary">
-  ⏱ <b>Total Meeting Time:</b> {{ total_time or "—" }}
+  📌 <b>Meeting:</b> {{ meeting.title }} <br>
+  📅 <b>Date:</b> {{ meeting.meeting_date }} <br>
+  ⏱ <b>Total Scheduled Time:</b> {{ total_time or 0 }} minutes
 </div>
 
 <div class="table-wrapper">
-<table>
-<tr>
-  <th>Name</th>
-  <th>Scan Time</th>
-  <th>Minutes Attended</th>
-</tr>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Scan Time</th>
+      <th>Minutes Attended</th>
+    </tr>
 
-{% for r in records %}
-<tr>
-  <td>{{ r[0] }}</td>
-  <td>{{ r[1] }}</td>
-  <td>{{ r[2] }}</td>
-</tr>
-{% endfor %}
-</table>
+    {% if records %}
+        {% for r in records %}
+        <tr>
+          <td>{{ r[0] }}</td>
+          <td>
+            {% if r[1] %}
+              {{ r[1].strftime("%d-%m-%Y %H:%M") }}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>{{ r[2] or 0 }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+          <td colspan="3" class="no-data">
+            No attendance records found
+          </td>
+        </tr>
+    {% endif %}
+
+  </table>
 </div>
 
 <a href="{{ url_for('portal.committee_dashboard', cid=meeting.committee_id) }}"
    class="back">
-   ← Back
+   ← Back to Committee Dashboard
 </a>
 
 </body>

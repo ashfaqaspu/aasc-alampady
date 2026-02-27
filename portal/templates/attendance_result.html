@@ -1,95 +1,179 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Attendance Summary</title>
+  <title>Attendance Summary</title>
 
-    <style>
-        body {
-            font-family: "Segoe UI";
-            background: #f4f6f9;
-            padding: 30px;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-        }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 30px 20px;
+      color: #333;
+    }
 
-        .card {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 25px;
+      font-size: 26px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    .card {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
 
-        th {
-            background: #0d47a1;
-            color: white;
-            padding: 12px;
-        }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
+    .summary-box {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 5px solid #0d47a1;
+      font-weight: 600;
+      font-size: 14px;
+    }
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            color: #0d47a1;
-        }
-    </style>
+    th {
+      background: #0d47a1;
+      color: white;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef1f5;
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f5f8ff;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 25px;
+      color: #777;
+      font-style: italic;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      color: #0d47a1;
+      font-size: 14px;
+    }
+
+    .back:hover {
+      text-decoration: underline;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .card {
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      th {
+        background: #ddd !important;
+        color: black !important;
+      }
+
+      .back {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
 <h2>📋 Committee Attendance Summary</h2>
 
 <div class="card">
+
+  {% if data and data|length > 0 %}
+
+    <!-- Summary Section -->
+    <div class="summary-grid">
+      <div class="summary-box">
+        👥 Total Members Present: {{ data|length }}
+      </div>
+
+      <div class="summary-box">
+        ⏱ Total Minutes Combined:
+        {{ data | map(attribute=1) | sum }}
+      </div>
+    </div>
+
+    <!-- Attendance Table -->
     <table>
-        <thead>
-            <tr>
-                <th>Member Name</th>
-                <th>Total Minutes Attended</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if data and data|length > 0 %}
-                {% for name, minutes in data %}
-                <tr>
-                    <td>{{ name }}</td>
-                    <td>{{ minutes or 0 }}</td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="2" style="text-align:center;">
-                        No attendance data found
-                    </td>
-                </tr>
-            {% endif %}
-        </tbody>
+      <thead>
+        <tr>
+          <th>Member Name</th>
+          <th>Total Minutes Attended</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for name, minutes in data %}
+        <tr>
+          <td>{{ name }}</td>
+          <td>{{ minutes or 0 }} minutes</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
+
+  {% else %}
+
+    <!-- Empty State -->
+    <div class="no-data">
+      🚫 No attendance data available<br><br>
+      (Meeting may not have started, expired QR, or no one has scanned yet.)
+    </div>
+
+  {% endif %}
+
 </div>
 
-<a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
-   class="back">
-   ← Back to Committee Dashboard
+{% if cid %}
+<a href="{{ url_for('portal.committee_dashboard', cid=cid) }}" class="back">
+  ← Back to Committee Dashboard
 </a>
+{% endif %}
 
 </body>
 </html>

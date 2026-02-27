@@ -33,12 +33,12 @@
   margin-bottom: 30px;
 }
 
-/* Filter */
+/* Filter Card */
 .filter-card {
-  max-width: 480px;
+  max-width: 500px;
   margin: 0 auto 30px;
   background: #ffffff;
-  padding: 18px;
+  padding: 20px;
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
   display: flex;
@@ -55,40 +55,42 @@
 }
 
 .filter-card button {
-  padding: 10px 18px;
+  padding: 10px 20px;
   background: linear-gradient(135deg,#0d47a1,#1976d2);
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .filter-card button:hover {
   background: #08306b;
 }
 
-/* Summary */
+/* Summary Grid */
 .summary-grid {
-  max-width: 950px;
+  max-width: 1000px;
   margin: 0 auto 30px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 
 .summary-box {
   background: #e3f2fd;
-  padding: 18px;
+  padding: 20px;
   border-radius: 16px;
   border-left: 6px solid #0d47a1;
   font-size: 15px;
   font-weight: 600;
+  line-height: 1.6;
 }
 
 /* Table */
 .table-card {
-  max-width: 950px;
+  max-width: 1000px;
   margin: auto;
   background: #ffffff;
   border-radius: 18px;
@@ -107,13 +109,13 @@ thead {
 
 th {
   color: white;
-  padding: 14px 16px;
+  padding: 15px 18px;
   text-align: left;
   font-size: 14px;
 }
 
 td {
-  padding: 14px 16px;
+  padding: 15px 18px;
   border-bottom: 1px solid #edf2f7;
   font-size: 14px;
 }
@@ -122,7 +124,7 @@ tbody tr:hover td {
   background: #f4f8ff;
 }
 
-/* Percentage Badge */
+/* Percentage Styles */
 .percent {
   font-weight: 700;
 }
@@ -131,17 +133,18 @@ tbody tr:hover td {
 .percent.medium { color: #f57c00; }
 .percent.low { color: #c62828; }
 
-/* Empty */
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 25px;
+  padding: 30px;
   color: #78909c;
   font-weight: 500;
 }
 
-/* Print */
+/* Print Mode */
 @media print {
-  .top-nav, .filter-card {
+  .top-nav,
+  .filter-card {
     display: none;
   }
 
@@ -166,7 +169,7 @@ tbody tr:hover td {
 
 <div class="report-wrapper">
 
-<!-- Top Nav -->
+<!-- Top Navigation -->
 <div class="top-nav">
   <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}">🏠 Mini Dashboard</a> |
   <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">👥 Members</a>
@@ -176,7 +179,7 @@ tbody tr:hover td {
     <a href="{{ url_for('portal.yearly_report',
                         cid=cid,
                         year=month.split('-')[0]) }}">
-      📊 Yearly
+      📊 Yearly Report
     </a>
   {% endif %}
 </div>
@@ -192,25 +195,25 @@ tbody tr:hover td {
          name="month"
          value="{{ month or '' }}"
          required>
-  <button type="submit">View</button>
+  <button type="submit">View Report</button>
 </form>
 
 {% if month %}
 
-<!-- Summary -->
+<!-- Summary Section -->
 <div class="summary-grid">
   <div class="summary-box">
-    ⏱ Total Meeting Time:<br>
+    ⏱ <b>Total Meeting Time:</b><br>
     {{ total_meeting_time }} Minutes
   </div>
 
   <div class="summary-box">
-    👥 Total Attended Time:<br>
+    👥 <b>Total Attended Time:</b><br>
     {{ total_attended_time }} Minutes
   </div>
 </div>
 
-<!-- Table -->
+<!-- Attendance Table -->
 <div class="table-card">
   <table>
     <thead>
@@ -223,12 +226,10 @@ tbody tr:hover td {
 
     <tbody>
       {% if data and data|length > 0 %}
-        {% for d in data %}
+        {% for name, minutes, percent in data %}
         <tr>
-          <td>{{ d[0] }}</td>
-          <td>{{ d[1] }}</td>
-
-          {% set percent = d[2] %}
+          <td>{{ name }}</td>
+          <td>{{ minutes }}</td>
           <td>
             {% if percent >= 75 %}
               <span class="percent high">{{ percent }}%</span>
@@ -238,7 +239,6 @@ tbody tr:hover td {
               <span class="percent low">{{ percent }}%</span>
             {% endif %}
           </td>
-
         </tr>
         {% endfor %}
       {% else %}
