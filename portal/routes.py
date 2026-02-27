@@ -1263,47 +1263,96 @@ def event_participants(event_id):
 
 from sqlalchemy import func
 
+from datetime import date
+
 @portal_bp.route("/admin/analytics")
 def admin_analytics():
 
+    # 🔐 Admin Check
     if not is_admin():
         return "Access Denied", 403
+
+    today = date.today()
+
+    # ===============================
+    # 📊 BASIC MEMBER STATISTICS
+    # ===============================
 
     total = User.query.count()
 
     active = User.query.filter(
-        User.membership_end >= date.today()
+        User.membership_end.isnot(None),
+        User.membership_end >= today
     ).count()
 
-    expired = total - active
+    expired = User.query.filter(
+        User.membership_end.isnot(None),
+        User.membership_end < today
+    ).count()
+
+    # ===============================
+    # 🩸 BLOOD GROUP DISTRIBUTION
+    # ===============================
 
     blood_groups = db.session.query(
         User.blood_group,
         func.count(User.id)
     ).filter(
-        User.blood_group.isnot(None)
+        User.blood_group.isnot(None),
+        User.blood_group != ""
     ).group_by(
         User.blood_group
+    ).order_by(
+        func.count(User.id).desc()
     ).all()
+
+    # ===============================
+    # 🎯 INTEREST DISTRIBUTION
+    # ===============================
 
     interests = db.session.query(
         User.interests,
         func.count(User.id)
     ).filter(
-        User.interests.isnot(None)
+        User.interests.isnot(None),
+        User.interests != ""
     ).group_by(
         User.interests
+    ).order_by(
+        func.count(User.id).desc()
     ).all()
 
-    # ✅ NEW: NATIVITY DISTRIBUTION
-    nativity = db.session.query(
+    # ===============================
+    # 🌍 NATIVITY DISTRIBUTION
+    # (Fixed Categories + Others)
+    # ===============================
+
+    nativity_counts = {
+        "Student": 0,
+        "GCC": 0,
+        "Native": 0,
+        "Others": 0
+    }
+
+    raw_nativity = db.session.query(
         User.nativity,
         func.count(User.id)
     ).filter(
-        User.nativity.isnot(None)
+        User.nativity.isnot(None),
+        User.nativity != ""
     ).group_by(
         User.nativity
     ).all()
+
+    for n, count in raw_nativity:
+        if n in nativity_counts:
+            nativity_counts[n] = count
+        else:
+            nativity_counts["Others"] += count
+
+    # ===============================
+    # 📤 RENDER TEMPLATE
+    # ===============================
 
     return render_template(
         "admin_analytics.html",
@@ -1312,8 +1361,9 @@ def admin_analytics():
         expired=expired,
         blood_groups=blood_groups,
         interests=interests,
-        nativity=nativity  # 🔥 Pass to template
+        nativity_counts=nativity_counts
     )
+
 
 
 @portal_bp.route("/admin/blood-donors")
