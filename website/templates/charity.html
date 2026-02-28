@@ -308,27 +308,26 @@
     </div>
 
     {% if e.image %}
-        {% set images = e.image.split(",") %}
+    {% set images = e.image.split(",") %}
 
-        <div class="ev-img-rule"></div>
+    <div class="ev-img-rule"></div>
 
-        <div class="ev-main-wrap">
-            <img src="{{ url_for('static', filename=images[0].strip()) }}"
-                 class="event-main-img">
+    <div class="ev-main-wrap">
+        <img src="{{ images[0].strip() }}"
+             class="event-main-img">
+    </div>
+
+    {% if images|length > 1 %}
+    <div class="ev-scroll-wrap">
+        <div class="ev-scroll-hd">More Photos</div>
+        <div class="event-scroll">
+            {% for img in images[1:] %}
+               <img src="{{ img.strip() }}">
+            {% endfor %}
         </div>
-
-        {% if images|length > 1 %}
-        <div class="ev-scroll-wrap">
-            <div class="ev-scroll-hd">More Photos</div>
-            <div class="event-scroll">
-                {% for img in images[1:] %}
-                   <img src="{{ img.strip() }}">
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
+    </div>
     {% endif %}
+{% endif %}
 
 </div>
 {% else %}

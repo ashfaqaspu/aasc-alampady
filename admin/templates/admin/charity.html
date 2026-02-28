@@ -93,7 +93,7 @@
             {% set images = c.image.split(",") %}
             <div class="event-images">
                 {% for img in images %}
-                    <img src="{{ url_for('static', filename=img.strip()) }}">
+                   <img src="{{ img.strip() }}">
                 {% endfor %}
             </div>
         {% else %}
