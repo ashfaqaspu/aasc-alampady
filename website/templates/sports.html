@@ -304,7 +304,17 @@
 
     <div class="event-card-body">
         <h3>⚽ {{ e.title }}</h3>
-        <small>{{ e.event_date }}</small>
+
+        <small>
+            {% if e.event_date %}
+                {% if e.event_date.__class__.__name__ == 'date' %}
+                    {{ e.event_date.strftime('%d-%m-%Y') }}
+                {% else %}
+                    {{ e.event_date }}
+                {% endif %}
+            {% endif %}
+        </small>
+
         <p>{{ e.description }}</p>
     </div>
 
@@ -313,28 +323,25 @@
 
         <div class="ev-img-rule"></div>
 
+        <!-- MAIN IMAGE -->
         <div class="ev-main-wrap">
-            <img src="{{ url_for('static', filename=images[0].strip()) }}"
+            <img src="{{ images[0].strip() }}"
                  class="event-main-img">
         </div>
 
+        <!-- SCROLL IMAGES -->
         {% if images|length > 1 %}
         <div class="ev-scroll-wrap">
             <div class="ev-scroll-hd">More Photos</div>
             <div class="event-scroll">
                 {% for img in images[1:] %}
-                    <img src="{{ url_for('static', filename=img.strip()) }}">
+                    <img src="{{ img.strip() }}">
                 {% endfor %}
             </div>
         </div>
         {% endif %}
     {% endif %}
 
-</div>
-{% else %}
-<div class="empty-state reveal">
-    <span class="empty-icon">⚽</span>
-    <p>No sport events added yet.</p>
 </div>
 {% endfor %}
 

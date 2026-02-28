@@ -37,6 +37,22 @@
             display: inline-block;
         }
 
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .event-images {
             display: flex;
             gap: 6px;
@@ -56,6 +72,17 @@
 <body>
 
 <h2>Charity Activities</h2>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
 <a class="add" href="{{ url_for('admin.add_charity') }}">
     ➕ Add Charity Work
@@ -77,23 +104,23 @@
 {% for c in items %}
 <tr>
     <td>{{ loop.index }}</td>
+
     <td>{{ c.title }}</td>
 
     <td>
-{% if c.event_date %}
-    {% if c.event_date.__class__.__name__ == 'date' %}
-        {{ c.event_date.strftime('%d-%m-%Y') }}
-    {% else %}
-        {{ c.event_date }}
-    {% endif %}
-{% endif %}
-</td>
+        {% if c.event_date %}
+            {{ c.event_date.strftime('%d-%m-%Y') }}
+        {% else %}
+            -
+        {% endif %}
+    </td>
+
     <td>
         {% if c.image %}
             {% set images = c.image.split(",") %}
             <div class="event-images">
                 {% for img in images %}
-                   <img src="{{ img.strip() }}">
+                    <img src="{{ img.strip() }}">
                 {% endfor %}
             </div>
         {% else %}

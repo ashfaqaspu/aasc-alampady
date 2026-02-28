@@ -1,7 +1,8 @@
-from flask import render_template, request, redirect, session, url_for
+from flask import render_template, request, redirect, session, url_for, flash
 from werkzeug.security import check_password_hash
-from werkzeug.utils import secure_filename
 from datetime import datetime
+import cloudinary
+import cloudinary.uploader
 import os
 
 from extensions import db
@@ -65,9 +66,8 @@ def dashboard():
         award_count=Award.query.count()
     )
 
-
 # ===================================================
-# SPORTS (MULTI IMAGE + PIN)
+# SPORTS
 # ===================================================
 
 @admin_bp.route("/sports")
@@ -80,34 +80,32 @@ def sports():
 
 
 @admin_bp.route("/sports/add", methods=["GET", "POST"])
-def add_sport():
+def add_sports():
     if not admin_logged_in():
         return redirect(url_for("admin.login"))
 
     if request.method == "POST":
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
         if len(images) > 6:
             return "Maximum 6 images allowed"
 
-        upload_folder = os.path.join("static", "uploads", "sports")
-        os.makedirs(upload_folder, exist_ok=True)
-
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/sports/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/sports",
+                    transformation=[{"quality": "auto", "fetch_format": "auto"}]
+                )
+                image_urls.append(result["secure_url"])
 
         sport = Sport(
             title=request.form["title"],
             description=request.form["description"],
-            event_date=datetime.strptime(
-                request.form["event_date"], "%Y-%m-%d"
-            ).date(),
-            image=",".join(image_paths),
+            date=request.form["date"],
+            image=",".join(image_urls),
             pinned=True if request.form.get("pinned") else False,
             created_at=datetime.now()
         )
@@ -115,13 +113,14 @@ def add_sport():
         db.session.add(sport)
         db.session.commit()
 
+        flash("Sport added successfully", "success")
         return redirect(url_for("admin.sports"))
 
-    return render_template("admin/add_sport.html")
+    return render_template("admin/add_sports.html")
 
 
 @admin_bp.route("/sports/edit/<int:id>", methods=["GET", "POST"])
-def edit_sport(id):
+def edit_sports(id):
     if not admin_logged_in():
         return redirect(url_for("admin.login"))
 
@@ -131,30 +130,30 @@ def edit_sport(id):
 
         sport.title = request.form["title"]
         sport.description = request.form["description"]
-        sport.event_date = datetime.strptime(
-            request.form["event_date"], "%Y-%m-%d"
-        ).date()
+        sport.date = request.form["date"]
         sport.pinned = True if request.form.get("pinned") else False
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
-        upload_folder = os.path.join("static", "uploads", "sports")
-        os.makedirs(upload_folder, exist_ok=True)
+        if len(images) > 6:
+            return "Maximum 6 images allowed"
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/sports/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/sports"
+                )
+                image_urls.append(result["secure_url"])
 
-        if image_paths:
-            sport.image = ",".join(image_paths)
+        if image_urls:
+            sport.image = ",".join(image_urls)
 
         db.session.commit()
         return redirect(url_for("admin.sports"))
 
-    return render_template("admin/edit_sport.html", item=sport)
+    return render_template("admin/edit_sports.html", item=sport)
 
 
 @admin_bp.route("/sports/delete/<int:id>")
@@ -189,9 +188,8 @@ def unpin_sport(id):
     db.session.commit()
     return redirect(url_for("admin.sports"))
 
-
 # ===================================================
-# EVENTS (MULTI IMAGE + PIN)
+# EVENTS (MULTI IMAGE + PIN - CLOUDINARY VERSION)
 # ===================================================
 
 @admin_bp.route("/events")
@@ -203,6 +201,10 @@ def events():
     return render_template("admin/events.html", items=items)
 
 
+# ===================================================
+# ADD EVENT
+# ===================================================
+
 @admin_bp.route("/events/add", methods=["GET", "POST"])
 def add_event():
     if not admin_logged_in():
@@ -211,19 +213,23 @@ def add_event():
     if request.method == "POST":
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
+        # Limit to 6 images
         if len(images) > 6:
-            return "Maximum 6 images allowed"
-
-        upload_folder = os.path.join("static", "uploads", "events")
-        os.makedirs(upload_folder, exist_ok=True)
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/events/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/events",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
+                )
+                image_urls.append(result["secure_url"])
 
         event = Event(
             title=request.form["title"],
@@ -231,7 +237,7 @@ def add_event():
             event_date=datetime.strptime(
                 request.form["event_date"], "%Y-%m-%d"
             ).date(),
-            image=",".join(image_paths),
+            image=",".join(image_urls),  # Store comma separated
             pinned=True if request.form.get("pinned") else False,
             created_at=datetime.now()
         )
@@ -239,12 +245,14 @@ def add_event():
         db.session.add(event)
         db.session.commit()
 
+        flash("Event added successfully!", "success")
         return redirect(url_for("admin.events"))
 
     return render_template("admin/add_event.html")
 
+
 # ===================================================
-# EVENTS (CONTINUED)
+# EDIT EVENT
 # ===================================================
 
 @admin_bp.route("/events/edit/<int:id>", methods=["GET", "POST"])
@@ -256,6 +264,7 @@ def edit_event(id):
 
     if request.method == "POST":
 
+        # Update basic details
         event.title = request.form["title"]
         event.description = request.form["description"]
         event.event_date = datetime.strptime(
@@ -264,28 +273,38 @@ def edit_event(id):
         event.pinned = True if request.form.get("pinned") else False
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
         if len(images) > 6:
-            return "Maximum 6 images allowed"
-
-        upload_folder = os.path.join("static", "uploads", "events")
-        os.makedirs(upload_folder, exist_ok=True)
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/events/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/events",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
+                )
+                image_urls.append(result["secure_url"])
 
-        if image_paths:
-            event.image = ",".join(image_paths)
+        # Replace images only if new ones uploaded
+        if image_urls:
+            event.image = ",".join(image_urls)
 
         db.session.commit()
+
+        flash("Event updated successfully!", "success")
         return redirect(url_for("admin.events"))
 
     return render_template("admin/edit_event.html", item=event)
 
+
+# ===================================================
+# DELETE EVENT
+# ===================================================
 
 @admin_bp.route("/events/delete/<int:id>")
 def delete_event(id):
@@ -295,8 +314,14 @@ def delete_event(id):
     event = Event.query.get_or_404(id)
     db.session.delete(event)
     db.session.commit()
+
+    flash("Event deleted successfully!", "success")
     return redirect(url_for("admin.events"))
 
+
+# ===================================================
+# PIN EVENT
+# ===================================================
 
 @admin_bp.route("/events/pin/<int:id>")
 def pin_event(id):
@@ -306,8 +331,14 @@ def pin_event(id):
     event = Event.query.get_or_404(id)
     event.pinned = True
     db.session.commit()
+
+    flash("Event pinned!", "success")
     return redirect(url_for("admin.events"))
 
+
+# ===================================================
+# UNPIN EVENT
+# ===================================================
 
 @admin_bp.route("/events/unpin/<int:id>")
 def unpin_event(id):
@@ -317,11 +348,12 @@ def unpin_event(id):
     event = Event.query.get_or_404(id)
     event.pinned = False
     db.session.commit()
+
+    flash("Event unpinned!", "success")
     return redirect(url_for("admin.events"))
 
-
 # ===================================================
-# CHARITY (MULTI IMAGE + PIN)
+# CHARITY (MULTI IMAGE + PIN - CLOUDINARY VERSION)
 # ===================================================
 
 @admin_bp.route("/charity")
@@ -333,6 +365,10 @@ def charity():
     return render_template("admin/charity.html", items=items)
 
 
+# ===================================================
+# ADD CHARITY
+# ===================================================
+
 @admin_bp.route("/charity/add", methods=["GET", "POST"])
 def add_charity():
     if not admin_logged_in():
@@ -341,19 +377,23 @@ def add_charity():
     if request.method == "POST":
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
+        # Limit to 6 images
         if len(images) > 6:
-            return "Maximum 6 images allowed"
-
-        upload_folder = os.path.join("static", "uploads", "charity")
-        os.makedirs(upload_folder, exist_ok=True)
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/charity/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/charity",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
+                )
+                image_urls.append(result["secure_url"])
 
         charity = Charity(
             title=request.form["title"],
@@ -361,7 +401,7 @@ def add_charity():
             event_date=datetime.strptime(
                 request.form["event_date"], "%Y-%m-%d"
             ).date(),
-            image=",".join(image_paths),
+            image=",".join(image_urls),
             pinned=True if request.form.get("pinned") else False,
             created_at=datetime.now()
         )
@@ -369,10 +409,15 @@ def add_charity():
         db.session.add(charity)
         db.session.commit()
 
+        flash("Charity event added successfully!", "success")
         return redirect(url_for("admin.charity"))
 
     return render_template("admin/add_charity.html")
 
+
+# ===================================================
+# EDIT CHARITY
+# ===================================================
 
 @admin_bp.route("/charity/edit/<int:id>", methods=["GET", "POST"])
 def edit_charity(id):
@@ -383,6 +428,7 @@ def edit_charity(id):
 
     if request.method == "POST":
 
+        # Update basic fields
         charity.title = request.form["title"]
         charity.description = request.form["description"]
         charity.event_date = datetime.strptime(
@@ -391,28 +437,38 @@ def edit_charity(id):
         charity.pinned = True if request.form.get("pinned") else False
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
         if len(images) > 6:
-            return "Maximum 6 images allowed"
-
-        upload_folder = os.path.join("static", "uploads", "charity")
-        os.makedirs(upload_folder, exist_ok=True)
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/charity/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/charity",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
+                )
+                image_urls.append(result["secure_url"])
 
-        if image_paths:
-            charity.image = ",".join(image_paths)
+        # Replace images only if new images uploaded
+        if image_urls:
+            charity.image = ",".join(image_urls)
 
         db.session.commit()
+
+        flash("Charity event updated successfully!", "success")
         return redirect(url_for("admin.charity"))
 
     return render_template("admin/edit_charity.html", item=charity)
 
+
+# ===================================================
+# DELETE CHARITY
+# ===================================================
 
 @admin_bp.route("/charity/delete/<int:id>")
 def delete_charity(id):
@@ -422,8 +478,14 @@ def delete_charity(id):
     charity = Charity.query.get_or_404(id)
     db.session.delete(charity)
     db.session.commit()
+
+    flash("Charity event deleted successfully!", "success")
     return redirect(url_for("admin.charity"))
 
+
+# ===================================================
+# PIN CHARITY
+# ===================================================
 
 @admin_bp.route("/charity/pin/<int:id>")
 def pin_charity(id):
@@ -433,8 +495,14 @@ def pin_charity(id):
     charity = Charity.query.get_or_404(id)
     charity.pinned = True
     db.session.commit()
+
+    flash("Charity pinned!", "success")
     return redirect(url_for("admin.charity"))
 
+
+# ===================================================
+# UNPIN CHARITY
+# ===================================================
 
 @admin_bp.route("/charity/unpin/<int:id>")
 def unpin_charity(id):
@@ -444,11 +512,12 @@ def unpin_charity(id):
     charity = Charity.query.get_or_404(id)
     charity.pinned = False
     db.session.commit()
+
+    flash("Charity unpinned!", "success")
     return redirect(url_for("admin.charity"))
 
-
 # ===================================================
-# AWARDS (MULTI IMAGE + PIN)
+# AWARDS (MULTI IMAGE + PIN - CLOUDINARY VERSION)
 # ===================================================
 
 @admin_bp.route("/awards")
@@ -460,6 +529,10 @@ def awards():
     return render_template("admin/awards.html", awards=items)
 
 
+# ===================================================
+# ADD AWARD
+# ===================================================
+
 @admin_bp.route("/awards/add", methods=["GET", "POST"])
 def add_award():
     if not admin_logged_in():
@@ -468,25 +541,29 @@ def add_award():
     if request.method == "POST":
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
+        # Limit to 6 images
         if len(images) > 6:
-            return "Maximum 6 images allowed"
-
-        upload_folder = os.path.join("static", "uploads", "awards")
-        os.makedirs(upload_folder, exist_ok=True)
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/awards/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/awards",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
+                )
+                image_urls.append(result["secure_url"])
 
         award = Award(
             title=request.form["title"],
             year=request.form["year"],
             description=request.form["description"],
-            image=",".join(image_paths),
+            image=",".join(image_urls),
             pinned=True if request.form.get("pinned") else False,
             created_at=datetime.now()
         )
@@ -494,10 +571,15 @@ def add_award():
         db.session.add(award)
         db.session.commit()
 
+        flash("Award added successfully!", "success")
         return redirect(url_for("admin.awards"))
 
     return render_template("admin/add_award.html")
 
+
+# ===================================================
+# EDIT AWARD
+# ===================================================
 
 @admin_bp.route("/awards/edit/<int:id>", methods=["GET", "POST"])
 def edit_award(id):
@@ -514,28 +596,38 @@ def edit_award(id):
         award.pinned = True if request.form.get("pinned") else False
 
         images = request.files.getlist("images[]")
-        image_paths = []
+        image_urls = []
 
         if len(images) > 6:
-            return "Maximum 6 images allowed"
-
-        upload_folder = os.path.join("static", "uploads", "awards")
-        os.makedirs(upload_folder, exist_ok=True)
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
-                filename = f"{datetime.now().timestamp()}_{secure_filename(image.filename)}"
-                image.save(os.path.join(upload_folder, filename))
-                image_paths.append(f"uploads/awards/{filename}")
+                result = cloudinary.uploader.upload(
+                    image,
+                    folder="aasc/awards",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
+                )
+                image_urls.append(result["secure_url"])
 
-        if image_paths:
-            award.image = ",".join(image_paths)
+        # Replace only if new images uploaded
+        if image_urls:
+            award.image = ",".join(image_urls)
 
         db.session.commit()
+
+        flash("Award updated successfully!", "success")
         return redirect(url_for("admin.awards"))
 
     return render_template("admin/edit_award.html", item=award)
 
+
+# ===================================================
+# DELETE AWARD
+# ===================================================
 
 @admin_bp.route("/awards/delete/<int:id>")
 def delete_award(id):
@@ -545,8 +637,14 @@ def delete_award(id):
     award = Award.query.get_or_404(id)
     db.session.delete(award)
     db.session.commit()
+
+    flash("Award deleted successfully!", "success")
     return redirect(url_for("admin.awards"))
 
+
+# ===================================================
+# PIN AWARD
+# ===================================================
 
 @admin_bp.route("/awards/pin/<int:id>")
 def pin_award(id):
@@ -556,8 +654,14 @@ def pin_award(id):
     award = Award.query.get_or_404(id)
     award.pinned = True
     db.session.commit()
+
+    flash("Award pinned!", "success")
     return redirect(url_for("admin.awards"))
 
+
+# ===================================================
+# UNPIN AWARD
+# ===================================================
 
 @admin_bp.route("/awards/unpin/<int:id>")
 def unpin_award(id):
@@ -567,4 +671,7 @@ def unpin_award(id):
     award = Award.query.get_or_404(id)
     award.pinned = False
     db.session.commit()
+
+    flash("Award unpinned!", "success")
     return redirect(url_for("admin.awards"))
+

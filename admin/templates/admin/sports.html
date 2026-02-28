@@ -37,7 +37,22 @@
             display: inline-block;
         }
 
-        /* IMAGE THUMBNAILS */
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .event-images {
             display: flex;
             gap: 6px;
@@ -58,7 +73,18 @@
 
 <h2>Sports Activities</h2>
 
-<a class="add" href="{{ url_for('admin.add_sport') }}">
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<a class="add" href="{{ url_for('admin.add_sports') }}">
     ➕ Add Sports Activity
 </a> |
 <a href="{{ url_for('admin.dashboard') }}">
@@ -81,21 +107,19 @@
     <td>{{ s.title }}</td>
 
     <td>
-    {% if s.event_date %}
-        {% if s.event_date.__class__.__name__ == 'date' %}
-            {{ s.event_date.strftime('%d-%m-%Y') }}
+        {% if s.date %}
+            {{ s.date }}
         {% else %}
-            {{ s.event_date }}
+            -
         {% endif %}
-    {% endif %}
-</td>
+    </td>
 
     <td>
         {% if s.image %}
             {% set images = s.image.split(",") %}
             <div class="event-images">
                 {% for img in images %}
-                    <img src="{{ url_for('static', filename=img.strip()) }}">
+                    <img src="{{ img.strip() }}">
                 {% endfor %}
             </div>
         {% else %}
@@ -112,7 +136,7 @@
     </td>
 
     <td>
-        <a href="{{ url_for('admin.edit_sport', id=s.id) }}">✏️ Edit</a> |
+        <a href="{{ url_for('admin.edit_sports', id=s.id) }}">✏️ Edit</a> |
         <a href="{{ url_for('admin.delete_sport', id=s.id) }}"
            onclick="return confirm('Delete this sports activity?')">
            ❌ Delete

@@ -40,6 +40,13 @@
         img {
             border-radius: 6px;
         }
+
+        .gallery {
+            display:flex;
+            gap:6px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
     </style>
 </head>
 <body>
@@ -58,7 +65,7 @@
     <th>#</th>
     <th>Title</th>
     <th>Year</th>
-    <th>Image</th>
+    <th>Images</th>
     <th>📌</th>
     <th>Action</th>
 </tr>
@@ -72,12 +79,12 @@
     <td>
         {% if a.image %}
             {% set images = a.image.split(",") %}
-            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;">
+            <div class="gallery">
                 {% for img in images %}
-                    <img src="{{ url_for('static', filename=img.strip()) }}"
+                    <img src="{{ img.strip() }}"
                          width="70"
                          height="55"
-                         style="object-fit:cover; border-radius:6px;">
+                         style="object-fit:cover;">
                 {% endfor %}
             </div>
         {% else %}

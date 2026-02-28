@@ -3,31 +3,98 @@
 <head>
     <title>Edit Sport</title>
     <style>
-        body { font-family:Arial; background:#f4f6f9; padding:40px; }
-        form { max-width:600px; background:white; padding:25px; border-radius:8px; }
-        input, textarea, button { width:100%; padding:10px; margin-top:10px; }
-        button { background:#0d47a1; color:white; border:none; cursor:pointer; }
-        .imgs { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-        .imgs img { width:100px; height:70px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
+        body { 
+            font-family: Arial; 
+            background: #f4f6f9; 
+            padding: 40px; 
+        }
+
+        form { 
+            max-width: 600px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        input, textarea, button { 
+            width: 100%; 
+            padding: 10px; 
+            margin-top: 10px; 
+        }
+
+        button { 
+            background: #0d47a1; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .imgs { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            margin-top: 10px; 
+        }
+
+        .imgs img { 
+            width: 100px; 
+            height: 70px; 
+            object-fit: cover; 
+            border-radius: 6px; 
+            border: 1px solid #ccc; 
+        }
     </style>
 </head>
 <body>
 
 <h2>Edit Sport</h2>
 
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <form method="post" enctype="multipart/form-data">
 
     <!-- Title -->
     <input name="title" value="{{ item.title }}" required>
 
-    <!-- Date -->
-    <input name="event_date"
+    <!-- Date (IMPORTANT: name must match backend = date) -->
+    <input name="date"
            type="date"
-           value="{% if item.event_date %}{{ item.event_date.strftime('%Y-%m-%d') }}{% endif %}"
+           value="{{ item.date.strftime('%Y-%m-%d') if item.date else '' }}"
            required>
 
     <!-- Description -->
-    <textarea name="description" rows="5">{{ item.description }}</textarea>
+    <textarea name="description" rows="5">{{ item.description or '' }}</textarea>
 
     <!-- Existing Images -->
     <p><strong>Existing Images</strong></p>
@@ -35,7 +102,7 @@
         {% if item.image %}
             {% set images = item.image.split(",") %}
             {% for img in images %}
-                <img src="{{ url_for('static', filename=img.strip()) }}">
+                <img src="{{ img.strip() }}">
             {% endfor %}
         {% else %}
             No images
@@ -43,12 +110,17 @@
     </div>
 
     <!-- Upload New Images -->
-    <p><strong>Add More Images (optional, max 6)</strong></p>
-    <input type="file" name="images[]" multiple accept="image/*">
+    <p><strong>Replace Images (optional, max 6)</strong></p>
+    <input type="file"
+           name="images[]"
+           multiple
+           accept="image/*">
 
     <!-- Pin -->
     <label style="display:block; margin-top:10px;">
-        <input type="checkbox" name="pinned" value="1"
+        <input type="checkbox"
+               name="pinned"
+               value="1"
                {% if item.pinned %}checked{% endif %}>
         📌 Pin this sport
     </label>

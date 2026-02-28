@@ -329,7 +329,7 @@
         {% set images = a.image.split(",") %}
         <div class="award-img-wrap">
             {% for img in images %}
-                <img src="{{ url_for('static', filename=img.strip()) }}">
+                <img src="{{ img.strip() }}">
             {% endfor %}
         </div>
     {% endif %}
@@ -341,6 +341,7 @@
     <p>No awards listed yet.</p>
 </div>
 {% endfor %}
+
 
 </div>
 

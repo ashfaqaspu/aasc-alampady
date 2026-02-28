@@ -35,6 +35,22 @@
             opacity: 0.9;
         }
 
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         .imgs { 
             display: flex; 
             gap: 10px; 
@@ -55,6 +71,17 @@
 
 <h2>Edit Charity</h2>
 
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <form method="post" enctype="multipart/form-data">
 
     <!-- Title -->
@@ -65,22 +92,16 @@
         required
     >
 
-    <!-- Safe Date Field -->
+    <!-- Date -->
     <input 
         type="date"
         name="event_date"
-        value="{% if item.event_date %}
-                   {% if item.event_date.__class__.__name__ == 'date' %}
-                       {{ item.event_date.strftime('%Y-%m-%d') }}
-                   {% else %}
-                       {{ item.event_date }}
-                   {% endif %}
-               {% endif %}"
+        value="{{ item.event_date.strftime('%Y-%m-%d') if item.event_date else '' }}"
         required
     >
 
     <!-- Description -->
-    <textarea name="description" rows="5">{{ item.description }}</textarea>
+    <textarea name="description" rows="5">{{ item.description or '' }}</textarea>
 
     <!-- Existing Images -->
     <p><strong>Existing Images</strong></p>
@@ -96,7 +117,7 @@
     </div>
 
     <!-- Upload New Images -->
-    <p><strong>Add More Images (optional, max 6)</strong></p>
+    <p><strong>Replace Images (optional, max 6)</strong></p>
     <input 
         type="file" 
         name="images[]" 

@@ -31,6 +31,22 @@
             font-weight: bold;
         }
 
+        .flash {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
         #preview {
             margin-top: 15px;
             display: flex;
@@ -51,9 +67,23 @@
 
 <h2>Add Charity Work</h2>
 
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <form method="post" enctype="multipart/form-data">
+
     <input name="title" placeholder="Charity Title" required>
+
     <input name="event_date" type="date" required>
+
     <textarea name="description" placeholder="Description" rows="5"></textarea>
 
     <label><strong>Charity Images (Max 6)</strong></label>
@@ -72,6 +102,7 @@
     </label>
 
     <button type="submit">Save Charity</button>
+
 </form>
 
 <br>
@@ -80,13 +111,14 @@
 <script>
 function previewImages() {
     const preview = document.getElementById("preview");
-    const files = document.getElementById("images").files;
+    const input = document.getElementById("images");
+    const files = input.files;
 
     preview.innerHTML = "";
 
     if (files.length > 6) {
         alert("You can upload a maximum of 6 images.");
-        document.getElementById("images").value = "";
+        input.value = "";  // Clear selection
         return;
     }
 

@@ -3,12 +3,48 @@
 <head>
     <title>Edit Award</title>
     <style>
-        body { font-family:Arial; background:#f4f6f9; padding:40px; }
-        form { max-width:600px; background:white; padding:25px; border-radius:8px; }
-        input, textarea, button { width:100%; padding:10px; margin-top:10px; }
-        button { background:#0d47a1; color:white; border:none; }
-        .imgs { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
-        .imgs img { width:120px; height:100px; object-fit:cover; border-radius:6px; }
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        form {
+            max-width: 600px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            background: #0d47a1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .imgs {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .imgs img {
+            width: 120px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
@@ -31,7 +67,7 @@
         {% if item.image %}
             {% set images = item.image.split(",") %}
             {% for img in images %}
-                <img src="{{ url_for('static', filename=img.strip()) }}">
+                <img src="{{ img.strip() }}">
             {% endfor %}
         {% else %}
             No image
@@ -39,10 +75,15 @@
     </div>
 
     <p><strong>Change Images (optional, max 6)</strong></p>
-    <input type="file" name="images[]" multiple accept="image/*">
+    <input type="file"
+           name="images[]"
+           multiple
+           accept="image/*">
 
     <label style="display:block; margin-top:10px;">
-        <input type="checkbox" name="pinned" value="1"
+        <input type="checkbox"
+               name="pinned"
+               value="1"
                {% if item.pinned %}checked{% endif %}>
         📌 Pin this award
     </label>
