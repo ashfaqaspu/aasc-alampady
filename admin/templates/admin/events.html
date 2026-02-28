@@ -107,12 +107,16 @@
     <td>{{ e.title }}</td>
 
     <td>
-        {% if e.event_date %}
+    {% if e.event_date %}
+        {% if e.event_date.__class__.__name__ == 'date' %}
             {{ e.event_date.strftime('%d-%m-%Y') }}
         {% else %}
-            -
+            {{ e.event_date }}
         {% endif %}
-    </td>
+    {% else %}
+        -
+    {% endif %}
+</td>
 
     <td>
         {% if e.image %}

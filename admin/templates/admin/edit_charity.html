@@ -94,11 +94,17 @@
 
     <!-- Date -->
     <input 
-        type="date"
-        name="event_date"
-        value="{{ item.event_date.strftime('%Y-%m-%d') if item.event_date else '' }}"
-        required
-    >
+    type="date"
+    name="event_date"
+    value="{% if item.event_date %}
+               {% if item.event_date.__class__.__name__ == 'date' %}
+                   {{ item.event_date.strftime('%Y-%m-%d') }}
+               {% else %}
+                   {{ item.event_date }}
+               {% endif %}
+           {% else %}{% endif %}"
+    required
+>
 
     <!-- Description -->
     <textarea name="description" rows="5">{{ item.description or '' }}</textarea>

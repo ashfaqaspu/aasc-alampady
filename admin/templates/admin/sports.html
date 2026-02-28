@@ -107,13 +107,16 @@
     <td>{{ s.title }}</td>
 
     <td>
-        {% if s.date %}
-            {{ s.date }}
+    {% if s.date %}
+        {% if s.date.__class__.__name__ == 'date' %}
+            {{ s.date.strftime('%d-%m-%Y') }}
         {% else %}
-            -
+            {{ s.date }}
         {% endif %}
-    </td>
-
+    {% else %}
+        -
+    {% endif %}
+</td>
     <td>
         {% if s.image %}
             {% set images = s.image.split(",") %}
