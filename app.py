@@ -40,13 +40,7 @@ def create_app():
 
     # ===============================
     # CLOUDINARY CONFIG
-    # ===============================
-    cloudinary.config(
-        cloud_name=os.environ.get("dhssjkykf"),
-        api_key=os.environ.get("516981333178533"),
-        api_secret=os.environ.get("**********"),
-        secure=True
-    )
+    # ==============================
 
     # ===============================
     # REGISTER BLUEPRINTS
