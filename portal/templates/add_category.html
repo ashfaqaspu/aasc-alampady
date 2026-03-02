@@ -135,9 +135,42 @@
                 padding: 35px 25px;
             }
         }
+
+        /* Dashboard Back Button */
+.top-bar {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.dashboard-btn {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 14px;
+    background: linear-gradient(135deg,#00c6ff,#0072ff);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s ease;
+    box-shadow: 0 15px 35px rgba(0,114,255,0.35);
+}
+
+.dashboard-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 45px rgba(0,114,255,0.55);
+}
     </style>
 </head>
 <body>
+
+<body>
+
+<div class="top-bar">
+    <a href="{{ url_for('portal.medical_dashboard') }}"
+       class="dashboard-btn">
+       ← Back to Medical Dashboard
+    </a>
+</div>
 
 <div class="category-card">
 

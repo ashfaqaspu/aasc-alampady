@@ -69,6 +69,13 @@ h2 {
     gap: 15px;
     flex-wrap: wrap;
     margin-bottom: 25px;
+    align-items: center;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .search-box {
@@ -253,9 +260,19 @@ tbody tr:hover {
         📄 Export PDF
     </button>
 
-    <form method="GET" action="{{ url_for('portal.admin_members') }}">
-        <input type="text" name="search" placeholder="Search by name"
+    <!-- SEARCH FORM WITH BUTTON -->
+    <form method="GET"
+          action="{{ url_for('portal.admin_members') }}"
+          class="search-form">
+
+        <input type="text"
+               name="search"
+               placeholder="Search by name"
                class="search-box">
+
+        <button type="submit" class="btn-primary">
+            🔍 Search
+        </button>
     </form>
 
     <a href="{{ url_for('portal.dashboard') }}" class="back">
@@ -264,7 +281,7 @@ tbody tr:hover {
 
 </div>
 
-<!-- Table -->
+<!-- TABLE -->
 <div class="table-card">
 <table>
 <thead>

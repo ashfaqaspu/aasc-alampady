@@ -163,15 +163,43 @@ tbody tr:hover td {
     margin-bottom: 8px;
   }
 }
+/* Back Button */
+.top-bar {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#6366f1,#4338ca);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.3s ease;
+  box-shadow: 0 15px 35px rgba(67,56,202,0.4);
+}
+
+.dashboard-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 50px rgba(67,56,202,0.6);
+}
 </style>
 </head>
 
 <body>
 
-<div class="page-wrapper">
-
 <div class="page-title">
   🏛 All Committees
+</div>
+
+<div class="top-bar">
+  <a href="{{ url_for('portal.dashboard') }}"
+     class="dashboard-btn">
+     ← Back to Dashboard
+  </a>
 </div>
 
 {% if committees and committees|length > 0 %}
