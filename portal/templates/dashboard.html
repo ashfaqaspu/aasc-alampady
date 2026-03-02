@@ -408,48 +408,103 @@
         /* ═══════════════════════════════════════════════
    BENTO GRID
 ═══════════════════════════════════════════════ */
-        .bento {
-            display: grid;
-            grid-template-columns: 320px 1fr 1fr;
-            grid-template-rows: auto;
-            gap: 18px;
-            align-items: start;
-        }
+        /* ═══════════════════════════════════════════════
+   BENTO GRID — RESPONSIVE PERFECT VERSION
+═══════════════════════════════════════════════ */
 
-        /* column helpers */
-        .b-left {
-            grid-column: 1;
-            grid-row: 1 / span 4;
-        }
+.bento {
+    display: grid;
+    grid-template-columns: 320px 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
 
-        .b-mid1 {
-            grid-column: 2;
-        }
+/* Left column stays tall */
+.b-left {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+}
 
-        .b-mid2 {
-            grid-column: 2;
-        }
+/* Default placements */
+.b-mid1 { grid-column: 2; }
+.b-mid2 { grid-column: 2; }
+.b-right1 { grid-column: 3; }
 
-        .b-mid3 {
-            grid-column: 2;
-        }
+/* ───────────── LARGE TABLETS (≤1200px) ───────────── */
+@media (max-width:1200px) {
+    .bento {
+        grid-template-columns: 280px 1fr;
+    }
 
-        .b-right1 {
-            grid-column: 3;
-        }
+    .b-right1 {
+        grid-column: 2;
+    }
+}
 
-        .b-right2 {
-            grid-column: 3;
-        }
+/* ───────────── TABLETS (≤1000px) ───────────── */
+@media (max-width:1000px) {
+    .bento {
+        grid-template-columns: 1fr;
+    }
 
-        .b-right3 {
-            grid-column: 3;
-        }
+    .b-left,
+    .b-mid1,
+    .b-mid2,
+    .b-right1,
+    .b-full {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
 
-        .b-full {
-            grid-column: 1 / -1;
-        }
+    .card {
+        padding: 22px;
+    }
+}
 
+/* ───────────── MOBILE (≤600px) ───────────── */
+@media (max-width:600px) {
+
+    .pg {
+        padding: 14px 12px 40px;
+    }
+
+    .hdr {
+        padding: 0 12px;
+        height: 60px;
+    }
+
+    .welcome {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .welcome-name {
+        font-size: 22px;
+    }
+
+    .card {
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .prof-name {
+        font-size: 18px;
+    }
+
+    .stat-chip .stat-num {
+        font-size: 28px;
+    }
+
+    .adm-btns {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 8px 14px;
+    }
+}
         /* ═══════════════════════════════════════════════
    CARD BASE
 ═══════════════════════════════════════════════ */
@@ -1299,34 +1354,22 @@
                 grid-column: 2;
             }
         }
-
         @media(max-width:900px) {
-            .bento {
-                display: flex;
-                flex-direction: column;
-            }
 
-            .b-left {
-                grid-row: auto;
-            }
+    .hdr-pills,
+    .hdr-clock {
+        display: none;
+    }
 
-            .pg {
-                padding: 16px 14px 48px;
-            }
+    .logo-sub {
+        display: none;
+    }
 
-            .hdr {
-                padding: 0 16px;
-            }
-
-            .hdr-pills,
-            .hdr-clock {
-                display: none;
-            }
-
-            .welcome-name {
-                font-size: 26px;
-            }
-        }
+    .logout-btn {
+        padding: 6px 14px;
+        font-size: 12px;
+    }
+}
     </style>
 </head>
 
