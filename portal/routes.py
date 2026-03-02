@@ -7,6 +7,8 @@ from flask import request, session, redirect, url_for, render_template, flash
 from helpers import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
+import cloudinary
+import cloudinary.uploader
 
 
 
@@ -232,32 +234,49 @@ def complete_profile():
 
     if request.method == "POST":
 
-        user.address = request.form.get("address")
-        user.email = request.form.get("email")
-        user.whatsapp = request.form.get("whatsapp")
+        # ✅ Only update if value exists
+        address = request.form.get("address")
+        if address:
+            user.address = address
+
+        email = request.form.get("email")
+        if email:
+            user.email = email
+
+        whatsapp = request.form.get("whatsapp")
+        if whatsapp:
+            user.whatsapp = whatsapp
 
         dob = request.form.get("dob")
         if dob:
             user.dob = datetime.strptime(dob, "%Y-%m-%d").date()
 
-        user.blood_group = request.form.get("blood_group")
-        user.interests = ",".join(request.form.getlist("interests"))
+        blood_group = request.form.get("blood_group")
+        if blood_group:
+            user.blood_group = blood_group
 
-        # ✅ PHOTO HANDLING
+        interests = request.form.getlist("interests")
+        if interests:
+            user.interests = ",".join(interests)
+
+        # ✅ PHOTO UPLOAD (Cloudinary)
         photo = request.files.get("photo")
 
         if photo and photo.filename:
-            os.makedirs("static/uploads", exist_ok=True)
+            try:
+                upload_result = cloudinary.uploader.upload(
+                    photo,
+                    folder="users",
+                    public_id=f"user_{user.id}",
+                    overwrite=True
+                )
 
-            filename = f"user_{user.id}.jpg"
+                user.photo = upload_result["secure_url"]
 
-            # Save file physically
-            photo.save(f"static/uploads/{filename}")
+            except Exception as e:
+                print("Cloudinary Error:", e)
 
-            # Save path in DB (WITHOUT static/)
-            user.photo = f"uploads/{filename}"
-
-        # ✅ Single commit
+        # ✅ Commit after all updates
         db.session.commit()
 
         return redirect(url_for("portal.dashboard"))

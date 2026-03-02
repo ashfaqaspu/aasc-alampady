@@ -1378,36 +1378,41 @@
             <div class="welcome-date" id="live-date">—</div>
         </div>
 
-        <!-- Bento grid -->
-        <div class="bento">
+       <!-- Bento grid -->
+<div class="bento">
 
-            <!-- ═══ LEFT: Profile (tall) ═══ -->
-            <div class="card b-left">
-                <div class="card-wm">🏅</div>
+    <!-- ═══ LEFT: Profile (tall) ═══ -->
+    <div class="card b-left">
+        <div class="card-wm">🏅</div>
 
-                <div class="prof-top">
-                    <div class="av-wrap">
-                        {% if user.photo %}
-    <img src="{{ user.photo }}" class="id-photo">
-{% else %}
-    <img src="{{ url_for('static', filename='default_avatar.png') }}" class="id-photo">
-{% endif %}
-                            alt="{{ user.name }}">
-                        <div class="av-dot"></div>
-                    </div>
-                    <div class="prof-name">{{ user.name }}</div>
+        <div class="prof-top">
+            <div class="av-wrap">
 
-                    {% if is_super_admin %}
-                    <span class="badge super">⭐ Super Admin</span>
-                    {% elif is_admin %}
-                    <span class="badge admin">🛡️ Admin</span>
-                    {% elif is_section_admin %}
-                    <span class="badge section">📋 Section Admin</span>
-                    {% else %}
-                    <span class="badge member">👤 Member</span>
-                    {% endif %}
-                </div>
+                {% if user.photo %}
+                    <img src="{{ user.photo }}" 
+                         alt="{{ user.name }}" 
+                         class="id-photo">
+                {% else %}
+                    <img src="{{ url_for('static', filename='default_avatar.png') }}" 
+                         alt="{{ user.name }}" 
+                         class="id-photo">
+                {% endif %}
 
+                <div class="av-dot"></div>
+            </div>
+
+            <div class="prof-name">{{ user.name }}</div>
+
+            {% if is_super_admin %}
+                <span class="badge super">⭐ Super Admin</span>
+            {% elif is_admin %}
+                <span class="badge admin">🛡️ Admin</span>
+            {% elif is_section_admin %}
+                <span class="badge section">📋 Section Admin</span>
+            {% else %}
+                <span class="badge member">👤 Member</span>
+            {% endif %}
+            
                 <hr class="rule">
 
                 <ul class="info-list">
