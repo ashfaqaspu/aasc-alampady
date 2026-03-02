@@ -1,109 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Event Participants</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta charset="UTF-8">
+<title>Event Participants</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: #0d47a1;
-            font-size: 24px;
-        }
+body {
+    min-height: 100vh;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #f1f5f9;
+}
 
-        /* Table */
-        table {
-            width: 100%;
-            max-width: 900px;
-            margin: auto;
-            border-collapse: collapse;
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
+/* Page Title */
+.page-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 35px;
+    letter-spacing: 0.4px;
+}
 
-        th {
-            background: #0d47a1;
-            color: #ffffff;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 14.5px;
-        }
+/* Table Card */
+.table-wrapper {
+    max-width: 1000px;
+    margin: auto;
+    background: #1e293b;
+    border-radius: 22px;
+    border: 1px solid #334155;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+}
 
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #eef1f5;
-            font-size: 14.5px;
-        }
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+/* Header */
+thead {
+    background: linear-gradient(135deg, #6366f1, #4338ca);
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.3px;
+}
 
-        td[colspan] {
-            text-align: center;
-            font-style: italic;
-            color: #777;
-        }
+/* Body */
+td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #334155;
+    font-size: 14px;
+    color: #e2e8f0;
+}
 
-        /* Back link */
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #0d47a1;
-            font-size: 14.5px;
-        }
+tr:last-child td {
+    border-bottom: none;
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+/* Row Hover */
+tbody tr {
+    transition: 0.25s ease;
+}
+
+tbody tr:hover {
+    background: #0f172a;
+}
+
+/* Empty Row */
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Back Button */
+.back-btn {
+    display: inline-block;
+    margin: 35px auto 0;
+    padding: 12px 22px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    background: #334155;
+    color: #f1f5f9;
+    transition: 0.3s ease;
+    text-align: center;
+}
+
+.back-container {
+    text-align: center;
+}
+
+.back-btn:hover {
+    background: #475569;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    th, td {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<h2>👥 Participants – {{ event[0] }}</h2>
+<div class="page-title">
+    👥 Participants – {{ event[0] }}
+</div>
 
-<table>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Membership ID</th>
-    </tr>
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Membership ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in participants %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ p[0] }}</td>
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="empty">No participants yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-    {% for p in participants %}
-    <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ p[0] }}</td>
-        <td>{{ p[1] }}</td>
-        <td>{{ p[2] }}</td>
-    </tr>
-    {% else %}
-    <tr><td colspan="4">No participants yet</td></tr>
-    {% endfor %}
-</table>
-
-<a href="{{ url_for('portal.admin_events') }}">Back</a>
+<div class="back-container">
+    <a href="{{ url_for('portal.admin_events') }}" class="back-btn">
+        ← Back
+    </a>
+</div>
 
 </body>
 </html>

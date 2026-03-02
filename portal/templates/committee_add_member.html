@@ -1,125 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Committee Member</title>
+<meta charset="UTF-8">
+<title>Add Committee Member</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-            margin-bottom: 25px;
-            font-size: 24px;
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        .card {
-            max-width: 420px;
-            margin: auto;
-            background: #ffffff;
-            padding: 28px 26px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
+/* Title */
+h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 35px;
+    letter-spacing: 0.5px;
+}
 
-        label {
-            font-weight: 600;
-            font-size: 14px;
-            color: #555;
-            display: block;
-            margin-bottom: 6px;
-        }
+/* Card */
+.card {
+    width: 100%;
+    max-width: 480px;
+    background: #1e293b;
+    padding: 35px;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+}
 
-        select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid #dcdfe3;
-            background: #fafafa;
-            font-size: 14.5px;
-            margin-bottom: 18px;
-            transition: border 0.2s, box-shadow 0.2s;
-        }
+/* Labels */
+label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 8px;
+}
 
-        select:focus {
-            outline: none;
-            border-color: #0d47a1;
-            background: #ffffff;
-            box-shadow: 0 0 0 2px rgba(13,71,161,0.1);
-        }
+/* Select */
+select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: 14px;
+    margin-bottom: 20px;
+    transition: 0.3s;
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #0d47a1;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14.5px;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
-        }
+select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
+}
 
-        button:hover {
-            background: #08306b;
-            box-shadow: 0 6px 14px rgba(13,71,161,0.25);
-        }
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+    color: white;
+    transition: 0.3s;
+    box-shadow: 0 15px 40px rgba(67,56,202,0.4);
+}
 
-        button:active {
-            transform: scale(0.98);
-        }
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 25px 60px rgba(67,56,202,0.6);
+}
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 22px;
-            text-decoration: none;
-            font-weight: 600;
-            color: #0d47a1;
-            font-size: 14.5px;
-        }
+/* Back Button */
+.back {
+    margin-top: 30px;
+    padding: 12px 22px;
+    border-radius: 14px;
+    background: #334155;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+.back:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .card {
+        padding: 25px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-<h2>Add Member to Committee</h2>
+<h2>➕ Add Member to Committee</h2>
 
 <div class="card">
     <form method="post">
-        <label>Select Member:</label>
-        <select name="user_id" required>
-    {% for u in users %}
-        <option value="{{ u.id }}">
-            {{ u.name }} ({{ u.membership_id }})
-        </option>
-    {% endfor %}
-</select>
 
-        <label>Role:</label>
+        <label>Select Member</label>
+        <select name="user_id" required>
+            {% for u in users %}
+                <option value="{{ u.id }}">
+                    {{ u.name }} ({{ u.membership_id }})
+                </option>
+            {% endfor %}
+        </select>
+
+        <label>Select Role</label>
         <select name="role">
             <option value="member">Member</option>
             <option value="admin">Admin</option>
         </select>
 
-        <button type="submit">Add to Committee</button>
+        <button type="submit">
+            Add to Committee
+        </button>
+
     </form>
 </div>
 
-<a href="{{ url_for('portal.committee_members_page', cid=cid) }}">
+<a href="{{ url_for('portal.committee_members_page', cid=cid) }}" class="back">
     ← Back to Members
 </a>
 

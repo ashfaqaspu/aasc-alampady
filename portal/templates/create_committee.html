@@ -1,119 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Create Committee</title>
+<meta charset="UTF-8">
+<title>Create Committee</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f4f6f9;
-      padding: 30px 20px;
-      color: #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+}
 
-    .card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 420px;
-      padding: 32px 30px;
-      border-radius: 18px;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.12);
-      text-align: center;
-    }
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #e2e8f0;
+}
 
-    h2 {
-      margin-top: 0;
-      margin-bottom: 25px;
-      color: #0d47a1;
-      font-size: 26px;
-    }
+/* Card */
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: #1e293b;
+  padding: 40px 35px;
+  border-radius: 28px;
+  border: 1px solid #334155;
+  box-shadow: 0 40px 90px rgba(0,0,0,0.6);
+  animation: fadeIn 0.4s ease;
+}
 
-    label {
-      display: block;
-      text-align: left;
-      font-size: 14px;
-      font-weight: 600;
-      color: #555;
-      margin-bottom: 6px;
-    }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    input {
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 10px;
-      border: 1px solid #dcdfe3;
-      background: #fafafa;
-      font-size: 14.5px;
-      margin-bottom: 22px;
-      transition: border 0.2s, box-shadow 0.2s;
-    }
+/* Title */
+h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  letter-spacing: 0.5px;
+}
 
-    input:focus {
-      outline: none;
-      border-color: #0d47a1;
-      background: #ffffff;
-      box-shadow: 0 0 0 2px rgba(13,71,161,0.12);
-    }
+/* Label */
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #94a3b8;
+}
 
-    button {
-      width: 100%;
-      padding: 14px;
-      background: #0d47a1;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 15.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
-    }
+/* Input */
+input {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 14.5px;
+  margin-bottom: 25px;
+  transition: 0.3s ease;
+}
 
-    button:hover {
-      background: #08306b;
-      box-shadow: 0 10px 22px rgba(13,71,161,0.25);
-    }
+input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
+/* Button */
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  background: linear-gradient(135deg,#6366f1,#4338ca);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 25px 60px rgba(67,56,202,0.5);
+}
 
-    .back {
-      display: block;
-      margin-top: 22px;
-      font-weight: 600;
-      text-decoration: none;
-      color: #0d47a1;
-      font-size: 14.5px;
-    }
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 35px 80px rgba(67,56,202,0.7);
+}
 
-    .back:hover {
-      text-decoration: underline;
-    }
-  </style>
+button:active {
+  transform: scale(0.97);
+}
+
+/* Back Link */
+.back {
+  display: block;
+  text-align: center;
+  margin-top: 28px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #94a3b8;
+  transition: 0.3s;
+}
+
+.back:hover {
+  color: #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card {
+    padding: 30px 22px;
+  }
+}
+</style>
 </head>
+
 <body>
 
 <div class="card">
-  <h2>Create Committee</h2>
+
+  <h2>🏛 Create Committee</h2>
 
   <form method="post">
     <label>Committee Name</label>
-    <input type="text" name="name" required>
+    <input type="text" name="name" placeholder="Enter committee name" required>
 
-    <button type="submit">Create</button>
+    <button type="submit">Create Committee</button>
   </form>
 
-<a href="{{ url_for('portal.dashboard') }}" class="back">
+  <a href="{{ url_for('portal.dashboard') }}" class="back">
     ← Back to Dashboard
-</a>
+  </a>
 
 </div>
 

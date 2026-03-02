@@ -1,257 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AASC Admin | Members</title>
+<meta charset="UTF-8">
+<title>AASC Admin | Members</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * { box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        h2 {
-            color: #0d47a1;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 26px;
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 50px 20px;
+    color: #e2e8f0;
+}
 
-        /* ---------- TABS ---------- */
-        .tabs {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+.page-wrapper {
+    max-width: 1400px;
+    margin: auto;
+}
 
-        .tabs a {
-            padding: 10px 18px;
-            background: #e0e0e0;
-            margin: 4px;
-            text-decoration: none;
-            color: #333;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-block;
-        }
+h2 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 35px;
+    font-weight: 700;
+}
 
-        .tabs a.active {
-            background: #0d47a1;
-            color: white;
-        }
+/* ---------- TABS ---------- */
+.tabs {
+    text-align: center;
+    margin-bottom: 25px;
+}
 
-        /* ---------- SEARCH ---------- */
-        .search-box {
-            width: 100%;
-            max-width: 420px;
-            padding: 12px 14px;
-            margin: 15px auto;
-            display: block;
-            border-radius: 10px;
-            border: 1px solid #dcdfe3;
-            font-size: 14.5px;
-            background: #ffffff;
-        }
+.tabs a {
+    display: inline-block;
+    padding: 10px 18px;
+    margin: 6px;
+    border-radius: 20px;
+    background: #334155;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.3s;
+}
 
-        .search-box:focus {
-            outline: none;
-            border-color: #0d47a1;
-            box-shadow: 0 0 0 2px rgba(13,71,161,0.1);
-        }
+.tabs a.active {
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+    color: white;
+}
 
-        /* ---------- EXPORT ---------- */
-        .print-btn {
-            background: #0d47a1;
-            color: white;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            display: block;
-            margin: 0 auto 20px;
-        }
+.tabs a:hover {
+    background: #475569;
+}
 
-        .print-btn:hover {
-            background: #08306b;
-        }
+/* ---------- ACTION BAR ---------- */
+.action-bar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
 
-        /* ---------- TABLE ---------- */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
+.search-box {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: 14px;
+    min-width: 260px;
+}
 
-        th {
-            background: #0d47a1;
-            color: white;
-            padding: 14px;
-            font-size: 14.5px;
-            text-align: center;
-        }
+.search-box:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
+}
 
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #eef1f5;
-            text-align: center;
-            font-size: 14px;
-        }
+.btn-primary {
+    padding: 12px 20px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+    color: white;
+    transition: 0.3s;
+    box-shadow: 0 15px 40px rgba(67,56,202,0.4);
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 25px 60px rgba(67,56,202,0.6);
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+.back {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 14px;
+    background: #334155;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
 
-        /* ---------- STATUS ---------- */
-        .yes {
-            color: #2e7d32;
-            font-weight: 700;
-        }
+.back:hover {
+    background: #475569;
+}
 
-        .no {
-            color: #c62828;
-            font-weight: 700;
-        }
+/* ---------- TABLE ---------- */
+.table-card {
+    background: #1e293b;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    overflow-x: auto;
+}
 
-        /* ---------- BUTTONS ---------- */
-        .btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            display: inline-block;
-            margin: 2px;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        .edit {
-            background: #4caf50;
-            color: white;
-        }
+thead {
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+}
 
-        .reset {
-            background: #ff9800;
-            color: white;
-        }
+th {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
 
-        .info {
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
+td {
+    padding: 16px;
+    border-bottom: 1px solid #334155;
+    text-align: center;
+    font-size: 13px;
+}
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+tbody tr {
+    transition: 0.25s;
+}
 
-        /* ---------- BACK ---------- */
-        a.back {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #0d47a1;
-        }
+tbody tr:hover {
+    background: #0f172a;
+}
 
-        a.back:hover {
-            text-decoration: underline;
-        }
+/* Status */
+.yes {
+    color: #22c55e;
+    font-weight: 700;
+}
 
-        /* ---------- PRINT ---------- */
-        @media print {
-            .tabs, .print-btn, .btn, .search-box, a {
-                display: none !important;
-            }
+.no {
+    color: #ef4444;
+    font-weight: 700;
+}
 
-            body {
-                background: white;
-                padding: 0;
-            }
+/* Buttons */
+.btn {
+    padding: 6px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin: 3px;
+    transition: 0.3s;
+}
 
-            table {
-                font-size: 12px;
-                box-shadow: none;
-            }
+.edit {
+    background: #22c55e;
+    color: white;
+}
 
-            th {
-                background: #ddd !important;
-                color: black !important;
-            }
+.reset {
+    background: #f59e0b;
+    color: white;
+}
 
-            h2 {
-                text-align: center;
-            }
-        }
-    </style>
+.info {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Print */
+@media print {
+    .tabs, .action-bar, .btn, .back {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th {
+        background: #ddd !important;
+        color: black !important;
+    }
+}
+</style>
 </head>
 
 <body>
 
+<div class="page-wrapper">
+
 <h2>👥 AASC Members</h2>
 
+<!-- Tabs -->
 <div class="tabs">
     <a href="{{ url_for('portal.admin_members') }}"
-       class="{{ 'active' if view=='all' else '' }}">
-        All
-    </a>
+       class="{{ 'active' if view=='all' else '' }}">All</a>
 
     <a href="{{ url_for('portal.admin_members_renewed') }}"
-       class="{{ 'active' if view=='renewed' else '' }}">
-        Renewed
-    </a>
+       class="{{ 'active' if view=='renewed' else '' }}">Renewed</a>
 
     <a href="{{ url_for('portal.admin_members_pending') }}"
-       class="{{ 'active' if view=='pending' else '' }}">
-        Pending
-    </a>
+       class="{{ 'active' if view=='pending' else '' }}">Pending</a>
 
     <a href="{{ url_for('portal.admin_members_not_renewed') }}"
-       class="{{ 'active' if view=='not_renewed' else '' }}">
-        Not Renewed
-    </a>
+       class="{{ 'active' if view=='not_renewed' else '' }}">Not Renewed</a>
 </div>
 
+<!-- Action Bar -->
+<div class="action-bar">
 
-<button onclick="window.print()" class="print-btn">
-    📄 Export to PDF
-</button>
+    <button onclick="window.print()" class="btn-primary">
+        📄 Export PDF
+    </button>
 
-<form method="GET" action="{{ url_for('portal.admin_members') }}">
-    <input type="text" name="search" placeholder="Search by name">
-    <button type="submit">Search</button>
-</form>
+    <form method="GET" action="{{ url_for('portal.admin_members') }}">
+        <input type="text" name="search" placeholder="Search by name"
+               class="search-box">
+    </form>
 
-<a href="{{ url_for('portal.dashboard') }}" class="back">
-    ← Back to Dashboard
-</a>
+    <a href="{{ url_for('portal.dashboard') }}" class="back">
+        ← Dashboard
+    </a>
 
-<table id="membersTable">
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Nativity</th>
-        <th>Phone</th>
-        <th>Membership ID</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Admin</th>
-        <th>Section Admin</th>
-        <th>Actions</th>
+</div>
 
-            {% if is_super_admin %}
-            <th>Admin Control</th>
-            {% endif %}
-    </tr>
+<!-- Table -->
+<div class="table-card">
+<table>
+<thead>
+<tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Nativity</th>
+    <th>Phone</th>
+    <th>Membership ID</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Admin</th>
+    <th>Section Admin</th>
+    <th>Actions</th>
+    {% if is_super_admin %}
+    <th>Admin Control</th>
+    {% endif %}
+</tr>
+</thead>
+
+<tbody>
 {% for m in members %}
 <tr>
     <td>{{ loop.index }}</td>
@@ -296,22 +330,12 @@
         {% if m.phone != SUPER_ADMIN_PHONE %}
             <a class="btn info"
                href="{{ url_for('portal.toggle_admin', user_id=m.id) }}">
-               {% if m.is_admin %}
-                   Remove Admin
-               {% else %}
-                   Make Admin
-               {% endif %}
+               {% if m.is_admin %}Remove Admin{% else %}Make Admin{% endif %}
             </a>
-
-            <br><br>
 
             <a class="btn edit"
                href="{{ url_for('portal.toggle_section_admin', user_id=m.id) }}">
-               {% if m.section_admin %}
-                   Remove Section Admin
-               {% else %}
-                   Make Section Admin
-               {% endif %}
+               {% if m.section_admin %}Remove Section{% else %}Make Section{% endif %}
             </a>
         {% else %}
             —
@@ -320,3 +344,11 @@
     {% endif %}
 </tr>
 {% endfor %}
+</tbody>
+</table>
+</div>
+
+</div>
+
+</body>
+</html>

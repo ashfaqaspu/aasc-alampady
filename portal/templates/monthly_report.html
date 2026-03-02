@@ -1,259 +1,356 @@
-{% extends "portal_base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Monthly Attendance Report</title>
 
-<style>
-.report-wrapper {
-  padding: 40px 20px;
-}
+  <!-- Premium Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-/* Top Navigation */
-.top-nav {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
+  <style>
 
-.top-nav a {
-  text-decoration: none;
-  color: #0d47a1;
-  font-weight: 600;
-  margin: 0 8px;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-.top-nav a:hover {
-  text-decoration: underline;
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+      padding: 50px 20px;
+      color: #2c3e50;
+    }
 
-/* Header */
-.report-title {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: #0d47a1;
-  margin-bottom: 30px;
-}
+    .report-container {
+      max-width: 1100px;
+      margin: auto;
+      background: rgba(255,255,255,0.97);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    }
 
-/* Filter Card */
-.filter-card {
-  max-width: 500px;
-  margin: 0 auto 30px;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-}
+    /* ================= TOP NAV ================= */
 
-.filter-card input[type="month"] {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #d0d7de;
-  font-size: 14px;
-}
+    .top-nav {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
 
-.filter-card button {
-  padding: 10px 20px;
-  background: linear-gradient(135deg,#0d47a1,#1976d2);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
+    .top-nav a {
+      text-decoration: none;
+      color: #1565c0;
+      font-weight: 600;
+      margin: 0 10px;
+      transition: 0.25s ease;
+    }
 
-.filter-card button:hover {
-  background: #08306b;
-}
+    .top-nav a:hover {
+      color: #0d47a1;
+      transform: translateY(-2px);
+    }
 
-/* Summary Grid */
-.summary-grid {
-  max-width: 1000px;
-  margin: 0 auto 30px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
+    hr {
+      margin: 20px 0 35px;
+      border: none;
+      height: 1px;
+      background: #e3e8ef;
+    }
 
-.summary-box {
-  background: #e3f2fd;
-  padding: 20px;
-  border-radius: 16px;
-  border-left: 6px solid #0d47a1;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.6;
-}
+    /* ================= TITLE ================= */
 
-/* Table */
-.table-card {
-  max-width: 1000px;
-  margin: auto;
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  overflow: hidden;
-}
+    .report-title {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 35px;
+      background: linear-gradient(135deg,#1565c0,#00bcd4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    /* ================= FILTER ================= */
 
-thead {
-  background: #0d47a1;
-}
+    .filter-card {
+      max-width: 520px;
+      margin: 0 auto 40px;
+      background: #f8fbff;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+    }
 
-th {
-  color: white;
-  padding: 15px 18px;
-  text-align: left;
-  font-size: 14px;
-}
+    .filter-card input[type="month"] {
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1px solid #d0d7de;
+      font-size: 14px;
+      font-family: inherit;
+    }
 
-td {
-  padding: 15px 18px;
-  border-bottom: 1px solid #edf2f7;
-  font-size: 14px;
-}
+    .filter-card button {
+      padding: 11px 22px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg,#1e88e5,#42a5f5);
+      transition: 0.3s ease;
+      box-shadow: 0 8px 20px rgba(30,136,229,0.3);
+    }
 
-tbody tr:hover td {
-  background: #f4f8ff;
-}
+    .filter-card button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(30,136,229,0.45);
+    }
 
-/* Percentage Styles */
-.percent {
-  font-weight: 700;
-}
+    /* ================= SUMMARY ================= */
 
-.percent.high { color: #2e7d32; }
-.percent.medium { color: #f57c00; }
-.percent.low { color: #c62828; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
 
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: 30px;
-  color: #78909c;
-  font-weight: 500;
-}
+    .summary-box {
+      background: linear-gradient(135deg,#e3f2fd,#f1f8ff);
+      padding: 25px;
+      border-radius: 18px;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.8;
+      border-left: 6px solid #1976d2;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      transition: 0.25s ease;
+    }
 
-/* Print Mode */
-@media print {
-  .top-nav,
-  .filter-card {
-    display: none;
-  }
+    .summary-box:hover {
+      transform: translateY(-4px);
+    }
 
-  body {
-    background: white;
-  }
+    /* ================= TABLE ================= */
 
-  .table-card {
-    box-shadow: none;
-    border-radius: 0;
-  }
+    .table-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+    }
 
-  thead {
-    background: #ddd !important;
-  }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
 
-  th {
-    color: black !important;
-  }
-}
-</style>
+    thead {
+      background: linear-gradient(135deg,#1a237e,#3949ab);
+    }
 
-<div class="report-wrapper">
+    th {
+      color: white;
+      padding: 18px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-align: left;
+    }
 
-<!-- Top Navigation -->
-<div class="top-nav">
-  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}">🏠 Mini Dashboard</a> |
-  <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">👥 Members</a>
+    td {
+      padding: 16px 18px;
+      font-size: 14.5px;
+      border-bottom: 1px solid #eef2f7;
+    }
+
+    tbody tr {
+      transition: 0.25s ease;
+    }
+
+    tbody tr:hover {
+      background: #f4f8ff;
+      transform: scale(1.002);
+    }
+
+    /* ================= PERCENTAGE BADGES ================= */
+
+    .percent {
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: inline-block;
+    }
+
+    .percent.high {
+      background: linear-gradient(135deg,#2e7d32,#66bb6a);
+      color: white;
+    }
+
+    .percent.medium {
+      background: linear-gradient(135deg,#f57c00,#ffb74d);
+      color: white;
+    }
+
+    .percent.low {
+      background: linear-gradient(135deg,#c62828,#ef5350);
+      color: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px;
+      color: #78909c;
+      font-weight: 500;
+    }
+
+    /* ================= PRINT ================= */
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .filter-card,
+      .top-nav {
+        display: none;
+      }
+
+      .report-container {
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      thead {
+        background: #ddd !important;
+      }
+
+      th {
+        color: black !important;
+      }
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 768px) {
+
+      .report-container {
+        padding: 25px;
+      }
+
+      .report-title {
+        font-size: 22px;
+      }
+
+      .filter-card {
+        flex-direction: column;
+      }
+
+      th, td {
+        font-size: 13px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="report-container">
+
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}">🏠 Mini Dashboard</a> |
+    <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">👥 Members</a>
+
+    {% if month %}
+      |
+      <a href="{{ url_for('portal.yearly_report',
+                          cid=cid,
+                          year=month.split('-')[0]) }}">
+        📊 Yearly Report
+      </a>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <div class="report-title">
+    📅 Monthly Attendance Report
+  </div>
+
+  <form method="get" class="filter-card">
+    <input type="month"
+           name="month"
+           value="{{ month or '' }}"
+           required>
+    <button type="submit">View Report</button>
+  </form>
 
   {% if month %}
-    |
-    <a href="{{ url_for('portal.yearly_report',
-                        cid=cid,
-                        year=month.split('-')[0]) }}">
-      📊 Yearly Report
-    </a>
+
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="summary-box">
+      ⏱ <b>Total Meeting Time:</b><br>
+      {{ total_meeting_time }} Minutes
+    </div>
+
+    <div class="summary-box">
+      👥 <b>Total Attended Time:</b><br>
+      {{ total_attended_time }} Minutes
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Total Minutes Attended</th>
+          <th>Attendance %</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% if data and data|length > 0 %}
+          {% for name, minutes, percent in data %}
+          <tr>
+            <td>{{ name }}</td>
+            <td>{{ minutes }}</td>
+            <td>
+              {% if percent >= 75 %}
+                <span class="percent high">{{ percent }}%</span>
+              {% elif percent >= 40 %}
+                <span class="percent medium">{{ percent }}%</span>
+              {% else %}
+                <span class="percent low">{{ percent }}%</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="3" class="empty-state">
+              No attendance data available for selected month
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
   {% endif %}
-</div>
-
-<hr>
-
-<div class="report-title">
-  📅 Monthly Attendance Report
-</div>
-
-<form method="get" class="filter-card">
-  <input type="month"
-         name="month"
-         value="{{ month or '' }}"
-         required>
-  <button type="submit">View Report</button>
-</form>
-
-{% if month %}
-
-<!-- Summary Section -->
-<div class="summary-grid">
-  <div class="summary-box">
-    ⏱ <b>Total Meeting Time:</b><br>
-    {{ total_meeting_time }} Minutes
-  </div>
-
-  <div class="summary-box">
-    👥 <b>Total Attended Time:</b><br>
-    {{ total_attended_time }} Minutes
-  </div>
-</div>
-
-<!-- Attendance Table -->
-<div class="table-card">
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Total Minutes Attended</th>
-        <th>Attendance %</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {% if data and data|length > 0 %}
-        {% for name, minutes, percent in data %}
-        <tr>
-          <td>{{ name }}</td>
-          <td>{{ minutes }}</td>
-          <td>
-            {% if percent >= 75 %}
-              <span class="percent high">{{ percent }}%</span>
-            {% elif percent >= 40 %}
-              <span class="percent medium">{{ percent }}%</span>
-            {% else %}
-              <span class="percent low">{{ percent }}%</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      {% else %}
-        <tr>
-          <td colspan="3" class="empty-state">
-            No attendance data available for selected month
-          </td>
-        </tr>
-      {% endif %}
-    </tbody>
-  </table>
-</div>
-
-{% endif %}
 
 </div>
 
-{% endblock %}
+</body>
+</html>

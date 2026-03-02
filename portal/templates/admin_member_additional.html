@@ -1,89 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Additional Information</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>Additional Information</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-            margin-bottom: 25px;
-            font-size: 24px;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        .card {
-            max-width: 600px;
-            margin: auto;
-            background: #ffffff;
-            padding: 26px 28px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-        p {
-            margin: 14px 0;
-            font-size: 14.5px;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #eef1f5;
-            padding-bottom: 10px;
-        }
+/* Title */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 35px;
+    letter-spacing: 0.4px;
+}
 
-        p:last-child {
-            border-bottom: none;
-        }
+/* Card */
+.card {
+    width: 100%;
+    max-width: 650px;
+    background: #1e293b;
+    padding: 35px;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+}
 
-        b {
-            color: #555;
-            font-weight: 600;
-        }
+/* Info Rows */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid #334155;
+    font-size: 14.5px;
+}
 
-        .value {
-            color: #222;
-            font-weight: 500;
-        }
+.info-row:last-child {
+    border-bottom: none;
+}
 
-        a {
-            display: block;
-            margin-top: 22px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 600;
-            color: #0d47a1;
-            font-size: 14.5px;
-        }
+.label {
+    font-weight: 600;
+    color: #94a3b8;
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+.value {
+    font-weight: 500;
+    color: #f1f5f9;
+    text-align: right;
+}
+
+/* Back Button */
+.back-container {
+    margin-top: 35px;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    background: #334155;
+    color: #e2e8f0;
+    transition: 0.3s ease;
+}
+
+.back-btn:hover {
+    background: #475569;
+    transform: translateY(-3px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .info-row {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .value {
+        text-align: left;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<h2>Additional Information</h2>
-
-<div class="card">
-    <p><b>Address:</b> <span class="value">{{ user[0] or "—" }}</span></p>
-    <p><b>Email:</b> <span class="value">{{ user[1] or "—" }}</span></p>
-    <p><b>WhatsApp:</b> <span class="value">{{ user[2] or "—" }}</span></p>
-    <p><b>DOB:</b> <span class="value">{{ user[3] or "—" }}</span></p>
-    <p><b>Age:</b> <span class="value">{{ age if age else "—" }}</span></p>
-    <p><b>Blood Group:</b> <span class="value">{{ user[4] or "—" }}</span></p>
-    <p><b>Interests:</b> <span class="value">{{ user[5] or "—" }}</span></p>
+<div class="page-title">
+    📄 Additional Information
 </div>
 
-<a href="{{ url_for('portal.admin_members') }}">← Back</a>
+<div class="card">
+
+    <div class="info-row">
+        <div class="label">Address</div>
+        <div class="value">{{ user[0] or "—" }}</div>
+    </div>
+
+    <div class="info-row">
+        <div class="label">Email</div>
+        <div class="value">{{ user[1] or "—" }}</div>
+    </div>
+
+    <div class="info-row">
+        <div class="label">WhatsApp</div>
+        <div class="value">{{ user[2] or "—" }}</div>
+    </div>
+
+    <div class="info-row">
+        <div class="label">Date of Birth</div>
+        <div class="value">{{ user[3] or "—" }}</div>
+    </div>
+
+    <div class="info-row">
+        <div class="label">Age</div>
+        <div class="value">{{ age if age else "—" }}</div>
+    </div>
+
+    <div class="info-row">
+        <div class="label">Blood Group</div>
+        <div class="value">{{ user[4] or "—" }}</div>
+    </div>
+
+    <div class="info-row">
+        <div class="label">Interests</div>
+        <div class="value">{{ user[5] or "—" }}</div>
+    </div>
+
+</div>
+
+<div class="back-container">
+    <a href="{{ url_for('portal.admin_members') }}" class="back-btn">
+        ← Back
+    </a>
+</div>
 
 </body>
 </html>

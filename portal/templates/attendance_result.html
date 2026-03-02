@@ -1,121 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Attendance Summary</title>
+<meta charset="UTF-8">
+<title>Attendance Summary</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f4f6f9;
-      padding: 30px 20px;
-      color: #333;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+}
 
-    h2 {
-      text-align: center;
-      color: #0d47a1;
-      margin-bottom: 25px;
-      font-size: 26px;
-    }
+body {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  min-height: 100vh;
+  padding: 60px 20px;
+  color: #e2e8f0;
+}
 
-    .card {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    }
+/* Page Title */
+h2 {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  letter-spacing: 0.5px;
+}
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
+/* Card */
+.card {
+  max-width: 1000px;
+  margin: auto;
+  background: #1e293b;
+  padding: 35px;
+  border-radius: 24px;
+  border: 1px solid #334155;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+}
 
-    .summary-box {
-      background: #e3f2fd;
-      padding: 15px;
-      border-radius: 10px;
-      border-left: 5px solid #0d47a1;
-      font-weight: 600;
-      font-size: 14px;
-    }
+/* Summary Grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+.summary-box {
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  padding: 18px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+  box-shadow: 0 15px 40px rgba(67,56,202,0.4);
+  transition: 0.3s;
+}
 
-    th {
-      background: #0d47a1;
-      color: white;
-      padding: 14px 16px;
-      text-align: left;
-      font-size: 14px;
-    }
+.summary-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 60px rgba(67,56,202,0.6);
+}
 
-    td {
-      padding: 14px 16px;
-      border-bottom: 1px solid #eef1f5;
-      font-size: 14px;
-    }
+/* Table */
+.table-wrapper {
+  overflow-x: auto;
+}
 
-    tr:last-child td {
-      border-bottom: none;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    tr:hover td {
-      background: #f5f8ff;
-    }
+thead {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
 
-    .no-data {
-      text-align: center;
-      padding: 25px;
-      color: #777;
-      font-style: italic;
-    }
+th {
+  padding: 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
 
-    .back {
-      display: block;
-      text-align: center;
-      margin-top: 25px;
-      text-decoration: none;
-      font-weight: 600;
-      color: #0d47a1;
-      font-size: 14px;
-    }
+td {
+  padding: 16px;
+  border-bottom: 1px solid #334155;
+  font-size: 14px;
+}
 
-    .back:hover {
-      text-decoration: underline;
-    }
+tbody tr {
+  transition: 0.25s;
+}
 
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
+tbody tr:hover {
+  background: #0f172a;
+}
 
-      .card {
-        box-shadow: none;
-        border-radius: 0;
-      }
+tr:last-child td {
+  border-bottom: none;
+}
 
-      th {
-        background: #ddd !important;
-        color: black !important;
-      }
+/* Minutes highlight */
+.minutes {
+  font-weight: 600;
+  color: #22c55e;
+}
 
-      .back {
-        display: none;
-      }
-    }
-  </style>
+/* Empty State */
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+  font-size: 15px;
+}
+
+/* Back Button */
+.back {
+  display: inline-block;
+  margin-top: 35px;
+  padding: 12px 24px;
+  border-radius: 14px;
+  background: #334155;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.back:hover {
+  background: #475569;
+  transform: translateY(-3px);
+}
+
+/* Print */
+@media print {
+  body {
+    background: white;
+    color: black;
+    padding: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+  }
+
+  th {
+    background: #ddd !important;
+    color: black !important;
+  }
+
+  .back {
+    display: none;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -139,6 +185,7 @@
     </div>
 
     <!-- Attendance Table -->
+    <div class="table-wrapper">
     <table>
       <thead>
         <tr>
@@ -151,11 +198,12 @@
         {% for name, minutes in data %}
         <tr>
           <td>{{ name }}</td>
-          <td>{{ minutes or 0 }} minutes</td>
+          <td class="minutes">{{ minutes or 0 }} minutes</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    </div>
 
   {% else %}
 

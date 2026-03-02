@@ -1,153 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin | Manage Admins</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>Admin | Manage Admins</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #0d47a1;
-            font-size: 26px;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #0d47a1;
-            font-size: 18px;
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: #e2e8f0;
+}
 
-        /* Cards */
-        .card {
-            background: #ffffff;
-            padding: 24px 22px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+/* Page Title */
+.page-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 45px;
+    letter-spacing: 0.5px;
+}
 
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-radius: 12px;
-            overflow: hidden;
-        }
+/* Card */
+.card {
+    background: #1e293b;
+    padding: 35px;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    margin-bottom: 35px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-        th {
-            background: #e3f2fd;
-            color: #0d47a1;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 14.5px;
-        }
+.card h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
 
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #eef1f5;
-            font-size: 14.5px;
-        }
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+thead {
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+th {
+    padding: 16px 18px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
 
-        /* Form */
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: 1px solid #dcdfe3;
-            background: #fafafa;
-            font-size: 14.5px;
-            transition: border 0.2s, box-shadow 0.2s;
-        }
+td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #334155;
+    font-size: 14px;
+}
 
-        input:focus {
-            outline: none;
-            border-color: #0d47a1;
-            background: #ffffff;
-            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
-        }
+tbody tr {
+    transition: 0.25s ease;
+}
 
-        button {
-            margin-top: 16px;
-            padding: 10px 20px;
-            background: #0d47a1;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
-        }
+tbody tr:hover {
+    background: #0f172a;
+}
 
-        button:hover {
-            background: #08306b;
-            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.25);
-        }
+tr:last-child td {
+    border-bottom: none;
+}
 
-        button:active {
-            transform: scale(0.97);
-        }
+/* Form */
+input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-top: 15px;
+    border-radius: 14px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
 
-        /* Back link */
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #0d47a1;
-            font-size: 14.5px;
-        }
+input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
+}
 
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+/* Primary Button */
+button {
+    margin-top: 20px;
+    padding: 14px 26px;
+    border-radius: 16px;
+    border: none;
+    font-weight: 600;
+    font-size: 15px;
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 0 18px 45px rgba(67,56,202,0.4);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 28px 60px rgba(67,56,202,0.6);
+}
+
+/* Back Button */
+.back {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 22px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    background: #334155;
+    color: #e2e8f0;
+    transition: 0.3s ease;
+}
+
+.back:hover {
+    background: #475569;
+    transform: translateY(-3px);
+}
+
+.back-container {
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    th, td {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<h2>🔐 Manage Admins</h2>
+<div class="page-title">
+    🔐 Manage Admins
+</div>
 
+<!-- Current Admins -->
 <div class="card">
     <h3>Current Admins</h3>
+
     <table>
-        <tr>
-            <th>Name</th>
-            <th>Phone</th>
-        </tr>
-        {% for a in admins %}
-<tr>
-    <td>{{ a.name }}</td>
-    <td>{{ a.phone }}</td>
-</tr>
-{% endfor %}
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in admins %}
+            <tr>
+                <td>{{ a.name }}</td>
+                <td>{{ a.phone }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 
+<!-- Add Admin -->
 <div class="card">
     <h3>Make Member an Admin</h3>
 
@@ -156,7 +195,6 @@
                placeholder="Member Phone Number"
                required>
 
-        <!-- REQUIRED FOR PYTHON -->
         <input type="hidden"
                name="action"
                value="add">
@@ -165,9 +203,11 @@
     </form>
 </div>
 
-<a href="{{ url_for('portal.dashboard') }}" class="back">
-    ← Back to Dashboard
-</a>
+<div class="back-container">
+    <a href="{{ url_for('portal.dashboard') }}" class="back">
+        ← Back to Dashboard
+    </a>
+</div>
 
 </body>
 </html>

@@ -1,186 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Committee Dashboard</title>
+<meta charset="UTF-8">
+<title>Committee Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * { box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-            margin-bottom: 20px;
-            font-size: 26px;
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 50px 20px;
+    color: #e2e8f0;
+}
 
-        h3 {
-            color: #0d47a1;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 20px;
-            text-align: center;
-        }
+.page-wrapper {
+    max-width: 1300px;
+    margin: auto;
+}
 
-        .actions {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+/* Header */
+h2 {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
 
-        .actions a {
-            display: inline-block;
-            margin: 6px;
-            padding: 10px 16px;
-            background: #e3f2fd;
-            color: #0d47a1;
-            text-decoration: none;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-        }
+/* Action Panel */
+.actions {
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-        .actions a:hover {
-            background: #bbdefb;
-        }
+.actions a {
+    display: inline-block;
+    margin: 6px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    background: #334155;
+    color: #e2e8f0;
+    transition: 0.3s;
+}
 
-        .danger {
-            display: inline-block;
-            margin-top: 10px;
-            color: #c62828;
-            font-weight: 700;
-            text-decoration: none;
-        }
+.actions a:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
 
-        .danger:hover { text-decoration: underline; }
+/* Danger Button */
+.danger {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    background: #ef4444;
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+}
 
-        .meetings {
-            max-width: 1100px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
+.danger:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
 
-        .meeting-card {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            text-align: center;
-            position: relative;
-        }
+/* Divider */
+hr {
+    border: none;
+    border-top: 1px solid #334155;
+    margin: 35px 0;
+}
 
-        .meeting-card b {
-            font-size: 17px;
-            color: #222;
-        }
+/* Section Title */
+h3 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 25px;
+}
 
-        .meeting-card small {
-            color: #666;
-            display: block;
-            margin-top: 6px;
-        }
+/* Meetings Grid */
+.meetings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
 
-        .status {
-            margin-top: 8px;
-            font-weight: 600;
-            font-size: 13px;
-        }
+/* Meeting Card */
+.meeting-card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 22px;
+    border: 1px solid #334155;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    text-align: center;
+    transition: 0.3s;
+}
 
-        .status.scheduled { color: #f57c00; }
-        .status.ongoing { color: #2e7d32; }
-        .status.completed { color: #616161; }
+.meeting-card:hover {
+    transform: translateY(-6px);
+}
 
-        .meeting-card img {
-            width: 160px;
-            border-radius: 10px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-            margin: 15px 0;
-        }
+/* Title */
+.meeting-card b {
+    font-size: 18px;
+    font-weight: 600;
+}
 
-        .meeting-card a {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 8px 14px;
-            background: #0d47a1;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-        }
+.meeting-card small {
+    display: block;
+    margin-top: 8px;
+    color: #94a3b8;
+    font-size: 13px;
+}
 
-        .meeting-card a:hover {
-            background: #08306b;
-        }
+/* Status Badge */
+.status {
+    margin-top: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
 
-        .admin-actions {
-            margin-top: 10px;
-        }
+.status.scheduled {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
 
-        .admin-actions a {
-            background: #2e7d32;
-            margin: 5px;
-        }
+.status.ongoing {
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+}
 
-        .admin-actions a.end {
-            background: #c62828;
-        }
+.status.completed {
+    background: rgba(148,163,184,0.15);
+    color: #94a3b8;
+}
 
-        .back {
-            display: block;
-            text-align: center;
-            margin-top: 30px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #0d47a1;
-        }
+/* QR */
+.meeting-card img {
+    width: 160px;
+    border-radius: 14px;
+    margin: 18px 0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+}
 
-        .back:hover { text-decoration: underline; }
+/* Primary Button */
+.meeting-card a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 14px;
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.3s;
+}
 
-        hr {
-            border: none;
-            border-top: 1px solid #e5e8ec;
-            margin: 20px 0;
-        }
-    </style>
+.meeting-card a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(67,56,202,0.5);
+}
+
+/* Admin Action Buttons */
+.admin-actions {
+    margin-top: 14px;
+}
+
+.admin-actions a {
+    background: #22c55e;
+    margin: 4px;
+}
+
+.admin-actions a.end {
+    background: #ef4444;
+}
+
+.admin-actions a:hover {
+    opacity: 0.9;
+}
+
+/* Back */
+.back {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 12px 24px;
+    border-radius: 14px;
+    background: #334155;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.back:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
+
+/* Empty */
+.empty {
+    text-align: center;
+    color: #94a3b8;
+    margin-top: 20px;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Committee Dashboard</h2>
+<div class="page-wrapper">
+
+<h2>🏛 Committee Dashboard</h2>
 
 {% if is_admin %}
 <div class="actions">
 
-    <a href="{{ url_for('portal.create_meeting', cid=cid) }}">
-        ➕ Create Meeting
-    </a>
-
-    <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">
-        👥 Members
-    </a>
-
-    <a href="{{ url_for('portal.add_committee_member', cid=cid) }}">
-        ➕ Add Member
-    </a>
-
-    <a href="{{ url_for('portal.monthly_report', cid=cid) }}">
-        📅 Monthly Report
-    </a>
-
-    <a href="{{ url_for('portal.yearly_report', cid=cid, year=2026) }}">
-        📊 Yearly Report
-    </a>
-
-    <a href="{{ url_for('portal.committee_attendance_summary', cid=cid) }}">
-        📋 Attendance Summary
-    </a>
+    <a href="{{ url_for('portal.create_meeting', cid=cid) }}">➕ Create Meeting</a>
+    <a href="{{ url_for('portal.committee_members_page', cid=cid) }}">👥 Members</a>
+    <a href="{{ url_for('portal.add_committee_member', cid=cid) }}">➕ Add Member</a>
+    <a href="{{ url_for('portal.monthly_report', cid=cid) }}">📅 Monthly Report</a>
+    <a href="{{ url_for('portal.yearly_report', cid=cid, year=2026) }}">📊 Yearly Report</a>
+    <a href="{{ url_for('portal.committee_attendance_summary', cid=cid) }}">📋 Attendance Summary</a>
 
     <br>
 
@@ -195,70 +252,69 @@
 
 <hr>
 
-<h3>Meetings</h3>
+<h3>📅 Meetings</h3>
 
 {% if meetings %}
 <div class="meetings">
 
 {% for m in meetings %}
-    <div class="meeting-card">
+<div class="meeting-card">
 
-        <b>{{ m.title }}</b>
-        <small>{{ m.meeting_date }} | {{ m.start_time }} - {{ m.end_time }}</small>
+    <b>{{ m.title }}</b>
+    <small>{{ m.meeting_date }} | {{ m.start_time }} - {{ m.end_time }}</small>
+
+    {% if m.status == "SCHEDULED" %}
+        <div class="status scheduled">Scheduled</div>
+    {% elif m.status == "ONGOING" %}
+        <div class="status ongoing">Ongoing</div>
+    {% else %}
+        <div class="status completed">Completed</div>
+    {% endif %}
+
+    {% if m.status == "ONGOING" %}
+        <img src="{{ url_for('static',
+                 filename='qrcodes/meeting_' ~ m.id ~ '.png') }}">
+    {% endif %}
+
+    {% if m.status == "COMPLETED" %}
+        <a href="{{ url_for('portal.meeting_report', mid=m.id) }}">
+            📊 View Report
+        </a>
+    {% endif %}
+
+    {% if is_admin %}
+    <div class="admin-actions">
 
         {% if m.status == "SCHEDULED" %}
-            <div class="status scheduled">Status: Scheduled</div>
+            <a href="{{ url_for('portal.start_meeting', meeting_id=m.id) }}">
+                ▶ Start
+            </a>
+
         {% elif m.status == "ONGOING" %}
-            <div class="status ongoing">Status: Ongoing</div>
-        {% else %}
-            <div class="status completed">Status: Completed</div>
-        {% endif %}
-
-        <!-- Show QR only when ONGOING -->
-        {% if m.status == "ONGOING" %}
-            <img src="{{ url_for('static',
-                     filename='qrcodes/meeting_' ~ m.id ~ '.png') }}">
-        {% endif %}
-
-        <!-- Show report only when COMPLETED -->
-        {% if m.status == "COMPLETED" %}
-            <a href="{{ url_for('portal.meeting_report', mid=m.id) }}">
-                📊 View Report
+            <a href="{{ url_for('portal.end_meeting', meeting_id=m.id) }}"
+               class="end">
+                ⏹ End
             </a>
         {% endif %}
 
-        {% if is_admin %}
-        <div class="admin-actions">
-
-            {% if m.status == "SCHEDULED" %}
-                <a href="{{ url_for('portal.start_meeting', meeting_id=m.id) }}">
-                    ▶ Start
-                </a>
-
-            {% elif m.status == "ONGOING" %}
-                <a href="{{ url_for('portal.end_meeting', meeting_id=m.id) }}"
-                   class="end">
-                    ⏹ End
-                </a>
-            {% endif %}
-
-        </div>
-        {% endif %}
-
     </div>
+    {% endif %}
+
+</div>
 {% endfor %}
 
 </div>
 {% else %}
-<p style="text-align:center; color:#777;">
+<p class="empty">
     No meetings created yet.
 </p>
 {% endif %}
 
-<a href="{{ url_for('portal.dashboard') }}"
-   class="back">
+<a href="{{ url_for('portal.dashboard') }}" class="back">
    ← Back to Dashboard
 </a>
+
+</div>
 
 </body>
 </html>

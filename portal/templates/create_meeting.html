@@ -3,102 +3,142 @@
 
 <style>
 .create-wrapper {
-  padding: 40px 20px;
+  padding: 50px 20px;
   display: flex;
   justify-content: center;
 }
 
+/* Card */
 .card {
   background: #ffffff;
   width: 100%;
-  max-width: 500px;
-  padding: 35px 30px;
-  border-radius: 20px;
-  box-shadow: 0 20px 45px rgba(0,0,0,0.10);
+  max-width: 560px;
+  padding: 45px 40px;
+  border-radius: 24px;
+  box-shadow: 0 35px 80px rgba(15, 23, 42, 0.12);
+  border: 1px solid #eef2f7;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Subtle top accent */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #2563eb, #6366f1);
+}
+
+/* Title */
 h2 {
   margin-top: 0;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
   text-align: center;
-  color: #0d47a1;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
+  color: #1e293b;
+  letter-spacing: 0.3px;
 }
 
+/* Labels */
 label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #555;
-  margin-bottom: 6px;
+  color: #64748b;
+  margin-bottom: 8px;
 }
 
+/* Inputs */
 input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #dcdfe3;
-  background: #fafafa;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
   font-size: 14px;
-  margin-bottom: 18px;
-  transition: border 0.2s, box-shadow 0.2s;
+  margin-bottom: 22px;
+  transition: all 0.25s ease;
 }
 
 input:focus {
   outline: none;
-  border-color: #0d47a1;
+  border-color: #6366f1;
   background: #ffffff;
-  box-shadow: 0 0 0 2px rgba(13,71,161,0.12);
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
 }
 
+/* Time Grid */
 .time-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
+/* Button */
 button {
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg,#0d47a1,#1976d2);
+  padding: 16px;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
   color: #ffffff;
   border: none;
-  border-radius: 14px;
+  border-radius: 18px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 20px 40px rgba(37,99,235,0.25);
+  margin-top: 10px;
 }
 
 button:hover {
-  background: #08306b;
-  box-shadow: 0 12px 24px rgba(13,71,161,0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 30px 60px rgba(37,99,235,0.35);
 }
 
 button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
+/* Hint Box */
 .hint {
-  margin-top: 12px;
+  margin-top: 18px;
   font-size: 13px;
-  color: #666;
+  color: #64748b;
   text-align: center;
+  padding: 12px 15px;
+  background: #f1f5ff;
+  border-radius: 12px;
 }
 
+/* Back Link */
 .back {
   display: block;
   text-align: center;
-  margin-top: 25px;
+  margin-top: 28px;
   font-weight: 600;
   text-decoration: none;
-  color: #0d47a1;
+  color: #475569;
   font-size: 14px;
+  transition: 0.2s;
 }
 
 .back:hover {
-  text-decoration: underline;
+  color: #1e293b;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .card {
+    padding: 35px 25px;
+  }
+
+  .time-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Print */
@@ -109,6 +149,7 @@ button:active {
 
   .card {
     box-shadow: none;
+    border: none;
   }
 
   .back {
@@ -118,47 +159,46 @@ button:active {
 </style>
 
 <div class="create-wrapper">
+  <div class="card">
 
-<div class="card">
+    <h2>📅 Create Committee Meeting</h2>
 
-  <h2>📅 Create Committee Meeting</h2>
+    <form method="POST" onsubmit="return validateTime()">
 
-  <form method="POST" onsubmit="return validateTime()">
+      <label>Meeting Title</label>
+      <input type="text" name="title" required>
 
-    <label>📝 Meeting Title</label>
-    <input type="text" name="title" required>
+      <label>Meeting Date</label>
+      <input type="date" name="meeting_date" required>
 
-    <label>📆 Meeting Date</label>
-    <input type="date" name="meeting_date" required>
+      <div class="time-row">
+        <div>
+          <label>Start Time</label>
+          <input type="time" name="start_time" id="start_time" required>
+        </div>
 
-    <div class="time-row">
-      <div>
-        <label>⏰ Start Time</label>
-        <input type="time" name="start_time" id="start_time" required>
+        <div>
+          <label>End Time</label>
+          <input type="time" name="end_time" id="end_time" required>
+        </div>
       </div>
 
-      <div>
-        <label>⏱ End Time</label>
-        <input type="time" name="end_time" id="end_time" required>
+      <button type="submit">
+        🚀 Create & Generate QR
+      </button>
+
+      <div class="hint">
+        📌 A QR code will be generated automatically for attendance tracking.
       </div>
-    </div>
 
-    <button type="submit">
-      ✅ Create & Generate QR
-    </button>
+    </form>
 
-    <div class="hint">
-      📌 A QR code will be generated automatically for attendance
-    </div>
+    <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
+       class="back">
+      ← Back to Committee Dashboard
+    </a>
 
-  </form>
-
-  <a href="{{ url_for('portal.committee_dashboard', cid=cid) }}"
-     class="back">
-    ← Back to Committee Dashboard
-  </a>
-
-</div>
+  </div>
 </div>
 
 <script>

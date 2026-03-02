@@ -1,115 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Receipts</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>Receipts</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        h2 {
-            text-align: center;
-            color: #0d47a1;
-            margin-bottom: 25px;
-            font-size: 26px;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        /* Table container */
-        .table-wrapper {
-            max-width: 1000px;
-            margin: auto;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: #e2e8f0;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+/* Page Title */
+.page-title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    letter-spacing: 0.5px;
+}
 
-        th {
-            background: #0d47a1;
-            color: #ffffff;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 14.5px;
-        }
+/* Table Card */
+.table-wrapper {
+    max-width: 1100px;
+    margin: auto;
+    background: #1e293b;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
 
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #eef1f5;
-            font-size: 14.5px;
-        }
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+/* Header */
+thead {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.3px;
+}
 
-        td:nth-child(4) {
-            font-weight: 600;
-            color: #2e7d32;
-        }
+/* Body */
+td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #334155;
+    font-size: 14px;
+}
 
-        /* Print friendly */
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
+tbody tr {
+    transition: 0.25s ease;
+}
 
-            .table-wrapper {
-                box-shadow: none;
-                border-radius: 0;
-            }
+tbody tr:hover {
+    background: #0f172a;
+}
 
-            th {
-                background: #ddd !important;
-                color: black !important;
-            }
+tr:last-child td {
+    border-bottom: none;
+}
 
-            h2 {
-                text-align: center;
-            }
-        }
-    </style>
+/* Amount Highlight */
+.amount {
+    font-weight: 700;
+    color: #22c55e;
+}
+
+/* Print Friendly */
+@media print {
+    body {
+        background: white;
+        color: black;
+        padding: 0;
+    }
+
+    .table-wrapper {
+        box-shadow: none;
+        border-radius: 0;
+        border: none;
+    }
+
+    th {
+        background: #ddd !important;
+        color: black !important;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<h2>🧾 Receipts</h2>
+<div class="page-title">
+    🧾 Receipts
+</div>
 
 <div class="table-wrapper">
     <table>
-        <tr>
-            <th>Receipt No</th>
-            <th>Name</th>
-            <th>Membership ID</th>
-            <th>Amount</th>
-            <th>Date</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Receipt No</th>
+                <th>Name</th>
+                <th>Membership ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
 
-      {% for receipt, user in receipts %}
-<tr>
-    <td>{{ receipt.receipt_no }}</td>
-    <td>{{ user.name }}</td>
-    <td>{{ user.membership_id }}</td>
-    <td>₹{{ receipt.amount }}</td>
-    <td>{{ receipt.issued_date }}</td>
-</tr>
-{% endfor %}
+        <tbody>
+        {% for receipt, user in receipts %}
+        <tr>
+            <td>{{ receipt.receipt_no }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.membership_id }}</td>
+            <td class="amount">₹{{ receipt.amount }}</td>
+            <td>{{ receipt.issued_date }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
     </table>
 </div>
 

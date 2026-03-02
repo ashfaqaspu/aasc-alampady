@@ -4,49 +4,125 @@
     <title>Portal Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Premium Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
+            padding: 0;
         }
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+            min-height: 100vh;
+        }
+
+        /* ================= NAVBAR ================= */
+
         .portal-nav {
-            background: #203a43;
-            padding: 15px 30px;
+            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding: 18px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .portal-nav a {
+        .nav-title {
+            font-size: 20px;
+            font-weight: 600;
             color: white;
-            text-decoration: none;
-            margin-right: 15px;
-            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
-        .portal-nav a:hover {
-            text-decoration: underline;
+        .portal-nav a {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            transition: 0.3s ease;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            background: linear-gradient(135deg,#e53935,#ef5350);
+            color: white;
+            box-shadow: 0 8px 20px rgba(229,57,53,0.4);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(229,57,53,0.6);
+        }
+
+        /* ================= CONTENT ================= */
+
+        .portal-content-wrapper {
+            padding: 50px 25px;
         }
 
         .portal-content {
-            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+            background: rgba(255,255,255,0.97);
+            padding: 40px;
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+            min-height: 500px;
         }
+
+        /* Smooth appearance */
+        .portal-content {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 768px) {
+
+            .portal-nav {
+                padding: 15px 20px;
+            }
+
+            .portal-content {
+                padding: 25px;
+                border-radius: 20px;
+            }
+
+        }
+
     </style>
 </head>
+
 <body>
 
 <div class="portal-nav">
-    
+    <div class="nav-title">
+        🚀 Portal Dashboard
+    </div>
 
     <div>
-        <a href="{{ url_for('portal.logout') }}">Logout</a>
+        <a href="{{ url_for('portal.logout') }}" class="logout-btn">
+            Logout
+        </a>
     </div>
 </div>
 
-<div class="portal-content">
-    {% block content %}{% endblock %}
+<div class="portal-content-wrapper">
+    <div class="portal-content">
+        {% block content %}{% endblock %}
+    </div>
 </div>
 
 </body>

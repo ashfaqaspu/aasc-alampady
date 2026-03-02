@@ -1,40 +1,70 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Portal Events</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: #e2e8f0;
+}
+
+/* Wrapper */
 .page-wrapper {
-    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
 }
 
 /* Title */
 .page-title {
     text-align: center;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    color: #0d47a1;
-    margin-bottom: 30px;
+    margin-bottom: 45px;
+    letter-spacing: 0.5px;
 }
 
 /* Card */
 .card {
-    background: #ffffff;
-    padding: 28px;
-    border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-    margin: auto;
-    margin-bottom: 30px;
-    max-width: 1100px;
+    background: #1e293b;
+    padding: 35px;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    margin-bottom: 40px;
+}
+
+/* Section Headings */
+.card h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 /* Form */
 input, textarea {
     width: 100%;
-    padding: 12px 14px;
-    margin-top: 14px;
+    padding: 14px 16px;
+    margin-top: 15px;
+    border-radius: 14px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #e2e8f0;
     font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid #dcdfe3;
-    background: #fafafa;
-    transition: 0.2s;
+    transition: 0.3s ease;
 }
 
 textarea {
@@ -44,26 +74,28 @@ textarea {
 input:focus,
 textarea:focus {
     outline: none;
-    border-color: #0d47a1;
-    background: #ffffff;
-    box-shadow: 0 0 0 2px rgba(13,71,161,0.1);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
 }
 
+/* Primary Button */
 button {
-    margin-top: 20px;
-    padding: 12px 22px;
-    background: linear-gradient(135deg,#0d47a1,#1976d2);
-    color: white;
+    margin-top: 22px;
+    padding: 14px 26px;
+    border-radius: 16px;
     border: none;
-    border-radius: 8px;
     font-weight: 600;
+    font-size: 15px;
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+    color: white;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.3s ease;
+    box-shadow: 0 18px 45px rgba(67,56,202,0.4);
 }
 
 button:hover {
-    background: #08306b;
-    box-shadow: 0 6px 14px rgba(13,71,161,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 28px 60px rgba(67,56,202,0.6);
 }
 
 /* Table */
@@ -74,105 +106,101 @@ button:hover {
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
+/* Table Head */
 thead {
-    background: #0d47a1;
+    background: linear-gradient(135deg,#6366f1,#4338ca);
 }
 
 th {
-    color: white;
-    padding: 14px 16px;
+    padding: 16px 18px;
     text-align: left;
     font-size: 14px;
+    font-weight: 600;
+    color: white;
 }
 
+/* Table Body */
 td {
-    padding: 14px 16px;
-    border-bottom: 1px solid #eef1f5;
+    padding: 16px 18px;
+    border-bottom: 1px solid #334155;
     font-size: 14px;
 }
 
-tbody tr:hover td {
-    background: #f4f8ff;
+tbody tr {
+    transition: 0.25s ease;
 }
 
+tbody tr:hover {
+    background: #0f172a;
+}
+
+/* Badge */
 .badge {
-    background: #e3f2fd;
-    color: #0d47a1;
-    padding: 5px 10px;
+    background: #334155;
+    color: #6366f1;
+    padding: 6px 12px;
     border-radius: 20px;
     font-size: 13px;
     font-weight: 600;
 }
 
+/* Action Button */
 .action-btn {
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 8px 14px;
+    border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
     display: inline-block;
+    background: #334155;
+    color: #e2e8f0;
+    transition: 0.3s ease;
 }
 
-.view-btn {
-    background: #e3f2fd;
-    color: #0d47a1;
+.action-btn:hover {
+    background: #475569;
+    transform: translateY(-2px);
 }
 
-.view-btn:hover {
-    background: #bbdefb;
-}
-
+/* Empty State */
 .empty-state {
     text-align: center;
     padding: 30px;
-    color: #78909c;
-    font-style: italic;
+    color: #94a3b8;
 }
 
 /* Back */
 .back {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    font-weight: 600;
+    display: inline-block;
+    margin-top: 25px;
+    padding: 12px 22px;
+    border-radius: 14px;
     text-decoration: none;
-    color: #0d47a1;
+    font-weight: 600;
+    background: #334155;
+    color: #e2e8f0;
+    transition: 0.3s ease;
 }
 
 .back:hover {
-    text-decoration: underline;
+    background: #475569;
+    transform: translateY(-3px);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
-
-    thead {
-        display: none;
-    }
-
-    tr {
-        margin-bottom: 15px;
-        border-bottom: 2px solid #eee;
-    }
-
-    td {
-        padding: 10px;
-    }
-
-    td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        display: block;
-        margin-bottom: 5px;
-        color: #607d8b;
+    th, td {
+        padding: 12px;
+        font-size: 13px;
     }
 }
 </style>
+</head>
+
+<body>
 
 <div class="page-wrapper">
 
@@ -181,7 +209,7 @@ tbody tr:hover td {
 </div>
 
 <!-- CREATE EVENT -->
-<div class="card" style="max-width:600px;">
+<div class="card" style="max-width:650px; margin:auto;">
     <h3>Create New Event</h3>
 
     <form method="POST">
@@ -213,17 +241,17 @@ tbody tr:hover td {
         <tbody>
         {% for e in events %}
         <tr>
-            <td data-label="#"> {{ loop.index }} </td>
-            <td data-label="Title"> {{ e.title }} </td>
-            <td data-label="Date"> {{ e.event_date }} </td>
-            <td data-label="Participants">
+            <td>{{ loop.index }}</td>
+            <td>{{ e.title }}</td>
+            <td>{{ e.event_date }}</td>
+            <td>
                 <span class="badge">
                     {{ e.participant_count }}
                 </span>
             </td>
-            <td data-label="Action">
+            <td>
                 <a href="{{ url_for('portal.event_participants', event_id=e.id) }}"
-                   class="action-btn view-btn">
+                   class="action-btn">
                    👥 View Participants
                 </a>
             </td>
@@ -239,14 +267,13 @@ tbody tr:hover td {
     {% endif %}
 </div>
 
-    <hr>
-
-<!-- ===== NATIVITY DISTRIBUTION ===== -->
-
+<div style="text-align:center;">
 <a href="{{ url_for('portal.dashboard') }}" class="back">
     ← Back to Dashboard
 </a>
+</div>
 
 </div>
 
+</body>
 </html>

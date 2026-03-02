@@ -2,129 +2,130 @@
 <html>
 <head>
     <title>Renew Membership | AASC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: linear-gradient(to bottom, #eef2f7, #f9fafc);
-            padding: 40px 20px;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+            padding: 50px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .box {
-            background: #ffffff;
-            padding: 32px 30px;
-            max-width: 440px;
-            margin: auto;
-            border-radius: 18px;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+            background: white;
+            padding: 40px 35px;
+            max-width: 480px;
+            width: 100%;
+            border-radius: 22px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
         }
 
         h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
             text-align: center;
-            color: #0d47a1;
-            font-size: 24px;
+            margin-bottom: 25px;
+            color: #1565c0;
+            font-weight: 700;
         }
 
         label {
-            display: block;
             font-weight: 600;
+            font-size: 13px;
             margin-bottom: 6px;
-            color: #555;
-            font-size: 14px;
+            display: block;
         }
 
-        input {
+        input[type="number"],
+        input[type="file"] {
             width: 100%;
-            padding: 12px 14px;
-            margin-bottom: 16px;
+            padding: 12px;
             border-radius: 10px;
-            border: 1px solid #dcdfe3;
-            background: #fafafa;
-            font-size: 14.5px;
-            transition: border 0.2s, box-shadow 0.2s;
+            border: 1px solid #d0d7de;
+            margin-bottom: 18px;
         }
 
         input:focus {
             outline: none;
-            border-color: #0d47a1;
-            background: #ffffff;
-            box-shadow: 0 0 0 2px rgba(13,71,161,0.12);
+            border-color: #1565c0;
+            box-shadow: 0 0 0 3px rgba(21,101,192,0.15);
         }
 
-        button {
-            width: 100%;
-            padding: 13px;
-            background: #0d47a1;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.15s, transform 0.1s;
-        }
-
-        button:hover {
-            background: #08306b;
-            box-shadow: 0 10px 22px rgba(13,71,161,0.25);
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
+        /* UPI Button */
         .upi-btn {
-            display: block;
-            text-align: center;
-            background: linear-gradient(to right, #2e7d32, #388e3c);
-            color: white;
+            width: 100%;
             padding: 14px;
-            margin: 18px 0 10px;
-            text-decoration: none;
-            font-weight: 700;
-            border-radius: 14px;
-            box-shadow: 0 8px 18px rgba(46,125,50,0.35);
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg,#2e7d32,#43a047);
+            box-shadow: 0 12px 25px rgba(46,125,50,0.35);
+            transition: 0.3s ease;
+            margin-bottom: 15px;
         }
 
         .upi-btn:hover {
-            opacity: 0.95;
+            transform: translateY(-3px);
         }
 
-        small {
-            display: block;
-            margin-bottom: 16px;
-            color: #666;
-            font-size: 13.5px;
+        /* QR SECTION */
+        .qr-section {
             text-align: center;
+            background: #f5f8ff;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
         }
 
-        hr {
+        .qr-section h4 {
+            margin-bottom: 12px;
+            color: #37474f;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .qr-image {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
             border: none;
-            border-top: 1px solid #e1e5eb;
-            margin: 20px 0;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg,#1e88e5,#42a5f5);
+            box-shadow: 0 12px 25px rgba(30,136,229,0.35);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
         }
 
         .back {
             display: block;
             text-align: center;
-            margin-top: 18px;
+            margin-top: 20px;
             font-weight: 600;
             text-decoration: none;
-            color: #0d47a1;
-            font-size: 14.5px;
-        }
-
-        .back:hover {
-            text-decoration: underline;
+            color: #1565c0;
         }
     </style>
 
-    <!-- 🔥 JS to generate UPI link dynamically (UNCHANGED) -->
+    <!-- 🔥 ORIGINAL JS (UNCHANGED) -->
     <script>
         function openUPI() {
             const amount = document.getElementById("amount").value;
@@ -142,11 +143,13 @@
             window.location.href = url;
         }
     </script>
+
 </head>
 
 <body>
 
 <div class="box">
+
     <h2>💳 Renew Membership</h2>
 
     <label>Enter Amount (₹)</label>
@@ -162,17 +165,19 @@
         📱 Pay via UPI App
     </button>
 
-    <small>
-        After completing payment, return here and submit the details below.
-    </small>
+    <!-- 🔥 STATIC QR SECTION -->
+    <div class="qr-section">
+        <h4>OR Scan & Pay Using Another Phone</h4>
 
-    <hr>
+        <img src="{{ url_for('static', filename='aasc_qr.jpeg') }}"
+             alt="AASC UPI QR Code"
+             class="qr-image">
+    </div>
 
     <form method="POST"
           enctype="multipart/form-data"
           action="{{ url_for('portal.renew') }}">
 
-        <!-- SAME AMOUNT SUBMITTED -->
         <input type="hidden"
                name="amount"
                id="amount_hidden">
@@ -183,7 +188,7 @@
                accept="image/*"
                required>
 
-        <button type="submit">
+        <button type="submit" class="submit-btn">
             ✅ Submit Renewal Request
         </button>
 
@@ -193,10 +198,10 @@
        class="back">
        ← Back to Dashboard
     </a>
+
 </div>
 
 <script>
-    // Sync visible amount to hidden field before submit (UNCHANGED)
     document.querySelector("form").addEventListener("submit", function () {
         document.getElementById("amount_hidden").value =
             document.getElementById("amount").value;

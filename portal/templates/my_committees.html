@@ -1,83 +1,154 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Committees</title>
 
-<style>
-/* Page Background */
-.committee-container {
-    max-width: 900px;
-    margin: 60px auto;
-    padding: 30px;
-}
+    <!-- Premium Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-/* Title */
-.committee-title {
-    text-align: center;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 40px;
-    color: #222;
-}
+    <style>
 
-/* Grid Layout */
-.committee-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 25px;
-}
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-/* Committee Card */
-.committee-card {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: #333;
-    display: block;
-}
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+        padding: 60px 20px;
+        color: #2c3e50;
+    }
 
-.committee-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #fff;
-}
+    /* Main Card Container */
+    .committee-container {
+        max-width: 1100px;
+        margin: auto;
+        background: rgba(255,255,255,0.97);
+        padding: 45px;
+        border-radius: 28px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+    }
 
-.committee-name {
-    font-size: 20px;
-    font-weight: 600;
-}
+    /* Title */
+    .committee-title {
+        text-align: center;
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 45px;
+        background: linear-gradient(135deg,#1565c0,#00bcd4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-/* Empty Message */
-.empty-state {
-    text-align: center;
-    padding: 40px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    font-size: 18px;
-    color: #777;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
+    /* Grid Layout */
+    .committee-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
 
-/* Back Button */
-.back-btn {
-    display: inline-block;
-    margin-top: 40px;
-    padding: 12px 25px;
-    border-radius: 30px;
-    background: linear-gradient(135deg, #2c5364, #203a43);
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
-}
+    /* Committee Card */
+    .committee-card {
+        background: linear-gradient(135deg,#f8fbff,#eef3ff);
+        padding: 30px;
+        border-radius: 20px;
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 18px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
-.back-btn:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
-}
-</style>
+    .committee-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+        transition: 0.6s;
+    }
+
+    .committee-card:hover::before {
+        left: 100%;
+    }
+
+    .committee-card:hover {
+        transform: translateY(-10px);
+        background: linear-gradient(135deg,#1a237e,#3949ab);
+        color: white;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    }
+
+    .committee-name {
+        font-size: 20px;
+        font-weight: 600;
+        z-index: 2;
+        position: relative;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px;
+        background: #f5f8ff;
+        border-radius: 20px;
+        font-size: 18px;
+        color: #78909c;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    /* Back Button */
+    .back-wrapper {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        padding: 14px 32px;
+        border-radius: 40px;
+        background: linear-gradient(135deg,#1e88e5,#42a5f5);
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        box-shadow: 0 10px 25px rgba(30,136,229,0.35);
+    }
+
+    .back-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(30,136,229,0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+
+        .committee-container {
+            padding: 30px;
+        }
+
+        .committee-title {
+            font-size: 26px;
+        }
+
+        .committee-card {
+            padding: 22px;
+            font-size: 16px;
+        }
+
+    }
+
+    </style>
+</head>
+
+<body>
 
 <div class="committee-container">
 
@@ -103,7 +174,7 @@
         </div>
     {% endif %}
 
-    <div style="text-align:center;">
+    <div class="back-wrapper">
         <a href="{{ url_for('portal.dashboard') }}"
            class="back-btn">
            ← Back to Dashboard
@@ -112,4 +183,5 @@
 
 </div>
 
-{% endblock %}
+</body>
+</html>

@@ -1,164 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AASC Admin | Renewal Requests</title>
+<meta charset="UTF-8">
+<title>AASC Admin | Renewal Requests</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * { box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 30px 20px;
-            color: #333;
-        }
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        h2 {
-            color: #0d47a1;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 26px;
-        }
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height: 100vh;
+    padding: 50px 20px;
+    color: #e2e8f0;
+}
 
-        /* Back link */
-        .back {
-            display: block;
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #0d47a1;
-        }
+.page-wrapper {
+    max-width: 1300px;
+    margin: auto;
+}
 
-        .back:hover {
-            text-decoration: underline;
-        }
+/* Header */
+h2 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
 
-        /* Table wrapper */
-        .table-wrapper {
-            max-width: 1100px;
-            margin: auto;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
+/* Back Button */
+.back {
+    display: inline-block;
+    margin-bottom: 25px;
+    padding: 10px 18px;
+    background: #334155;
+    color: #e2e8f0;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.back:hover {
+    background: #475569;
+    transform: translateY(-2px);
+}
 
-        th {
-            background: #0d47a1;
-            color: white;
-            padding: 14px;
-            text-align: center;
-            font-size: 14.5px;
-        }
+/* Table Card */
+.table-wrapper {
+    background: #1e293b;
+    border-radius: 24px;
+    border: 1px solid #334155;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    overflow-x: auto;
+}
 
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #eef1f5;
-            text-align: center;
-            font-size: 14px;
-        }
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        tr:last-child td {
-            border-bottom: none;
-        }
+/* Header */
+thead {
+    background: linear-gradient(135deg,#6366f1,#4338ca);
+}
 
-        tr:hover td {
-            background: #f5f8ff;
-        }
+th {
+    padding: 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+}
 
-        /* Buttons */
-        .btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            display: inline-block;
-            margin: 2px;
-        }
+td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #334155;
+    font-size: 13px;
+}
 
-        .approve {
-            background: #4caf50;
-            color: white;
-        }
+tbody tr {
+    transition: 0.25s;
+}
 
-        .reject {
-            background: #f44336;
-            color: white;
-        }
+tbody tr:hover {
+    background: #0f172a;
+}
 
-        .view {
-            background: #2196f3;
-            color: white;
-        }
+tr:last-child td {
+    border-bottom: none;
+}
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+/* Amount */
+.amount {
+    font-weight: 700;
+    color: #22c55e;
+}
 
-        /* Status */
-        .status-pending {
-            color: #ff9800;
-            font-weight: 700;
-        }
+/* Status */
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-block;
+}
 
-        .status-approved {
-            color: #2e7d32;
-            font-weight: 700;
-        }
+.status-pending {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
 
-        .status-rejected {
-            color: #c62828;
-            font-weight: 700;
-        }
+.status-approved {
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+}
 
-        /* Screenshot */
-        img {
-            max-width: 60px;
-            border-radius: 6px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
+.status-rejected {
+    background: rgba(239,68,68,0.15);
+    color: #ef4444;
+}
 
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
+/* Buttons */
+.btn {
+    padding: 6px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin: 3px;
+    transition: 0.3s;
+}
 
-            .btn, .back {
-                display: none !important;
-            }
+.approve {
+    background: #22c55e;
+    color: white;
+}
 
-            .table-wrapper {
-                box-shadow: none;
-                border-radius: 0;
-            }
+.reject {
+    background: #ef4444;
+    color: white;
+}
 
-            th {
-                background: #ddd !important;
-                color: black !important;
-            }
+.view {
+    background: #6366f1;
+    color: white;
+}
 
-            h2 {
-                text-align: center;
-            }
-        }
-    </style>
-</head>
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AASC Admin | Renewal Requests</title>
+/* Screenshot */
+img {
+    max-width: 60px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    transition: 0.3s;
+}
+
+img:hover {
+    transform: scale(1.1);
+}
+
+/* Print */
+@media print {
+    body {
+        background: white;
+        color: black;
+        padding: 0;
+    }
+
+    .btn, .back {
+        display: none !important;
+    }
+
+    th {
+        background: #ddd !important;
+        color: black !important;
+    }
+}
+</style>
 </head>
 
 <body>
+
+<div class="page-wrapper">
 
 <h2>🔁 Renewal Requests</h2>
 
@@ -167,7 +205,8 @@
 </a>
 
 <div class="table-wrapper">
-<table  cellpadding="10" cellspacing="0" width="100%">
+<table>
+<thead>
 <tr>
     <th>#</th>
     <th>Name</th>
@@ -177,65 +216,59 @@
     <th>Status</th>
     <th>Action</th>
 </tr>
+</thead>
 
+<tbody>
 {% for r in renewals %}
 <tr>
     <td>{{ loop.index }}</td>
 
-    <!-- Member Name -->
     <td>{{ r.user.name }}</td>
-
-    <!-- Membership ID -->
     <td>{{ r.user.membership_id }}</td>
+    <td class="amount">₹{{ r.amount }}</td>
 
-    <!-- Amount -->
-    <td>₹{{ r.amount }}</td>
-
-    <!-- Screenshot -->
     <td>
         {% if r.screenshot %}
             <a href="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}"
                target="_blank">
-                <img src="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}"
-                     width="60">
+                <img src="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}">
             </a>
         {% else %}
             —
         {% endif %}
     </td>
 
-    <!-- Status -->
     <td>
         {% if r.status == 'PENDING' %}
-            <span style="color:orange; font-weight:bold;">PENDING</span>
+            <span class="status status-pending">PENDING</span>
 
         {% elif r.status == 'APPROVED' %}
-            <span style="color:green; font-weight:bold;">APPROVED</span>
+            <span class="status status-approved">APPROVED</span>
 
         {% else %}
-            <span style="color:red; font-weight:bold;">REJECTED</span>
+            <span class="status status-rejected">REJECTED</span>
         {% endif %}
     </td>
 
-    <!-- Actions -->
     <td>
         {% if r.status == 'PENDING' %}
 
-            <a href="{{ url_for('portal.approve_renewal', rid=r.id, uid=r.user_id) }}"
+            <a class="btn approve"
+               href="{{ url_for('portal.approve_renewal', rid=r.id, uid=r.user_id) }}"
                onclick="return confirm('Approve this renewal?')">
                ✔ Approve
             </a>
 
-            |
-
-            <a href="{{ url_for('portal.reject_renewal', rid=r.id) }}"
+            <a class="btn reject"
+               href="{{ url_for('portal.reject_renewal', rid=r.id) }}"
                onclick="return confirm('Reject this renewal?')">
                ✖ Reject
             </a>
 
         {% elif r.status == 'APPROVED' %}
 
-            <a href="{{ url_for('portal.view_receipt', rid=r.id) }}"
+            <a class="btn view"
+               href="{{ url_for('portal.view_receipt', rid=r.id) }}"
                target="_blank">
                🧾 View Receipt
             </a>
@@ -246,8 +279,11 @@
     </td>
 </tr>
 {% endfor %}
+</tbody>
 
 </table>
+</div>
+
 </div>
 
 </body>

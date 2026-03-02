@@ -1,90 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Add Member | AASC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Premium Modern Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: "Segoe UI", Roboto, Arial, sans-serif;
-            background: #f4f6f9;
-            padding: 40px 20px;
-            color: #333;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #141e30, #243b55);
         }
 
         .card {
-            background: #ffffff;
-            padding: 30px 28px;
-            max-width: 420px;
-            margin: auto;
-            border-radius: 14px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 45px 40px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: fadeIn 0.6s ease;
         }
 
         h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
             text-align: center;
-            font-size: 22px;
-            color: #0d47a1;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 35px;
+            letter-spacing: 0.4px;
         }
 
-        input,
-        select,
-        button {
-            width: 100%;
-            padding: 12px 14px;
-            margin-top: 14px;
-            font-size: 15px;
-            border-radius: 8px;
+        .form-group {
+            position: relative;
+            margin-bottom: 28px;
         }
 
         input,
         select {
-            border: 1px solid #dcdfe3;
-            background: #fafafa;
-            transition: border 0.2s, box-shadow 0.2s;
+            width: 100%;
+            padding: 15px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.05);
+            font-size: 14.5px;
+            color: #ffffff;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255,255,255,0.55);
         }
 
         input:focus,
         select:focus {
-            outline: none;
-            border-color: #0d47a1;
-            background: #ffffff;
-            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
+            border-color: #42a5f5;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 3px rgba(66,165,245,0.25);
+        }
+
+        select option {
+            color: #000;
         }
 
         button {
-            margin-top: 22px;
-            background: #0d47a1;
-            color: #ffffff;
+            width: 100%;
+            margin-top: 15px;
+            padding: 16px;
+            border-radius: 16px;
             border: none;
+            font-size: 15px;
             font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #42a5f5, #1e88e5);
+            color: #ffffff;
             cursor: pointer;
-            transition:  transform 0.1s, box-shadow 0.1s;
+            transition: 0.3s ease;
+            box-shadow: 0 18px 40px rgba(66,165,245,0.4);
         }
 
         button:hover {
-            background: #09357a;
-            box-shadow: 0 6px 14px rgba(13, 71, 161, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 55px rgba(66,165,245,0.6);
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
-        a {
+        .back-link {
             display: inline-block;
-            margin-top: 22px;
+            margin-top: 25px;
             text-decoration: none;
-            color: #0d47a1;
+            color: #90caf9;
+            font-size: 14px;
             font-weight: 500;
+            transition: 0.3s;
         }
 
-        a:hover {
+        .back-link:hover {
+            color: #ffffff;
             text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 35px 25px;
+            }
         }
     </style>
 </head>
@@ -96,22 +139,28 @@
     <form method="POST"
           action="{{ url_for('portal.admin_add_member') }}">
 
-        <input type="text"
-               name="name"
-               placeholder="Full Name"
-               required>
+        <div class="form-group">
+            <input type="text"
+                   name="name"
+                   placeholder="Full Name"
+                   required>
+        </div>
 
-        <input type="text"
-               name="phone"
-               placeholder="Phone Number"
-               required>
+        <div class="form-group">
+            <input type="text"
+                   name="phone"
+                   placeholder="Phone Number"
+                   required>
+        </div>
 
-        <select name="nativity" required>
-            <option value="">Select Nativity</option>
-            <option value="(NATIVE)">NATIVE</option>
-            <option value="(GCC)">GCC</option>
-            <option value="(STUDENT)">STUDENT</option>
-        </select>
+        <div class="form-group">
+            <select name="nativity" required>
+                <option value="">Select Nativity</option>
+                <option value="(NATIVE)">NATIVE</option>
+                <option value="(GCC)">GCC</option>
+                <option value="(STUDENT)">STUDENT</option>
+            </select>
+        </div>
 
         <button type="submit">
             Add Member
@@ -120,7 +169,7 @@
     </form>
 
     <a href="{{ url_for('portal.admin_members') }}"
-       class="back">
+       class="back-link">
        ← Back
     </a>
 </div>

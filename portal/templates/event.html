@@ -4,87 +4,158 @@
 <style>
 * { box-sizing: border-box; }
 
-body {
-    font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    background: linear-gradient(to bottom, #fdf6e3, #f7f1dc);
-    padding: 30px 20px;
-    color: #3e2723;
+/* Wrapper */
+.events-wrapper {
+    padding: 50px 20px;
 }
 
+/* Title */
 h2 {
     text-align: center;
-    font-size: 28px;
-    color: #6d4c41;
-    margin-bottom: 30px;
+    font-size: 30px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 40px;
+    letter-spacing: 0.5px;
 }
 
 /* Grid */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    max-width: 1100px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 28px;
+    max-width: 1200px;
     margin: auto;
 }
 
 /* Card */
 .card {
-    background: #fffdf7;
-    border-radius: 18px;
-    padding: 22px;
-    border: 1px solid #e6dcc8;
-    box-shadow: 0 10px 25px rgba(109,76,65,0.15);
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 26px;
+    border: 1px solid #eef2f7;
+    box-shadow: 0 25px 60px rgba(15,23,42,0.08);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 35px 80px rgba(15,23,42,0.15);
+}
+
+/* Top Accent */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    border-radius: 22px 22px 0 0;
+    background: linear-gradient(90deg,#2563eb,#6366f1);
+}
+
+/* Event Title */
 .card h3 {
-    margin: 0 0 8px;
-    color: #4e342e;
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
 }
 
+/* Description */
 .card p {
     margin: 6px 0;
     font-size: 14.5px;
+    color: #475569;
+}
+
+/* Info Row */
+.info-row {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #334155;
+}
+
+/* Participants Badge */
+.participants-badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: #eef2ff;
+    color: #4f46e5;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 /* Status */
 .status.active {
-    margin-top: 12px;
-    font-weight: 700;
-    color: #2e7d32;
-    background: #e8f5e9;
-    padding: 8px 12px;
-    border-radius: 10px;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #166534;
+    background: #dcfce7;
+    padding: 8px 14px;
+    border-radius: 14px;
     display: inline-block;
+    font-size: 13px;
 }
 
 /* Button */
 .btn {
     display: inline-block;
-    margin-top: 14px;
-    padding: 10px 18px;
-    background: linear-gradient(to right, #8d6e63, #6d4c41);
+    margin-top: 18px;
+    padding: 11px 20px;
+    background: linear-gradient(135deg,#2563eb,#4f46e5);
     color: #fff;
-    border-radius: 22px;
+    border-radius: 30px;
     text-decoration: none;
     font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 15px 35px rgba(37,99,235,0.25);
 }
 
-.btn:hover { opacity: 0.9; }
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 25px 50px rgba(37,99,235,0.35);
+}
 
+/* Empty */
 .empty {
     text-align: center;
-    color: #6d4c41;
+    font-size: 16px;
+    color: #64748b;
+    grid-column: 1 / -1;
+    padding: 40px;
 }
 
+/* Back */
 .back {
     display: block;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
     font-weight: 600;
-    color: #6d4c41;
+    color: #475569;
     text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.back:hover {
+    color: #0f172a;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card {
+        padding: 20px;
+    }
 }
 </style>
+
+<div class="events-wrapper">
 
 <h2>📅 Portal Events</h2>
 
@@ -97,11 +168,13 @@ h2 {
 
     <p>{{ event.description }}</p>
 
-    <p>📆 <b>Date:</b> {{ event.event_date }}</p>
+    <div class="info-row">
+        📆 <b>Date:</b> {{ event.event_date }}
+    </div>
 
-    <p>👥 <b>Participants:</b>
-        {{ event.participants|length }}
-    </p>
+    <div class="participants-badge">
+        👥 {{ event.participants|length }} Participants
+    </div>
 
     {% if event.id in registered_ids %}
         <p class="status active">✅ You are participating</p>
@@ -115,7 +188,7 @@ h2 {
 
 </div>
 {% else %}
-<p class="empty">No portal events available</p>
+<p class="empty">🚫 No portal events available</p>
 {% endfor %}
 
 </div>
@@ -124,5 +197,7 @@ h2 {
    class="back">
    ← Back to Dashboard
 </a>
+
+</div>
 
 {% endblock %}
