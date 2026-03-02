@@ -5,7 +5,7 @@
 <title>Complete Profile | AASC ALAMPADY</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 * {
@@ -25,7 +25,6 @@ body {
     color: #e2e8f0;
 }
 
-/* Card */
 .card {
     width: 100%;
     max-width: 620px;
@@ -34,15 +33,8 @@ body {
     padding: 40px 35px;
     border: 1px solid #334155;
     box-shadow: 0 40px 90px rgba(0,0,0,0.6);
-    animation: fadeIn 0.4s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(25px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Title */
 h2 {
     text-align: center;
     font-size: 30px;
@@ -57,7 +49,6 @@ h2 {
     margin-bottom: 30px;
 }
 
-/* Section Title */
 .section-title {
     font-size: 16px;
     font-weight: 600;
@@ -66,7 +57,6 @@ h2 {
     color: #6366f1;
 }
 
-/* Labels */
 label {
     display: block;
     font-size: 13px;
@@ -75,7 +65,6 @@ label {
     color: #94a3b8;
 }
 
-/* Inputs */
 input, textarea, select {
     width: 100%;
     padding: 14px 16px;
@@ -98,7 +87,6 @@ textarea {
     resize: vertical;
 }
 
-/* Profile Photo */
 .photo-preview {
     display: flex;
     justify-content: center;
@@ -114,7 +102,6 @@ textarea {
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
-/* Checkbox Group */
 .checkbox-group {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
@@ -131,11 +118,6 @@ textarea {
     background: #0f172a;
     border: 1px solid #334155;
     cursor: pointer;
-    transition: 0.3s;
-}
-
-.checkbox-group label:hover {
-    background: #1e293b;
 }
 
 .checkbox-group input {
@@ -143,7 +125,6 @@ textarea {
     margin: 0;
 }
 
-/* Button */
 button {
     width: 100%;
     padding: 16px;
@@ -154,20 +135,14 @@ button {
     background: linear-gradient(135deg,#6366f1,#4338ca);
     color: white;
     cursor: pointer;
-    transition: 0.3s;
     box-shadow: 0 20px 50px rgba(67,56,202,0.5);
+    transition: 0.3s;
 }
 
 button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 30px 70px rgba(67,56,202,0.7);
 }
 
-button:active {
-    transform: scale(0.97);
-}
-
-/* Back Button */
 .back-btn {
     display: block;
     margin-top: 25px;
@@ -175,18 +150,10 @@ button:active {
     font-weight: 600;
     text-decoration: none;
     color: #94a3b8;
-    transition: 0.3s;
 }
 
 .back-btn:hover {
-    color: #e2e8f0;
-}
-
-/* Responsive */
-@media (max-width: 500px) {
-    .card {
-        padding: 30px 22px;
-    }
+    color: #ffffff;
 }
 </style>
 </head>
@@ -195,64 +162,87 @@ button:active {
 
 <div class="card">
 
-    <h2>Complete Your Profile</h2>
-    <div class="subtitle">This is required only once</div>
+<h2>Complete Your Profile</h2>
+<div class="subtitle">This is required only once</div>
 
-    <form method="POST"
-          enctype="multipart/form-data"
-          action="{{ url_for('portal.complete_profile') }}">
+<form method="POST"
+      enctype="multipart/form-data"
+      action="{{ url_for('portal.complete_profile') }}">
 
-        <!-- PHOTO -->
-        <div class="photo-preview">
-            <img src="{{ url_for('static',
-                    filename=user.photo if user.photo else 'default_avatar.png') }}">
-        </div>
+<!-- PHOTO -->
+<div class="photo-preview">
+<img src="{{ url_for('static',
+filename=user.photo if user.photo else 'default_avatar.png') }}">
+</div>
 
-        <label>Upload Profile Photo (Optional)</label>
-        <input type="file" name="photo" accept="image/*">
+<label>Upload Profile Photo (Optional)</label>
+<input type="file" name="photo" accept="image/*">
 
-        <div class="section-title">Additional Information</div>
+<div class="section-title">Additional Information</div>
 
-        <label>Address</label>
-        <textarea name="address" rows="3"
-                  placeholder="Enter your address"></textarea>
+<label>Address</label>
+<textarea name="address" rows="3">{{ user.address or "" }}</textarea>
 
-        <label>Email</label>
-        <input type="email" name="email"
-               placeholder="Enter your email">
+<label>Email</label>
+<input type="email" name="email"
+value="{{ user.email or '' }}">
 
-        <label>WhatsApp Number</label>
-        <input type="text" name="whatsapp"
-               placeholder="Enter WhatsApp number">
+<label>WhatsApp Number</label>
+<input type="text" name="whatsapp"
+value="{{ user.whatsapp or '' }}">
 
-        <label>Date of Birth</label>
-        <input type="date" name="dob">
+<label>Date of Birth</label>
+<input type="date" name="dob"
+value="{{ user.dob.strftime('%Y-%m-%d') if user.dob else '' }}">
 
-        <label>Blood Group</label>
-        <select name="blood_group">
-            <option value="">Select Blood Group</option>
-            <option>A+</option><option>A-</option>
-            <option>B+</option><option>B-</option>
-            <option>O+</option><option>O-</option>
-            <option>AB+</option><option>AB-</option>
-        </select>
+<label>Blood Group</label>
+<select name="blood_group">
+<option value="">Select Blood Group</option>
+<option value="A+" {% if user.blood_group=="A+" %}selected{% endif %}>A+</option>
+<option value="A-" {% if user.blood_group=="A-" %}selected{% endif %}>A-</option>
+<option value="B+" {% if user.blood_group=="B+" %}selected{% endif %}>B+</option>
+<option value="B-" {% if user.blood_group=="B-" %}selected{% endif %}>B-</option>
+<option value="O+" {% if user.blood_group=="O+" %}selected{% endif %}>O+</option>
+<option value="O-" {% if user.blood_group=="O-" %}selected{% endif %}>O-</option>
+<option value="AB+" {% if user.blood_group=="AB+" %}selected{% endif %}>AB+</option>
+<option value="AB-" {% if user.blood_group=="AB-" %}selected{% endif %}>AB-</option>
+</select>
 
-        <label>Interested Fields</label>
+<label>Interested Fields</label>
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" name="interests" value="Arts"> Arts</label>
-            <label><input type="checkbox" name="interests" value="Sports"> Sports</label>
-            <label><input type="checkbox" name="interests" value="Literature"> Literature</label>
-            <label><input type="checkbox" name="interests" value="Tech"> Tech</label>
-        </div>
+{% set selected_interests = user.interests.split(',') if user.interests else [] %}
 
-        <button type="submit">Save & Continue</button>
+<div class="checkbox-group">
 
-        <a href="{{ url_for('portal.dashboard') }}" class="back-btn">
-           ← Back to Portal Dashboard
-        </a>
+<label>
+<input type="checkbox" name="interests" value="Arts"
+{% if "Arts" in selected_interests %}checked{% endif %}> Arts
+</label>
 
-    </form>
+<label>
+<input type="checkbox" name="interests" value="Sports"
+{% if "Sports" in selected_interests %}checked{% endif %}> Sports
+</label>
+
+<label>
+<input type="checkbox" name="interests" value="Literature"
+{% if "Literature" in selected_interests %}checked{% endif %}> Literature
+</label>
+
+<label>
+<input type="checkbox" name="interests" value="Tech"
+{% if "Tech" in selected_interests %}checked{% endif %}> Tech
+</label>
+
+</div>
+
+<button type="submit">Save & Continue</button>
+
+<a href="{{ url_for('portal.dashboard') }}" class="back-btn">
+← Back to Portal Dashboard
+</a>
+
+</form>
 
 </div>
 

@@ -156,17 +156,19 @@ def portal_events():
         PortalEvent.event_date.desc()
     ).all()
 
-    # Get events user already registered for
     registered = PortalEventParticipant.query.filter_by(
         user_id=session["user_id"]
     ).all()
 
     registered_ids = [r.portal_event_id for r in registered]
 
+    today = date.today()   # 👈 Get today's date
+
     return render_template(
         "event.html",
         events=events,
-        registered_ids=registered_ids
+        registered_ids=registered_ids,
+        today=today      # 👈 Pass to template
     )
 
 

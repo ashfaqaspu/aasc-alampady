@@ -177,14 +177,24 @@ h2 {
     </div>
 
     {% if event.id in registered_ids %}
-        <p class="status active">✅ You are participating</p>
-    {% else %}
-        <a href="{{ url_for('portal.participate_portal_event',
-                            event_id=event.id) }}"
-           class="btn">
-            🤝 Participate
-        </a>
-    {% endif %}
+    <p class="status active">✅ You are participating</p>
+
+{% elif today > event.event_date %}
+    <button class="btn"
+            style="background:#94a3b8;
+                   cursor:not-allowed;
+                   box-shadow:none;"
+            disabled>
+        ❌ Registration Closed
+    </button>
+
+{% else %}
+    <a href="{{ url_for('portal.participate_portal_event',
+                        event_id=event.id) }}"
+       class="btn">
+        🤝 Participate
+    </a>
+{% endif %}
 
 </div>
 {% else %}
