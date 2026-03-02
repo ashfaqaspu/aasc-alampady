@@ -1,1769 +1,1005 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AASC Portal | Dashboard</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700;900&family=Zodiak:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@300;400;500&display=swap"
-        rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap"
-        rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AASC Portal | Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <style>
-        /* ═══════════════════════════════════════════════
-   DESIGN TOKENS — Deep Emerald × Obsidian × Amber
-═══════════════════════════════════════════════ */
-        :root {
-            /* Core palette */
-            --void: #070b0e;
-            --abyss: #0a0f12;
-            --deep: #0d1418;
-            --panel: #111c21;
-            --surface: #162028;
-            --rim: #1e2f38;
-            --rim-bright: #2a4050;
+<style>
+/* ═══════════════════════════════════════════════════════
+   DESIGN TOKENS  Pearl White × Scarlet × Molten Gold
+═══════════════════════════════════════════════════════ */
+:root {
+  /* Backgrounds */
+  --bg:        #faf8f5;
+  --bg2:       #f6f2ed;
+  --bg3:       #f0ebe3;
+  --card:      #ffffff;
+  --card2:     #fefcf9;
 
-            /* Emerald family */
-            --em: #00c896;
-            --em-bright: #00e5aa;
-            --em-mid: #009e78;
-            --em-dark: #005c46;
-            --em-mist: rgba(0, 200, 150, 0.08);
-            --em-glow: rgba(0, 200, 150, 0.25);
+  /* Scarlet */
+  --sc:        #c0182c;
+  --sc-deep:   #8b0014;
+  --sc-mid:    #d9243e;
+  --sc-light:  #f03550;
+  --sc-soft:   rgba(192,24,44,0.08);
+  --sc-mist:   rgba(192,24,44,0.05);
+  --sc-glow:   rgba(192,24,44,0.22);
 
-            /* Amber family */
-            --amber: #f5a623;
-            --amber-bright: #ffc142;
-            --amber-dark: #c07d10;
-            --amber-mist: rgba(245, 166, 35, 0.08);
-            --amber-glow: rgba(245, 166, 35, 0.25);
+  /* Gold */
+  --gd:        #b8860b;
+  --gd-bright: #d4a820;
+  --gd-warm:   #e8bb44;
+  --gd-pale:   #fdf3c7;
+  --gd-soft:   rgba(184,134,11,0.09);
+  --gd-glow:   rgba(184,134,11,0.22);
 
-            /* Coral accent */
-            --coral: #ff5f57;
-            --coral-mist: rgba(255, 95, 87, 0.08);
+  /* Rose accent */
+  --rose:      #e86080;
+  --rose-pale: #fce8ef;
 
-            /* Sky accent */
-            --sky: #38b6ff;
-            --sky-mist: rgba(56, 182, 255, 0.08);
+  /* Text scale */
+  --t1: #1a0808;
+  --t2: #3d1818;
+  --t3: #7a4a52;
+  --t4: #b08890;
+  --t5: #e8d8dc;
 
-            /* Text */
-            --white: #f0f4f8;
-            --ghost: #8899a6;
-            --faint: #3a505e;
+  /* Borders */
+  --b1: rgba(192,24,44,0.12);
+  --b2: rgba(192,24,44,0.2);
+  --b3: rgba(184,134,11,0.15);
+  --b4: rgba(184,134,11,0.25);
 
-            --font-display: 'Playfair Display', Georgia, serif;
-            --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
-            --font-mono: 'IBM Plex Mono', monospace;
+  /* Fonts */
+  --fd: 'Libre Baskerville', Georgia, serif;
+  --fb: 'Manrope', system-ui, sans-serif;
+  --fm: 'JetBrains Mono', monospace;
 
-            --r-2xl: 28px;
-            --r-xl: 20px;
-            --r-lg: 16px;
-            --r-md: 10px;
-            --r-sm: 7px;
-            --r-pill: 100px;
+  /* Radii */
+  --r4:28px; --r3:22px; --r2:16px; --r1:10px; --rp:999px;
 
-            --ease: cubic-bezier(0.4, 0, 0.2, 1);
-            --spring: cubic-bezier(0.16, 1, 0.3, 1);
-            --t: 0.38s;
-        }
+  /* Shadows */
+  --s1: 0 2px 8px rgba(192,24,44,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --s2: 0 6px 24px rgba(192,24,44,0.09), 0 2px 8px rgba(0,0,0,0.04);
+  --s3: 0 14px 44px rgba(192,24,44,0.13), 0 4px 14px rgba(0,0,0,0.06);
+  --s4: 0 24px 72px rgba(192,24,44,0.16), 0 8px 22px rgba(0,0,0,0.07);
 
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--void);
-            color: var(--white);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ═══════════════════════════════════════════════
-   BACKGROUND SYSTEM
-═══════════════════════════════════════════════ */
-        .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse 80% 60% at -10% -5%, rgba(0, 200, 150, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 70% at 110% 10%, rgba(245, 166, 35, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse 70% 50% at 50% 110%, rgba(0, 200, 150, 0.07) 0%, transparent 55%),
-                radial-gradient(ellipse 50% 60% at 95% 80%, rgba(56, 182, 255, 0.06) 0%, transparent 50%),
-                var(--abyss);
-            animation: bgShift 25s ease-in-out infinite alternate;
-        }
-
-        @keyframes bgShift {
-            0% {
-                filter: brightness(1) hue-rotate(0deg);
-            }
-
-            100% {
-                filter: brightness(1.06) hue-rotate(8deg);
-            }
-        }
-
-        /* Grid lines */
-        .bg-grid {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background-image:
-                linear-gradient(rgba(0, 200, 150, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 200, 150, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 75%);
-        }
-
-        /* Noise grain */
-        .bg-grain {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            opacity: .55;
-        }
-
-        /* Ambient canvas */
-        #fx {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* ═══════════════════════════════════════════════
-   HEADER
-═══════════════════════════════════════════════ */
-        .hdr {
-            position: sticky;
-            top: 0;
-            z-index: 900;
-            height: 68px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            background: rgba(10, 15, 18, 0.82);
-            backdrop-filter: blur(28px) saturate(1.8);
-            -webkit-backdrop-filter: blur(28px) saturate(1.8);
-            border-bottom: 1px solid rgba(0, 200, 150, 0.12);
-        }
-
-        /* scan-line top bar */
-        .hdr::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg,
-                    transparent 0%, var(--em-bright) 40%,
-                    var(--amber) 60%, transparent 100%);
-            animation: scan 3.5s ease-in-out infinite;
-        }
-
-        @keyframes scan {
-            0% {
-                left: -100%
-            }
-
-            100% {
-                left: 100%
-            }
-        }
-
-        .hdr::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 48px;
-            right: 48px;
-            height: 1px;
-            background: linear-gradient(90deg,
-                    transparent, rgba(0, 200, 150, 0.15) 30%,
-                    rgba(0, 200, 150, 0.3) 50%,
-                    rgba(0, 200, 150, 0.15) 70%, transparent);
-        }
-
-        .hdr.scrolled {
-            background: rgba(7, 11, 14, 0.96);
-            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(0, 200, 150, 0.1);
-        }
-
-        /* ── Logo ── */
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-decoration: none;
-        }
-
-        .logo-gem {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            position: relative;
-            flex-shrink: 0;
-            background: linear-gradient(135deg, var(--em-dark) 0%, var(--em) 50%, var(--amber) 100%);
-            box-shadow: 0 0 0 1px rgba(0, 200, 150, 0.3),
-                0 8px 28px rgba(0, 200, 150, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: gemPulse 4s ease-in-out infinite alternate;
-        }
-
-        @keyframes gemPulse {
-            from {
-                box-shadow: 0 0 0 1px rgba(0, 200, 150, 0.3), 0 8px 28px rgba(0, 200, 150, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            }
-
-            to {
-                box-shadow: 0 0 0 1px rgba(0, 200, 150, 0.5), 0 8px 40px rgba(0, 200, 150, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            }
-        }
-
-        .logo-gem-inner {
-            font-family: var(--font-display);
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .logo-txt {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-
-        .logo-name {
-            font-family: var(--font-display);
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: .5px;
-            background: linear-gradient(90deg, var(--em-bright), var(--amber-bright));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-        }
-
-        .logo-sub {
-            font-family: var(--font-mono);
-            font-size: 9px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--ghost);
-            line-height: 1;
-        }
-
-        /* ── Header right ── */
-        .hdr-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .hdr-clock {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--em);
-            background: var(--em-mist);
-            border: 1px solid rgba(0, 200, 150, 0.18);
-            padding: 6px 14px;
-            border-radius: var(--r-pill);
-            letter-spacing: .5px;
-        }
-
-        /* theme pills */
-        .hdr-pills {
-            display: flex;
-            gap: 5px;
-        }
-
-        .hdr-pill {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--rim);
-            transition: var(--t) var(--ease);
-            cursor: default;
-        }
-
-        .hdr-pill:hover {
-            background: var(--em-mist);
-            border-color: rgba(0, 200, 150, 0.35);
-            transform: translateY(-2px) rotate(-5deg);
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            font-family: var(--font-body);
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--white);
-            padding: 8px 20px;
-            border-radius: var(--r-pill);
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--rim-bright);
-            transition: var(--t) var(--ease);
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 95, 87, 0.15);
-            border-color: var(--coral);
-            color: var(--coral);
-            box-shadow: 0 0 20px rgba(255, 95, 87, 0.2);
-            transform: translateY(-1px);
-        }
-
-        /* ═══════════════════════════════════════════════
-   PAGE WRAPPER
-═══════════════════════════════════════════════ */
-        .pg {
-            position: relative;
-            z-index: 10;
-            max-width: 1700px;
-            margin: 0 auto;
-            padding: 36px 28px 64px;
-        }
-
-        /* welcome strip */
-        .welcome {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .welcome-left {}
-
-        .welcome-hey {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--em);
-            margin-bottom: 6px;
-        }
-
-        .welcome-name {
-            font-family: var(--font-display);
-            font-size: clamp(24px, 3.5vw, 40px);
-            font-weight: 700;
-            font-style: italic;
-            color: var(--white);
-            line-height: 1.1;
-        }
-
-        .welcome-name em {
-            font-style: normal;
-            background: linear-gradient(135deg, var(--em-bright), var(--amber-bright));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .welcome-date {
-            font-family: var(--font-mono);
-            font-size: 10.5px;
-            color: var(--ghost);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--rim);
-            padding: 8px 18px;
-            border-radius: var(--r-pill);
-            letter-spacing: 1.5px;
-        }
-
-        /* ═══════════════════════════════════════════════
-   BENTO GRID
-═══════════════════════════════════════════════ */
-        /* ═══════════════════════════════════════════════
-   BENTO GRID — RESPONSIVE PERFECT VERSION
-═══════════════════════════════════════════════ */
-
-.bento {
-    display: grid;
-    grid-template-columns: 320px 1fr 1fr;
-    gap: 20px;
-    align-items: start;
+  --ease:   cubic-bezier(.4,0,.2,1);
+  --spring: cubic-bezier(.16,1,.3,1);
+  --t: .3s;
 }
 
-/* Left column stays tall */
-.b-left {
-    grid-column: 1;
-    grid-row: 1 / span 4;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--fb);
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Default placements */
-.b-mid1 { grid-column: 2; }
-.b-mid2 { grid-column: 2; }
-.b-right1 { grid-column: 3; }
-
-/* ───────────── LARGE TABLETS (≤1200px) ───────────── */
-@media (max-width:1200px) {
-    .bento {
-        grid-template-columns: 280px 1fr;
-    }
-
-    .b-right1 {
-        grid-column: 2;
-    }
+/* ══ BACKGROUND SYSTEM ══ */
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 65% at -5%  -5%,  rgba(192,24,44,0.055) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 80% at 105%  0%,  rgba(184,134,11,0.065) 0%, transparent 52%),
+    radial-gradient(ellipse 80% 55% at 50%  110%, rgba(192,24,44,0.045) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 100% 90%,  rgba(184,134,11,0.055) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 20%  70%,  rgba(232,96,128,0.025) 0%, transparent 55%),
+    var(--bg);
 }
 
-/* ───────────── TABLETS (≤1000px) ───────────── */
-@media (max-width:1000px) {
-    .bento {
-        grid-template-columns: 1fr;
-    }
-
-    .b-left,
-    .b-mid1,
-    .b-mid2,
-    .b-right1,
-    .b-full {
-        grid-column: 1 !important;
-        grid-row: auto !important;
-    }
-
-    .card {
-        padding: 22px;
-    }
+.bg-weave {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(192,24,44,0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,24,44,0.028) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 72%);
 }
 
-/* ───────────── MOBILE (≤600px) ───────────── */
-@media (max-width:600px) {
+#canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
-    .pg {
-        padding: 14px 12px 40px;
-    }
-
-    .hdr {
-        padding: 0 12px;
-        height: 60px;
-    }
-
-    .welcome {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .welcome-name {
-        font-size: 22px;
-    }
-
-    .card {
-        padding: 18px;
-        border-radius: 18px;
-    }
-
-    .prof-name {
-        font-size: 18px;
-    }
-
-    .stat-chip .stat-num {
-        font-size: 28px;
-    }
-
-    .adm-btns {
-        grid-template-columns: 1fr;
-    }
-
-    .btn {
-        font-size: 12px;
-        padding: 8px 14px;
-    }
+/* ══ HEADER ══ */
+.hdr {
+  position: sticky; top: 0; z-index: 900;
+  height: 70px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(250,248,245,0.86);
+  backdrop-filter: blur(32px) saturate(2);
+  -webkit-backdrop-filter: blur(32px) saturate(2);
+  border-bottom: 1px solid var(--b1);
+  transition: background var(--t) var(--ease), box-shadow var(--t) var(--ease);
 }
-        /* ═══════════════════════════════════════════════
-   CARD BASE
-═══════════════════════════════════════════════ */
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--rim);
-            border-radius: var(--r-xl);
-            padding: 26px;
-            position: relative;
-            overflow: hidden;
-            transition: transform var(--t) var(--spring),
-                box-shadow var(--t) var(--ease),
-                border-color var(--t) var(--ease);
-            animation: cardIn .6s var(--spring) both;
-        }
 
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 200, 150, 0.25);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 200, 150, 0.1);
-        }
-
-        /* top edge glow */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 200, 150, 0.4) 40%, rgba(245, 166, 35, 0.4) 60%, transparent);
-        }
-
-        /* amber variant */
-        .card.c-amber::before {
-            background: linear-gradient(90deg, transparent, rgba(245, 166, 35, 0.5) 50%, transparent);
-        }
-
-        .card.c-amber:hover {
-            border-color: rgba(245, 166, 35, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 166, 35, 0.1);
-        }
-
-        /* coral variant */
-        .card.c-coral::before {
-            background: linear-gradient(90deg, transparent, rgba(255, 95, 87, 0.5) 50%, transparent);
-        }
-
-        /* sky variant */
-        .card.c-sky::before {
-            background: linear-gradient(90deg, transparent, rgba(56, 182, 255, 0.5) 50%, transparent);
-        }
-
-        /* entrance stagger */
-        @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: translateY(22px) scale(.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .card:nth-child(1) {
-            animation-delay: .04s
-        }
-
-        .card:nth-child(2) {
-            animation-delay: .09s
-        }
-
-        .card:nth-child(3) {
-            animation-delay: .14s
-        }
-
-        .card:nth-child(4) {
-            animation-delay: .19s
-        }
-
-        .card:nth-child(5) {
-            animation-delay: .24s
-        }
-
-        .card:nth-child(6) {
-            animation-delay: .29s
-        }
-
-        /* large corner watermark */
-        .card-wm {
-            position: absolute;
-            bottom: -8px;
-            right: -4px;
-            font-size: 72px;
-            opacity: .06;
-            pointer-events: none;
-            user-select: none;
-            line-height: 1;
-        }
-
-        /* card section title */
-        .c-title {
-            font-family: var(--font-display);
-            font-size: 17px;
-            font-weight: 700;
-            font-style: italic;
-            color: var(--white);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 11px;
-        }
-
-        .c-title-ico {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            background: linear-gradient(135deg, rgba(0, 200, 150, 0.15), rgba(0, 200, 150, 0.05));
-            border: 1px solid rgba(0, 200, 150, 0.2);
-        }
-
-        .card.c-amber .c-title-ico {
-            background: linear-gradient(135deg, rgba(245, 166, 35, 0.18), rgba(245, 166, 35, 0.05));
-            border-color: rgba(245, 166, 35, 0.25);
-        }
-
-        .rule {
-            border: none;
-            height: 1px;
-            margin: 18px 0;
-            background: linear-gradient(90deg, transparent, var(--rim-bright) 40%, var(--rim-bright) 60%, transparent);
-        }
-
-        /* ═══════════════════════════════════════════════
-   PROFILE CARD
-═══════════════════════════════════════════════ */
-        .prof-top {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding-bottom: 4px;
-        }
-
-        /* Avatar with glowing conic ring */
-        .av-wrap {
-            position: relative;
-            width: 118px;
-            height: 118px;
-            margin-bottom: 18px;
-        }
-
-        .av-wrap::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: conic-gradient(var(--em) 0deg,
-                    var(--amber-bright) 120deg,
-                    var(--em-bright) 240deg,
-                    var(--em) 360deg);
-            animation: spinRing 6s linear infinite;
-            z-index: 0;
-        }
-
-        .av-wrap::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 50%;
-            background: var(--panel);
-            z-index: 1;
-        }
-
-        @keyframes spinRing {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .id-photo {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            margin: 4px auto 0;
-            position: relative;
-            z-index: 2;
-            border: 2px solid var(--panel);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            transition: transform var(--t) var(--spring);
-        }
-
-        .id-photo:hover {
-            transform: scale(1.06);
-        }
-
-        .av-dot {
-            position: absolute;
-            bottom: 7px;
-            right: 7px;
-            z-index: 3;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: var(--em);
-            border: 2px solid var(--panel);
-            box-shadow: 0 0 12px var(--em-glow);
-            animation: dotPulse 2.5s ease-in-out infinite;
-        }
-
-        @keyframes dotPulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 12px var(--em-glow);
-            }
-
-            50% {
-                box-shadow: 0 0 24px rgba(0, 200, 150, 0.6), 0 0 40px rgba(0, 200, 150, 0.2);
-            }
-        }
-
-        .prof-name {
-            font-family: var(--font-display);
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--white);
-            margin-bottom: 10px;
-        }
-
-        /* BADGES */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 16px;
-            border-radius: var(--r-pill);
-            font-family: var(--font-mono);
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        .badge.member {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--ghost);
-            border: 1px solid var(--rim-bright);
-        }
-
-        .badge.section {
-            background: var(--sky-mist);
-            color: var(--sky);
-            border: 1px solid rgba(56, 182, 255, 0.3);
-        }
-
-        .badge.admin {
-            background: var(--em-mist);
-            color: var(--em-bright);
-            border: 1px solid rgba(0, 200, 150, 0.35);
-            box-shadow: 0 0 16px rgba(0, 200, 150, 0.15);
-        }
-
-        .badge.super {
-            background: linear-gradient(135deg, rgba(0, 200, 150, 0.2), rgba(245, 166, 35, 0.2));
-            color: var(--amber-bright);
-            border: 1px solid rgba(245, 166, 35, 0.4);
-            box-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
-            animation: superAura 2.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes superAura {
-            from {
-                box-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
-            }
-
-            to {
-                box-shadow: 0 0 36px rgba(245, 166, 35, 0.45), 0 0 60px rgba(0, 200, 150, 0.15);
-            }
-        }
-
-        /* info list */
-        .info-list {
-            list-style: none;
-        }
-
-        .info-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 9px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 13.5px;
-        }
-
-        .info-list li:last-child {
-            border-bottom: none;
-        }
-
-        .i-lbl {
-            color: var(--ghost);
-            font-weight: 400;
-            font-size: 13px;
-        }
-
-        .i-val {
-            color: var(--white);
-            font-weight: 600;
-            text-align: right;
-            max-width: 58%;
-        }
-
-        /* ═══════════════════════════════════════════════
-   BUTTONS
-═══════════════════════════════════════════════ */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 9px 17px;
-            border-radius: var(--r-md);
-            text-decoration: none;
-            font-family: var(--font-body);
-            font-size: 13px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: var(--t) var(--spring);
-            position: relative;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        /* sheen sweep */
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
-            transform: translateX(-100%);
-            transition: transform .55s;
-        }
-
-        .btn:hover::after {
-            transform: translateX(100%);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn:active {
-            transform: translateY(0) scale(.98);
-        }
-
-        .btn.primary {
-            background: linear-gradient(135deg, var(--em-dark) 0%, var(--em) 100%);
-            color: var(--void);
-            box-shadow: 0 4px 20px rgba(0, 200, 150, 0.3);
-        }
-
-        .btn.primary:hover {
-            box-shadow: 0 8px 32px rgba(0, 200, 150, 0.5);
-        }
-
-        .btn.gold {
-            background: linear-gradient(135deg, var(--amber-dark) 0%, var(--amber-bright) 100%);
-            color: var(--void);
-            box-shadow: 0 4px 20px rgba(245, 166, 35, 0.3);
-        }
-
-        .btn.gold:hover {
-            box-shadow: 0 8px 32px rgba(245, 166, 35, 0.5);
-        }
-
-        .btn.success {
-            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(5, 150, 105, 0.3);
-        }
-
-        .btn.danger {
-            background: linear-gradient(135deg, #7f1d1d 0%, var(--coral) 100%);
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(255, 95, 87, 0.3);
-        }
-
-        .btn.warning {
-            background: linear-gradient(135deg, #78350f 0%, var(--amber) 100%);
-            color: var(--void);
-            box-shadow: 0 4px 20px rgba(245, 166, 35, 0.3);
-        }
-
-        .btn.ghost {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--ghost);
-            border: 1px solid var(--rim-bright);
-        }
-
-        .btn.ghost:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--white);
-            border-color: rgba(0, 200, 150, 0.3);
-        }
-
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            margin-top: 4px;
-        }
-
-        /* ═══════════════════════════════════════════════
-   INFO METRICS
-═══════════════════════════════════════════════ */
-        .i-metric {
-            padding: 11px 14px;
-            border-radius: var(--r-md);
-            background: var(--surface);
-            border: 1px solid var(--rim);
-            margin-bottom: 7px;
-            font-size: 13.5px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            transition: var(--t) var(--ease);
-        }
-
-        .i-metric:hover {
-            background: rgba(0, 200, 150, 0.05);
-            border-color: rgba(0, 200, 150, 0.2);
-        }
-
-        .i-metric b {
-            font-family: var(--font-mono);
-            font-size: 9.5px;
-            font-weight: 500;
-            letter-spacing: 1.8px;
-            text-transform: uppercase;
-            color: var(--em);
-        }
-
-        .i-metric span {
-            color: var(--ghost);
-        }
-
-        /* ═══════════════════════════════════════════════
-   STAT CHIPS
-═══════════════════════════════════════════════ */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 6px 0 14px;
-        }
-
-        .stat-chip {
-            border-radius: var(--r-lg);
-            padding: 18px 16px;
-            text-align: center;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .3px;
-            border: 1px solid var(--rim);
-            background: var(--surface);
-            position: relative;
-            overflow: hidden;
-            transition: var(--t) var(--spring);
-        }
-
-        .stat-chip:hover {
-            transform: scale(1.04) translateY(-2px);
-        }
-
-        /* bottom accent line */
-        .stat-chip::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            border-radius: 0 0 var(--r-lg) var(--r-lg);
-        }
-
-        .stat-chip .stat-num {
-            font-family: var(--font-display);
-            font-size: 36px;
-            font-weight: 700;
-            display: block;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .sc-total {
-            color: var(--em-bright);
-        }
-
-        .sc-total .stat-num {
-            background: linear-gradient(135deg, var(--em), var(--em-bright));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sc-total::after {
-            background: linear-gradient(90deg, var(--em-dark), var(--em));
-        }
-
-        .sc-active {
-            color: #34d399;
-        }
-
-        .sc-active .stat-num {
-            background: linear-gradient(135deg, #059669, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sc-active::after {
-            background: linear-gradient(90deg, #064e3b, #059669);
-        }
-
-        .sc-expired {
-            color: var(--coral);
-        }
-
-        .sc-expired .stat-num {
-            background: linear-gradient(135deg, #991b1b, var(--coral));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sc-expired::after {
-            background: linear-gradient(90deg, #7f1d1d, var(--coral));
-        }
-
-        .sc-orange {
-            color: var(--amber-bright);
-        }
-
-        .sc-orange .stat-num {
-            background: linear-gradient(135deg, var(--amber-dark), var(--amber-bright));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sc-orange::after {
-            background: linear-gradient(90deg, var(--amber-dark), var(--amber-bright));
-        }
-
-        /* section label */
-        .sec-lbl {
-            font-family: var(--font-mono);
-            font-size: 9.5px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--ghost);
-            margin: 14px 0 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sec-lbl::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, var(--rim-bright), transparent);
-        }
-
-        /* ═══════════════════════════════════════════════
-   ADMIN BUTTON GRID
-═══════════════════════════════════════════════ */
-        .adm-btns {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .adm-btns .btn {
-            justify-content: center;
-            font-size: 12.5px;
-        }
-
-        /* ═══════════════════════════════════════════════
-   ANNOUNCEMENTS
-═══════════════════════════════════════════════ */
-        .ann {
-            padding: 15px 17px;
-            border-radius: var(--r-md);
-            background: var(--surface);
-            border-left: 3px solid var(--em);
-            margin-bottom: 10px;
-            transition: var(--t) var(--ease);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ann::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(0, 200, 150, 0.04), transparent 60%);
-        }
-
-        .ann:hover {
-            background: rgba(0, 200, 150, 0.07);
-            transform: translateX(5px);
-        }
-
-        .ann h4 {
-            font-family: var(--font-display);
-            font-size: 14px;
-            font-style: italic;
-            color: var(--em-bright);
-            margin-bottom: 5px;
-        }
-
-        .ann p {
-            font-size: 13px;
-            color: var(--ghost);
-            line-height: 1.6;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 36px 20px;
-            color: var(--faint);
-            font-size: 14px;
-        }
-
-        .empty-ico {
-            font-size: 42px;
-            margin-bottom: 12px;
-            opacity: .5;
-        }
-
-        /* ═══════════════════════════════════════════════
-   MEMBERSHIP SECTION
-═══════════════════════════════════════════════ */
-        .date-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 16px 0;
-        }
-
-        .date-box {
-            background: var(--surface);
-            border: 1px solid var(--rim);
-            border-radius: var(--r-md);
-            padding: 14px 16px;
-            transition: var(--t) var(--ease);
-        }
-
-        .date-box:hover {
-            border-color: rgba(0, 200, 150, 0.3);
-            background: rgba(0, 200, 150, 0.05);
-        }
-
-        .d-label {
-            font-family: var(--font-mono);
-            font-size: 9px;
-            color: var(--ghost);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 5px;
-        }
-
-        .d-val {
-            font-family: var(--font-display);
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--white);
-        }
-
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            border-radius: var(--r-pill);
-            font-family: var(--font-mono);
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .status-pill.active {
-            background: rgba(5, 150, 105, 0.12);
-            color: #34d399;
-            border: 1px solid rgba(5, 150, 105, 0.35);
-            box-shadow: 0 0 20px rgba(5, 150, 105, 0.15);
-        }
-
-        .status-pill.expired {
-            background: rgba(255, 95, 87, 0.1);
-            color: var(--coral);
-            border: 1px solid rgba(255, 95, 87, 0.3);
-            animation: expBlink 1.8s ease-in-out infinite;
-        }
-
-        @keyframes expBlink {
-
-            0%,
-            100% {
-                box-shadow: none;
-            }
-
-            50% {
-                box-shadow: 0 0 16px rgba(255, 95, 87, 0.3);
-            }
-        }
-
-        .metric {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 11px 15px;
-            border-radius: var(--r-md);
-            background: var(--surface);
-            border-left: 3px solid var(--rim-bright);
-            margin-bottom: 8px;
-            font-size: 13.5px;
-            transition: var(--t) var(--ease);
-        }
-
-        .metric.orange {
-            background: rgba(245, 166, 35, 0.07);
-            border-left-color: var(--amber);
-            color: var(--amber-bright);
-        }
-
-        .metric.green {
-            background: rgba(5, 150, 105, 0.07);
-            border-left-color: #059669;
-            color: #34d399;
-        }
-
-        .metric.red {
-            background: rgba(255, 95, 87, 0.07);
-            border-left-color: var(--coral);
-            color: var(--coral);
-        }
-
-        .metric-icon {
-            font-size: 17px;
-        }
-
-        /* ═══════════════════════════════════════════════
-   PROGRESS BAR
-═══════════════════════════════════════════════ */
-        .prog-row {
-            margin-bottom: 14px;
-        }
-
-        .prog-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            font-size: 13px;
-        }
-
-        .prog-label {
-            color: var(--ghost);
-        }
-
-        .prog-val {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--em);
-        }
-
-        .prog-track {
-            height: 5px;
-            background: var(--rim);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .prog-fill {
-            height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, var(--em-dark), var(--em), var(--amber));
-            transition: width 1.4s cubic-bezier(.4, 0, .2, 1);
-            box-shadow: 0 0 10px var(--em-glow);
-        }
-
-        /* membership control */
-        .mc-title {
-            font-family: var(--font-display);
-            font-size: 15px;
-            color: var(--white);
-            margin-bottom: 10px;
-            font-style: italic;
-        }
-
-        /* ═══════════════════════════════════════════════
-   SCROLLBAR
-═══════════════════════════════════════════════ */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--abyss);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--em-dark), var(--em));
-            border-radius: 2px;
-        }
-
-        ::selection {
-            background: rgba(0, 200, 150, 0.25);
-            color: var(--white);
-        }
-
-        /* ═══════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════ */
-        @media(max-width:1200px) {
-            .bento {
-                grid-template-columns: 300px 1fr;
-            }
-
-            .b-right1,
-            .b-right2,
-            .b-right3 {
-                grid-column: 2;
-            }
-        }
-        @media(max-width:900px) {
-
-    .hdr-pills,
-    .hdr-clock {
-        display: none;
-    }
-
-    .logo-sub {
-        display: none;
-    }
-
-    .logout-btn {
-        padding: 6px 14px;
-        font-size: 12px;
-    }
+/* Shimmer top bar */
+.hdr::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; right: 0; height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--sc-deep) 20%,
+    var(--sc) 40%,
+    var(--gd-warm) 55%,
+    var(--sc-mid) 70%,
+    transparent 100%);
+  animation: hScan 5s ease-in-out infinite;
 }
-    </style>
+@keyframes hScan { 0%{left:-100%} 100%{left:100%} }
+
+.hdr.scrolled {
+  background: rgba(250,248,245,0.97);
+  box-shadow: 0 4px 32px rgba(192,24,44,0.1), 0 1px 0 var(--b1);
+}
+
+/* Logo */
+.logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+
+.logo-gem {
+  width: 48px; height: 48px; border-radius: 15px; flex-shrink: 0;
+  position: relative; overflow: hidden;
+  background: linear-gradient(140deg, var(--sc-deep) 0%, var(--sc) 52%, var(--gd-bright) 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 22px rgba(192,24,44,0.38), inset 0 1px 0 rgba(255,255,255,0.22);
+  animation: gemPulse 4.5s ease-in-out infinite alternate;
+}
+.logo-gem::before {
+  content: '';
+  position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: conic-gradient(
+    rgba(255,255,255,0) 0deg,
+    rgba(255,255,255,0.12) 60deg,
+    rgba(255,255,255,0) 120deg
+  );
+  animation: gemSheen 3s linear infinite;
+}
+@keyframes gemSheen { to { transform: rotate(360deg); } }
+@keyframes gemPulse {
+  from { box-shadow: 0 4px 22px rgba(192,24,44,0.32); }
+  to   { box-shadow: 0 4px 36px rgba(192,24,44,0.58), 0 0 0 5px rgba(192,24,44,0.07); }
+}
+.logo-letter {
+  font-family: var(--fd); font-size: 22px; font-weight: 700; color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3); position: relative; z-index: 1;
+}
+
+.logo-text { display: flex; flex-direction: column; gap: 2px; }
+.logo-name {
+  font-family: var(--fd); font-size: 17px; font-weight: 700; letter-spacing: .3px; line-height: 1;
+  background: linear-gradient(120deg, var(--sc-deep) 0%, var(--sc) 40%, var(--gd) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.logo-sub {
+  font-family: var(--fm); font-size: 9px; letter-spacing: 3.5px;
+  text-transform: uppercase; color: var(--t3); line-height: 1;
+}
+
+.hdr-right { display: flex; align-items: center; gap: 10px; }
+
+.h-clock {
+  font-family: var(--fm); font-size: 12px; color: var(--sc);
+  background: var(--sc-soft); border: 1px solid var(--b1);
+  padding: 6px 15px; border-radius: var(--rp); letter-spacing: .5px;
+}
+
+.h-pills { display: flex; gap: 5px; }
+.h-pill {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  background: var(--sc-mist); border: 1px solid var(--b1);
+  transition: var(--t) var(--ease); cursor: default;
+}
+.h-pill:hover {
+  background: var(--sc-soft); border-color: var(--b2);
+  transform: translateY(-3px) rotate(-10deg) scale(1.18);
+}
+
+.h-logout {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--fb); font-size: 13px; font-weight: 600; color: var(--t2);
+  text-decoration: none; padding: 8px 20px; border-radius: var(--rp);
+  background: var(--sc-mist); border: 1px solid var(--b1);
+  transition: var(--t) var(--ease);
+}
+.h-logout:hover {
+  background: var(--sc-soft); border-color: var(--sc); color: var(--sc);
+  box-shadow: 0 4px 18px var(--sc-glow); transform: translateY(-1px);
+}
+
+/* ══ PAGE ══ */
+.page {
+  position: relative; z-index: 10;
+  max-width: 1700px; margin: 0 auto;
+  padding: 44px 36px 88px;
+}
+
+/* ══ WELCOME BAND ══ */
+.wb {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  margin-bottom: 40px; padding-bottom: 28px;
+  border-bottom: 1px solid var(--t5);
+  position: relative;
+}
+.wb::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0; width: 0; height: 2px;
+  background: linear-gradient(90deg, var(--sc), var(--gd-warm), transparent);
+  animation: wbLine 1.4s var(--spring) forwards .3s;
+}
+@keyframes wbLine { to { width: 55%; } }
+
+.wb-eyebrow {
+  font-family: var(--fm); font-size: 10px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--sc);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.wb-eyebrow::before { content:''; width:20px; height:1.5px; background:linear-gradient(90deg,transparent,var(--sc)); }
+
+.wb-title {
+  font-family: var(--fd);
+  font-size: clamp(28px, 3.8vw, 50px);
+  font-weight: 700; font-style: italic; color: var(--t1); line-height: 1.1;
+}
+.wb-title strong {
+  font-style: normal;
+  background: linear-gradient(130deg, var(--sc-deep) 0%, var(--sc-mid) 45%, var(--gd) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.wb-date {
+  font-family: var(--fm); font-size: 11px; letter-spacing: 1.5px; color: var(--t3);
+  background: var(--card); border: 1px solid var(--b1);
+  padding: 10px 22px; border-radius: var(--rp); box-shadow: var(--s1); flex-shrink: 0;
+}
+
+/* ══ GRID ══ */
+.grid {
+  display: grid;
+  grid-template-columns: 298px 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.g-profile  { grid-column: 1; grid-row: 1 / span 4; }
+.g-member   { grid-column: 2; grid-row: 1; }
+.g-info     { grid-column: 3; grid-row: 1; }
+.g-announce { grid-column: 2; grid-row: 2 / span 2; }
+.g-admin    { grid-column: 1 / -1; }
+
+/* ══ CARD ══ */
+.card {
+  background: var(--card);
+  border: 1px solid var(--b1);
+  border-radius: var(--r3);
+  padding: 28px;
+  position: relative; overflow: hidden;
+  box-shadow: var(--s2);
+  transition:
+    transform var(--t) var(--spring),
+    box-shadow var(--t) var(--ease),
+    border-color var(--t) var(--ease);
+  animation: cRise .6s var(--spring) both;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: var(--b2);
+  box-shadow: var(--s4);
+}
+
+/* Animated top accent on hover */
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg,
+    var(--sc-deep), var(--sc), var(--gd-bright), var(--sc-mid), var(--sc-deep));
+  background-size: 300% 100%;
+  border-radius: var(--r3) var(--r3) 0 0;
+  opacity: 0; transition: opacity var(--t);
+}
+.card:hover::before { opacity: 1; animation: accBar 2.5s linear infinite; }
+@keyframes accBar { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+
+/* Inner glow on hover */
+.card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(192,24,44,0.035) 0%, transparent 70%);
+  opacity: 0; transition: opacity var(--t); pointer-events: none;
+}
+.card:hover::after { opacity: 1; }
+
+/* Card variants */
+.card.v-gold { background: linear-gradient(148deg, #fffdf6 0%, #fef8e8 100%); border-color: var(--b3); }
+.card.v-gold:hover { border-color: var(--b4); }
+.card.v-gold::before { background: linear-gradient(90deg, #7d5a00, var(--gd-bright), var(--gd-warm), var(--gd-bright), #7d5a00); background-size: 300% 100%; }
+.card.v-gold:hover::before { animation: accBarGd 2.5s linear infinite; }
+@keyframes accBarGd { 0%{background-position:0%} 100%{background-position:300%} }
+.card.v-gold::after { background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(184,134,11,0.04) 0%, transparent 70%); }
+.card.v-rose { background: linear-gradient(148deg, #fff8f9 0%, #fff2f4 100%); }
+.card.v-sky  { background: linear-gradient(148deg, #f6fbff 0%, #eef6ff 100%); border-color: rgba(37,99,235,0.1); }
+
+/* Stagger */
+@keyframes cRise {
+  from { opacity: 0; transform: translateY(24px) scale(.982); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.card:nth-child(1){animation-delay:.05s} .card:nth-child(2){animation-delay:.11s}
+.card:nth-child(3){animation-delay:.17s} .card:nth-child(4){animation-delay:.23s}
+.card:nth-child(5){animation-delay:.29s} .card:nth-child(6){animation-delay:.35s}
+.card:nth-child(7){animation-delay:.41s}
+
+/* Watermark */
+.wm { position:absolute; bottom:-6px; right:2px; font-size:74px; opacity:.048; pointer-events:none; user-select:none; line-height:1; }
+
+/* Card header */
+.ch { display: flex; align-items: center; gap: 13px; margin-bottom: 22px; }
+.ch-icon {
+  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  background: var(--sc-soft); border: 1px solid var(--b1);
+}
+.card.v-gold .ch-icon { background: var(--gd-soft); border-color: var(--b3); }
+.card.v-sky  .ch-icon { background: rgba(37,99,235,0.07); border-color: rgba(37,99,235,0.18); }
+.ch-title {
+  font-family: var(--fd); font-size: 19px; font-weight: 700; font-style: italic;
+  color: var(--t1); line-height: 1.25;
+}
+
+.hr { height: 1px; border: none; margin: 18px 0; background: linear-gradient(90deg, transparent, var(--t5) 35%, var(--t5) 65%, transparent); }
+
+/* ══ PROFILE ══ */
+.pc { display: flex; flex-direction: column; align-items: center; text-align: center; }
+
+.av { position: relative; width: 124px; height: 124px; margin-bottom: 20px; }
+.av::before {
+  content: '';
+  position: absolute; inset: -5px; border-radius: 50%;
+  background: conic-gradient(
+    var(--sc)        0deg,
+    var(--gd-bright) 72deg,
+    #ffccd6          144deg,
+    var(--sc-mid)    216deg,
+    var(--gd-warm)   288deg,
+    var(--sc)        360deg);
+  animation: avSpin 8s linear infinite; z-index: 0;
+}
+.av::after { content:''; position:absolute; inset:-1px; border-radius:50%; background:var(--card); z-index:1; }
+@keyframes avSpin { to { transform: rotate(360deg); } }
+
+.av-img {
+  width: 116px; height: 116px; border-radius: 50%;
+  object-fit: cover; display: block; margin: 4px auto 0;
+  position: relative; z-index: 2;
+  border: 3px solid var(--card);
+  box-shadow: 0 8px 30px rgba(192,24,44,0.2);
+  transition: transform var(--t) var(--spring);
+}
+.av-img:hover { transform: scale(1.07); }
+
+.av-dot {
+  position: absolute; bottom: 9px; right: 9px; z-index: 3;
+  width: 17px; height: 17px; border-radius: 50%;
+  background: #16a34a; border: 3px solid var(--card);
+  animation: dotAura 2.4s ease-in-out infinite;
+}
+@keyframes dotAura {
+  0%   { box-shadow: 0 0 0 0 rgba(22,163,74,0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(22,163,74,0); }
+  100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+}
+
+.pname {
+  font-family: var(--fd); font-size: 23px; font-weight: 700;
+  color: var(--t1); margin-bottom: 10px; letter-spacing: .2px;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 16px; border-radius: var(--rp);
+  font-family: var(--fm); font-size: 10px; font-weight: 500;
+  letter-spacing: 1.8px; text-transform: uppercase;
+}
+.badge.member  { background: rgba(0,0,0,0.04); color: var(--t3); border: 1px solid var(--t5); }
+.badge.section { background: rgba(37,99,235,0.07); color: #1d4ed8; border: 1px solid rgba(37,99,235,0.2); }
+.badge.admin   { background: var(--sc-soft); color: var(--sc); border: 1px solid var(--b2); box-shadow: 0 0 16px rgba(192,24,44,0.14); }
+.badge.super   {
+  background: linear-gradient(135deg, rgba(192,24,44,0.12), rgba(184,134,11,0.16));
+  color: var(--gd); border: 1px solid rgba(184,134,11,0.38);
+  box-shadow: 0 0 20px rgba(184,134,11,0.22);
+  animation: superPulse 3s ease-in-out infinite alternate;
+}
+@keyframes superPulse {
+  from { box-shadow: 0 0 18px rgba(184,134,11,0.2); }
+  to   { box-shadow: 0 0 36px rgba(184,134,11,0.52), 0 0 54px rgba(192,24,44,0.1); }
+}
+
+/* Info rows */
+.irows { list-style: none; }
+.irows li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; gap: 12px;
+  border-bottom: 1px solid rgba(192,24,44,0.06);
+}
+.irows li:last-child { border-bottom: none; }
+.ir-l { font-size: 12.5px; color: var(--t3); font-weight: 400; flex-shrink: 0; }
+.ir-v { font-size: 13px; color: var(--t1); font-weight: 600; text-align: right; word-break: break-all; }
+
+/* ══ BUTTONS ══ */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: var(--r1);
+  font-family: var(--fb); font-size: 13px; font-weight: 700;
+  border: none; cursor: pointer; text-decoration: none;
+  white-space: nowrap; position: relative; overflow: hidden;
+  transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
+  letter-spacing: .2px;
+}
+.btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(108deg, transparent 20%, rgba(255,255,255,0.3) 50%, transparent 80%);
+  transform: translateX(-100%); transition: transform .55s;
+}
+.btn:hover::before  { transform: translateX(100%); }
+.btn:hover          { transform: translateY(-2px); }
+.btn:active         { transform: translateY(0) scale(.97); }
+
+.btn.sc   { background: linear-gradient(135deg, var(--sc-deep) 0%, var(--sc) 100%);   color:#fff; box-shadow: 0 4px 18px rgba(192,24,44,0.32); }
+.btn.sc:hover   { box-shadow: 0 8px 28px rgba(192,24,44,0.5); }
+.btn.gd   { background: linear-gradient(135deg, #7d5a00 0%, var(--gd-bright) 100%);  color:#fff; box-shadow: 0 4px 18px rgba(184,134,11,0.3); }
+.btn.gd:hover   { box-shadow: 0 8px 28px rgba(184,134,11,0.5); }
+.btn.gr   { background: linear-gradient(135deg, #064e3b 0%, #16a34a 100%);            color:#fff; box-shadow: 0 4px 18px rgba(22,163,74,0.28); }
+.btn.gr:hover   { box-shadow: 0 8px 28px rgba(22,163,74,0.46); }
+.btn.red  { background: linear-gradient(135deg, #7f1d1d 0%, #ef4444 100%);            color:#fff; box-shadow: 0 4px 18px rgba(239,68,68,0.28); }
+.btn.red:hover  { box-shadow: 0 8px 28px rgba(239,68,68,0.46); }
+.btn.wr   { background: linear-gradient(135deg, #78350f 0%, #f59e0b 100%);            color:#fff; box-shadow: 0 4px 18px rgba(245,158,11,0.28); }
+.btn.wr:hover   { box-shadow: 0 8px 28px rgba(245,158,11,0.46); }
+.btn.ghost { background: var(--sc-mist); color: var(--t2); border: 1px solid var(--b1); }
+.btn.ghost:hover { background: var(--sc-soft); border-color: var(--b2); color: var(--sc); }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+/* ══ METRIC BLOCKS ══ */
+.mb {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 11px 14px; border-radius: var(--r1);
+  background: var(--bg2); border: 1px solid var(--b1);
+  margin-bottom: 8px;
+  transition: var(--t) var(--ease);
+}
+.mb:hover { background: var(--sc-mist); border-color: var(--b2); }
+.mb .mb-l {
+  font-family: var(--fm); font-size: 9px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--sc);
+}
+.mb .mb-v { font-size: 14px; color: var(--t2); font-weight: 500; }
+
+/* ══ DATE PAIR ══ */
+.dpair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.dbox {
+  background: var(--bg2); border: 1px solid var(--b1);
+  border-radius: var(--r1); padding: 14px 16px; transition: var(--t) var(--ease);
+}
+.dbox:hover { border-color: var(--b2); background: var(--sc-mist); }
+.dbox .dl { font-family: var(--fm); font-size: 9px; color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+.dbox .dv { font-family: var(--fd); font-size: 17px; font-weight: 700; color: var(--t1); }
+
+/* ══ STATUS PILL ══ */
+.spill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 22px; border-radius: var(--rp);
+  font-family: var(--fm); font-size: 11.5px; font-weight: 500;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.spill.ok  { background: rgba(22,163,74,0.09); color: #16a34a; border: 1px solid rgba(22,163,74,0.28); }
+.spill.exp { background: rgba(220,38,38,0.08); color: #dc2626; border: 1px solid rgba(220,38,38,0.26); animation: expFlash 1.9s ease-in-out infinite; }
+@keyframes expFlash { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 16px rgba(220,38,38,0.28)} }
+
+/* Renewal alert */
+.ral {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px; border-radius: var(--r1);
+  font-size: 13.5px; margin-top: 14px;
+}
+.ral.warn { background: rgba(245,158,11,0.08); border-left: 3px solid #f59e0b; color: #92400e; }
+.ral.ok   { background: rgba(22,163,74,0.07);  border-left: 3px solid #16a34a; color: #065f46; }
+
+/* ══ ANNOUNCEMENTS ══ */
+.ann {
+  padding: 15px 16px; border-radius: var(--r1);
+  background: var(--bg2); border-left: 3px solid var(--sc);
+  margin-bottom: 10px; transition: var(--t) var(--ease);
+  position: relative; overflow: hidden;
+}
+.ann::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(192,24,44,0.03), transparent 60%); pointer-events: none; }
+.ann:hover { background: rgba(192,24,44,0.05); transform: translateX(5px); }
+.ann h4 { font-family: var(--fd); font-size: 15px; font-style: italic; color: var(--sc); margin-bottom: 5px; }
+.ann p  { font-size: 13px; color: var(--t2); line-height: 1.65; }
+
+.ann-empty { text-align: center; padding: 44px 20px; color: var(--t4); }
+.ae-icon   { font-size: 46px; margin-bottom: 14px; opacity: .38; display: block; }
+
+/* ══ STAT BOX ══ */
+.srow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 16px; }
+.sbox {
+  border-radius: var(--r1); padding: 18px 14px;
+  text-align: center; font-size: 12.5px; font-weight: 600;
+  background: var(--bg2); border: 1px solid var(--b1);
+  position: relative; overflow: hidden;
+  transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
+}
+.sbox:hover { transform: scale(1.05) translateY(-3px); box-shadow: var(--s3); }
+.sbox::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  border-radius: 0 0 var(--r1) var(--r1);
+}
+.snum {
+  font-family: var(--fd); font-size: 38px; font-weight: 700;
+  display: block; line-height: 1.1; margin-bottom: 4px;
+}
+
+.s-sc  { color: var(--sc); }
+.s-sc  .snum { background: linear-gradient(135deg, var(--sc-deep), var(--sc-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.s-sc::after  { background: linear-gradient(90deg, var(--sc-deep), var(--sc-mid)); }
+
+.s-gr  { color: #16a34a; }
+.s-gr  .snum { background: linear-gradient(135deg, #065f46, #22c55e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.s-gr::after  { background: linear-gradient(90deg, #065f46, #22c55e); }
+
+.s-gd  { color: var(--gd); }
+.s-gd  .snum { background: linear-gradient(135deg, #7d5a00, var(--gd-bright)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.s-gd::after  { background: linear-gradient(90deg, #7d5a00, var(--gd-bright)); }
+
+.s-red { color: #dc2626; }
+.s-red .snum { background: linear-gradient(135deg, #7f1d1d, #f87171); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.s-red::after { background: linear-gradient(90deg, #7f1d1d, #f87171); }
+
+/* Sec label */
+.slbl {
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--fm); font-size: 9.5px; font-weight: 500;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--t3);
+  margin: 16px 0 9px;
+}
+.slbl::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(192,24,44,0.18), transparent); }
+
+/* Progress */
+.prog { margin-bottom: 16px; }
+.prog-head { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 13px; }
+.prog-head .pl { color: var(--t3); }
+.prog-head .pv { font-family: var(--fm); font-size: 12px; color: var(--sc); }
+.prog-track { height: 7px; background: rgba(192,24,44,0.1); border-radius: 4px; overflow: hidden; }
+.prog-fill  {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--sc-deep), var(--sc), var(--gd-warm));
+  transition: width 1.6s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 14px rgba(192,24,44,0.3);
+}
+
+/* Admin btn grid */
+.abtns { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 9px; margin-top: 6px; }
+.abtns .btn { justify-content: center; font-size: 12.5px; }
+
+.mc-lbl { font-family: var(--fd); font-size: 15px; font-style: italic; color: var(--t1); margin-bottom: 12px; }
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--sc-deep), var(--sc)); border-radius: 3px; }
+::selection { background: rgba(192,24,44,0.14); color: var(--t1); }
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 1280px) {
+  .grid { grid-template-columns: 278px 1fr; }
+  .g-info, .g-announce { grid-column: 2; }
+  .g-profile { grid-row: 1 / span 3; }
+  .g-announce { grid-row: 3; }
+  .g-admin { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .grid { display: flex; flex-direction: column; gap: 16px; }
+  .page { padding: 18px 16px 60px; }
+  .hdr  { padding: 0 18px; height: 64px; }
+  .h-pills, .h-clock { display: none; }
+  .wb-title { font-size: 26px; }
+  .srow  { grid-template-columns: 1fr 1fr; }
+  .abtns { grid-template-columns: 1fr 1fr; }
+  .dpair { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 520px) {
+  .hdr  { height: 60px; }
+  .h-logout { padding: 7px 13px; font-size: 12px; }
+  .abtns { grid-template-columns: 1fr; }
+  .btn-row .btn { font-size: 12px; padding: 8px 12px; }
+  .snum { font-size: 30px; }
+  .card { padding: 20px; }
+  .page { padding: 14px 12px 52px; }
+}
+</style>
 </head>
 
 <body>
+<div class="bg-mesh"></div>
+<div class="bg-weave"></div>
+<canvas id="canvas"></canvas>
 
-    <div class="bg-layer"></div>
-    <div class="bg-grid"></div>
-    <div class="bg-grain"></div>
-    <canvas id="fx"></canvas>
+<!-- ════════════════ HEADER ════════════════ -->
+<header class="hdr" id="hdr">
+  <a class="logo" href="/">
+    <div class="logo-gem"><span class="logo-letter">A</span></div>
+    <div class="logo-text">
+      <span class="logo-name">AASC Alampady</span>
+      <span class="logo-sub">Member Portal</span>
+    </div>
+  </a>
 
-    <!-- ════════════ HEADER ════════════ -->
-    <header class="hdr" id="hdr">
-        <a class="logo" href="/">
-            <div class="logo-gem"><span class="logo-gem-inner">A</span></div>
-            <div class="logo-txt">
-                <span class="logo-name">AASC Alampady</span>
-                <span class="logo-sub">Member Portal</span>
-            </div>
-        </a>
+  <div class="hdr-right">
+    <div class="h-pills">
+      <div class="h-pill" title="Sports">🏆</div>
+      <div class="h-pill" title="Arts">🎭</div>
+      <div class="h-pill" title="Charity">🤝</div>
+    </div>
+    <div class="h-clock" id="live-clock">—</div>
+    <a href="{{ url_for('portal.logout') }}" class="h-logout">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </a>
+  </div>
+</header>
 
-        <div class="hdr-right">
-            <div class="hdr-pills">
-                <div class="hdr-pill" title="Sports">🏆</div>
-                <div class="hdr-pill" title="Arts">🎭</div>
-                <div class="hdr-pill" title="Charity">🤝</div>
-            </div>
-            <div class="hdr-clock" id="live-clock">—</div>
-            <a href="{{ url_for('portal.logout') }}" class="logout-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <polyline points="16 17 21 12 16 7" />
-                    <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
-                Logout
-            </a>
+<!-- ════════════════ PAGE ════════════════ -->
+<div class="page">
+
+  <!-- Welcome Band -->
+  <div class="wb">
+    <div>
+      <div class="wb-eyebrow">Member Dashboard</div>
+      <div class="wb-title">Welcome back, <strong>{{ user.name.split()[0] }}</strong> 👋</div>
+    </div>
+    <div class="wb-date" id="live-date">—</div>
+  </div>
+
+  <!-- Dashboard Grid -->
+  <div class="grid">
+
+    <!-- ── PROFILE ── -->
+    <div class="card g-profile">
+      <div class="wm">🌹</div>
+
+      <div class="pc">
+        <div class="av">
+          {% if user.photo %}
+          <img src="{{ user.photo }}" alt="{{ user.name }}" class="av-img">
+          {% else %}
+          <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="{{ user.name }}" class="av-img">
+          {% endif %}
+          <div class="av-dot"></div>
         </div>
-    </header>
 
-    <!-- ════════════ PAGE ════════════ -->
-    <div class="pg">
+        <div class="pname">{{ user.name }}</div>
 
-        <!-- Welcome strip -->
-        <div class="welcome">
-            <div class="welcome-left">
-                <div class="welcome-hey">// member dashboard</div>
-                <div class="welcome-name">Welcome, <em>{{ user.name.split()[0] }}</em> 👋</div>
-            </div>
-            <div class="welcome-date" id="live-date">—</div>
+        {% if is_super_admin %}
+        <span class="badge super">⭐ Super Admin</span>
+        {% elif is_admin %}
+        <span class="badge admin">🛡️ Admin</span>
+        {% elif is_section_admin %}
+        <span class="badge section">📋 Section Admin</span>
+        {% else %}
+        <span class="badge member">👤 Member</span>
+        {% endif %}
+      </div>
+
+      <div class="hr"></div>
+
+      <ul class="irows">
+        <li><span class="ir-l">Member ID</span><span class="ir-v">{{ user.membership_id }}</span></li>
+        <li><span class="ir-l">Phone</span><span class="ir-v">{{ user.phone }}</span></li>
+        <li><span class="ir-l">Nativity</span><span class="ir-v">{{ user.nativity }}</span></li>
+      </ul>
+
+      <div class="hr"></div>
+
+      <div class="btn-row">
+        <a href="{{ url_for('portal.portal_events') }}"   class="btn sc">📅 Events</a>
+        <a href="{{ url_for('portal.membership_card') }}"  class="btn sc">🧾 Card</a>
+        <a href="{{ url_for('portal.complete_profile') }}" class="btn ghost">📷 Update</a>
+        <a href="{{ url_for('portal.change_password') }}"  class="btn wr">🔐 Password</a>
+        <a href="{{ url_for('portal.my_committees') }}"    class="btn ghost">📂 Committees</a>
+      </div>
+    </div>
+
+    <!-- ── MEMBERSHIP ── -->
+    <div class="card v-gold g-member">
+      <div class="wm">🪪</div>
+      <div class="ch">
+        <div class="ch-icon">🪪</div>
+        <div class="ch-title">Membership Status</div>
+      </div>
+
+      <div class="dpair">
+        <div class="dbox"><div class="dl">Start Date</div><div class="dv">{{ user.membership_start }}</div></div>
+        <div class="dbox"><div class="dl">End Date</div><div class="dv">{{ user.membership_end }}</div></div>
+      </div>
+
+      {% if expired %}
+      <span class="spill exp">❌ Expired</span>
+      {% else %}
+      <span class="spill ok">✅ Active</span>
+      {% endif %}
+
+      {% if renewal_enabled %}
+        {% if renewal_status == "PENDING" %}
+        <div class="ral warn"><span>⏳</span><span>Renewal request pending approval</span></div>
+        {% elif renewal_status == "APPROVED" %}
+        <div style="margin-top:14px"><a href="{{ url_for('portal.view_receipt') }}" class="btn gr">📄 Download Receipt</a></div>
+        {% else %}
+        <div style="margin-top:14px"><a href="{{ url_for('portal.renew') }}" class="btn gd">🔄 Renew Membership</a></div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <!-- ── ADDITIONAL INFO ── -->
+    <div class="card g-info">
+      <div class="wm">📋</div>
+      <div class="ch">
+        <div class="ch-icon">ℹ️</div>
+        <div class="ch-title">Additional Info</div>
+      </div>
+
+      <div class="mb"><span class="mb-l">Address</span><span class="mb-v">{{ user.address if user.address else "—" }}</span></div>
+      <div class="mb"><span class="mb-l">Email</span><span class="mb-v">{{ user.email if user.email else "—" }}</span></div>
+      <div class="mb"><span class="mb-l">WhatsApp</span><span class="mb-v">{{ user.whatsapp if user.whatsapp else "—" }}</span></div>
+      <div class="mb"><span class="mb-l">Date of Birth</span><span class="mb-v">{{ user.dob if user.dob else "—" }}</span></div>
+      <div class="mb"><span class="mb-l">Age</span><span class="mb-v">{% if user.dob %}{{ calculate_age(user.dob) }}{% else %}—{% endif %}</span></div>
+      <div class="mb"><span class="mb-l">Blood Group</span><span class="mb-v">{{ user.blood_group if user.blood_group else "—" }}</span></div>
+      <div class="mb"><span class="mb-l">Interests</span><span class="mb-v">{{ user.interests if user.interests else "—" }}</span></div>
+
+      <div class="hr"></div>
+      <a href="{{ url_for('portal.complete_profile') }}" class="btn sc">✏️ Edit Information</a>
+    </div>
+
+    <!-- ── ANNOUNCEMENTS ── -->
+    <div class="card g-announce">
+      <div class="wm">📢</div>
+      <div class="ch">
+        <div class="ch-icon">📢</div>
+        <div class="ch-title">Announcements</div>
+      </div>
+
+      {% for a in announcements %}
+      <div class="ann"><h4>{{ a.title }}</h4><p>{{ a.message }}</p></div>
+      {% else %}
+      <div class="ann-empty"><span class="ae-icon">📭</span><p>No announcements at this time</p></div>
+      {% endfor %}
+    </div>
+
+    <!-- ── ADMIN PANEL ── -->
+    {% if is_admin or is_super_admin or is_section_admin %}
+    <div class="card v-rose g-admin">
+      <div class="wm">🛡️</div>
+      <div class="ch">
+        <div class="ch-icon" style="background:rgba(192,24,44,0.1);border-color:rgba(192,24,44,0.22)">⚙️</div>
+        <div class="ch-title">Admin Panel</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:36px;align-items:start">
+
+        <!-- Stats -->
+        <div>
+          <div class="slbl">Member Statistics</div>
+          <div class="srow">
+            <div class="sbox s-sc"><span class="snum">{{ total_members }}</span>Total</div>
+            <div class="sbox s-gr"><span class="snum">{{ active_members }}</span>Active</div>
+            <div class="sbox s-red"><span class="snum">{{ expired_members }}</span>Expired</div>
+          </div>
+
+          <div class="prog">
+            <div class="prog-head"><span class="pl">Active Ratio</span><span class="pv" id="ratio-txt">—</span></div>
+            <div class="prog-track"><div class="prog-fill" id="ratio-bar" style="width:0%"></div></div>
+          </div>
+
+          <div class="slbl">Medical Inventory</div>
+          <div class="srow">
+            <div class="sbox s-sc"><span class="snum">{{ total_medical_items }}</span>Total</div>
+            <div class="sbox s-gr"><span class="snum">{{ available_medical }}</span>Available</div>
+            <div class="sbox s-gd"><span class="snum">{{ issued_medical }}</span>Issued</div>
+            <div class="sbox s-red"><span class="snum">{{ overdue_medical }}</span>Overdue</div>
+          </div>
         </div>
 
-       <!-- Bento grid -->
-<div class="bento">
+        <!-- Actions -->
+        <div>
+          <div class="slbl">Quick Actions</div>
+          <div class="abtns">
+            <a href="{{ url_for('portal.admin_members') }}"       class="btn sc">👥 Members</a>
+            <a href="{{ url_for('portal.admin_add_member') }}"    class="btn sc">➕ Add Member</a>
+            <a href="{{ url_for('portal.admin_announcements') }}" class="btn sc">📢 Announce</a>
+            <a href="{{ url_for('portal.admin_renewals') }}"      class="btn sc">💳 Renewals</a>
+            <a href="{{ url_for('portal.admin_events') }}"        class="btn sc">📅 Events</a>
+            <a href="{{ url_for('portal.admin_analytics') }}"     class="btn sc">📊 Analytics</a>
+            <a href="{{ url_for('portal.blood_donors') }}"        class="btn red">🚨 Blood Panel</a>
+            <a href="{{ url_for('portal.medical_dashboard') }}"   class="btn gr">🏥 Medical</a>
+          </div>
 
-    <!-- ═══ LEFT: Profile (tall) ═══ -->
-    <div class="card b-left">
-        <div class="card-wm">🏅</div>
+          {% if is_super_admin %}
+          <div class="slbl" style="margin-top:20px">Super Admin Tools</div>
+          <div class="abtns">
+            <a href="{{ url_for('portal.admin_dashboard') }}"  class="btn wr">🖥️ Full Dashboard</a>
+            <a href="{{ url_for('portal.admin_committees') }}" class="btn wr">📂 All Committees</a>
+            <a href="{{ url_for('portal.create_committee') }}" class="btn wr">➕ Create Committee</a>
+            <a href="{{ url_for('portal.manage_admins') }}"    class="btn wr">🛡️ Manage Admins</a>
+          </div>
 
-        <div class="prof-top">
-            <div class="av-wrap">
-
-                {% if user.photo %}
-                    <img src="{{ user.photo }}" 
-                         alt="{{ user.name }}" 
-                         class="id-photo">
-                {% else %}
-                    <img src="{{ url_for('static', filename='default_avatar.png') }}" 
-                         alt="{{ user.name }}" 
-                         class="id-photo">
-                {% endif %}
-
-                <div class="av-dot"></div>
-            </div>
-
-            <div class="prof-name">{{ user.name }}</div>
-
-            {% if is_super_admin %}
-                <span class="badge super">⭐ Super Admin</span>
-            {% elif is_admin %}
-                <span class="badge admin">🛡️ Admin</span>
-            {% elif is_section_admin %}
-                <span class="badge section">📋 Section Admin</span>
+          {% if is_admin or is_super_admin %}
+          <div class="hr" style="margin-top:20px"></div>
+          <div class="mc-lbl">🔑 Membership Renewal Control</div>
+          <form method="POST" action="{{ url_for('portal.toggle_renewal') }}" style="display:inline">
+            <input type="hidden" name="value" value="{{ '0' if renewal_enabled else '1' }}">
+            {% if renewal_enabled %}
+            <button type="submit" class="btn red">🔒 Disable Renewal</button>
             {% else %}
-                <span class="badge member">👤 Member</span>
+            <button type="submit" class="btn gr">🔓 Enable Renewal</button>
             {% endif %}
-            
-                <hr class="rule">
+          </form>
+          {% endif %}
+          {% endif %}
+        </div>
 
-                <ul class="info-list">
-                    <li><span class="i-lbl">Member ID</span><span class="i-val">{{ user.membership_id }}</span></li>
-                    <li><span class="i-lbl">Phone</span><span class="i-val">{{ user.phone }}</span></li>
-                    <li><span class="i-lbl">Nativity</span><span class="i-val">{{ user.nativity }}</span></li>
-                </ul>
+      </div>
+    </div>
+    {% endif %}
 
-                <hr class="rule">
+  </div><!-- /.grid -->
+</div><!-- /.page -->
 
-                <div class="btn-group">
-                    <a href="{{ url_for('portal.portal_events') }}" class="btn primary">📅 Events</a>
-                    <a href="{{ url_for('portal.membership_card') }}" class="btn primary">🧾 Card</a>
-                    <a href="{{ url_for('portal.complete_profile') }}" class="btn ghost">📷 Update</a>
-                    <a href="{{ url_for('portal.change_password') }}" class="btn warning">🔐 Password</a>
-                    <a href="{{ url_for('portal.my_committees') }}" class="btn ghost">📂 Committees</a>
-                </div>
-            </div>
+<script>
+/* ── Clock ── */
+function tick() {
+  const n = new Date();
+  const t = n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  const d = n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+  const ce = document.getElementById('live-clock');
+  const de = document.getElementById('live-date');
+  if(ce) ce.textContent = t;
+  if(de) de.textContent = d;
+}
+tick(); setInterval(tick, 1000);
 
-            <!-- ═══ MID-TOP: Membership ═══ -->
-            <div class="card c-amber b-mid1">
-                <div class="card-wm">🪪</div>
-                <div class="c-title">
-                    <div class="c-title-ico">🪪</div>
-                    Membership Status
-                </div>
+/* ── Header scroll ── */
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 30), {passive:true});
 
-                <div class="date-grid">
-                    <div class="date-box">
-                        <div class="d-label">Start Date</div>
-                        <div class="d-val">{{ user.membership_start }}</div>
-                    </div>
-                    <div class="date-box">
-                        <div class="d-label">End Date</div>
-                        <div class="d-val">{{ user.membership_end }}</div>
-                    </div>
-                </div>
+/* ── Progress bar ── */
+(function() {
+  const total  = parseInt('{{ total_members }}')  || 0;
+  const active = parseInt('{{ active_members }}') || 0;
+  const pct    = total > 0 ? Math.round((active / total) * 100) : 0;
+  const bar    = document.getElementById('ratio-bar');
+  const txt    = document.getElementById('ratio-txt');
+  if (bar) setTimeout(() => { bar.style.width = pct + '%'; }, 500);
+  if (txt) txt.textContent = pct + '%';
+})();
 
-                {% if expired %}
-                <span class="status-pill expired">❌ Expired</span>
-                {% else %}
-                <span class="status-pill active">✅ Active</span>
-                {% endif %}
+/* ── Floating Rose & Emoji Canvas ── */
+(function() {
+  const cv = document.getElementById('canvas');
+  if (!cv) return;
+  const cx = cv.getContext('2d');
+  let W, H;
+  const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
+  window.addEventListener('resize', resize, {passive:true}); resize();
 
-                {% if renewal_enabled %}
-                {% if renewal_status == "PENDING" %}
-                <div class="metric orange" style="margin-top:14px;">
-                    <span class="metric-icon">⏳</span>
-                    <span>Renewal request is pending approval</span>
-                </div>
-                {% elif renewal_status == "APPROVED" %}
-                <div style="margin-top:14px;">
-                    <a href="{{ url_for('portal.view_receipt') }}" class="btn success">📄 Download Receipt</a>
-                </div>
-                {% else %}
-                <div style="margin-top:14px;">
-                    <a href="{{ url_for('portal.renew') }}" class="btn gold">🔄 Renew Membership</a>
-                </div>
-                {% endif %}
-                {% endif %}
-            </div>
+  const mob = innerWidth < 600;
 
-            <!-- ═══ RIGHT-TOP: Additional Info ═══ -->
-            <div class="card b-right1">
-                <div class="card-wm">📋</div>
-                <div class="c-title">
-                    <div class="c-title-ico">ℹ️</div>
-                    Additional Info
-                </div>
+  /* Emoji pool */
+  const EMOJIS = [
+    '🌹','🌸','🌺','🌷','💐','🥀',
+    '🏆','🥇','🏅','🎖️','🎗️',
+    '🎭','🎨','🎵','🎪','🎬','🩰','🎺',
+    '🤝','❤️','💝','🤲','🕊️','🙏',
+    '⚽','🏸','🥊','🎯','🏊','🏋️'
+  ];
 
-                <div class="i-metric"><b>Address</b><span>{{ user.address if user.address else "—" }}</span></div>
-                <div class="i-metric"><b>Email</b><span>{{ user.email if user.email else "—" }}</span></div>
-                <div class="i-metric"><b>WhatsApp</b><span>{{ user.whatsapp if user.whatsapp else "—" }}</span></div>
-                <div class="i-metric"><b>Date of Birth</b><span>{{ user.dob if user.dob else "—" }}</span></div>
-                <div class="i-metric"><b>Age</b><span>{% if user.dob %}{{ calculate_age(user.dob) }}{% else %}—{% endif
-                        %}</span></div>
-                <div class="i-metric"><b>Blood Group</b><span>{{ user.blood_group if user.blood_group else "—" }}</span>
-                </div>
-                <div class="i-metric"><b>Interests</b><span>{{ user.interests if user.interests else "—" }}</span></div>
+  /* Stickers */
+  const NS = mob ? 10 : 22;
+  const stickers = Array.from({length: NS}, () => ({
+    e:   EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
+    x:   Math.random() * innerWidth,
+    y:   Math.random() * innerHeight,
+    sz:  mob ? (10 + Math.random() * 14) : (12 + Math.random() * 20),
+    vx:  (Math.random() - .5) * .18,
+    vy:  -(Math.random() * .2 + .05),
+    rot: Math.random() * Math.PI * 2,
+    rs:  (Math.random() - .5) * .009,
+    a:   Math.random() * .13 + .04,
+    ph:  Math.random() * Math.PI * 2,
+    ps:  Math.random() * .007 + .003,
+  }));
 
-                <hr class="rule">
-                <a href="{{ url_for('portal.complete_profile') }}" class="btn primary">✏️ Edit Information</a>
-            </div>
+  /* Petals */
+  const NP = mob ? 24 : 50;
+  const PALS = [
+    [192,24,44],[216,32,64],[255,172,192],
+    [184,134,11],[228,184,60],[255,220,140],
+    [232,96,128],[255,148,168]
+  ];
+  const petals = Array.from({length: NP}, () => {
+    const c = PALS[Math.floor(Math.random() * PALS.length)];
+    return {
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      rx: Math.random() * 4.5 + 2,
+      ry: Math.random() * 2.5 + 1.2,
+      vx: (Math.random() - .5) * .15,
+      vy: -(Math.random() * .22 + .04),
+      rot: Math.random() * Math.PI * 2,
+      rs:  (Math.random() - .5) * .022,
+      col: c,
+      a:   Math.random() * .09 + .03,
+      ph:  Math.random() * Math.PI * 2,
+      ps:  Math.random() * .009 + .004,
+    };
+  });
 
-            <!-- ═══ MID-BOT: Announcements ═══ -->
-            <div class="card b-mid2" style="grid-column:2; grid-row: 2 / span 2;">
-                <div class="card-wm">📢</div>
-                <div class="c-title">
-                    <div class="c-title-ico">📢</div>
-                    Announcements
-                </div>
+  function draw() {
+    cx.clearRect(0, 0, W, H);
 
-                {% for a in announcements %}
-                <div class="ann">
-                    <h4>{{ a.title }}</h4>
-                    <p>{{ a.message }}</p>
-                </div>
-                {% else %}
-                <div class="empty">
-                    <div class="empty-ico">📭</div>
-                    <p>No announcements at this time</p>
-                </div>
-                {% endfor %}
-            </div>
+    /* petals */
+    petals.forEach(p => {
+      p.ph += p.ps; p.rot += p.rs;
+      p.x += p.vx + Math.sin(p.ph * .6) * .22;
+      p.y += p.vy;
+      if (p.y < -14) { p.y = H + 14; p.x = Math.random() * W; }
+      if (p.x < -14)  p.x = W + 14;
+      if (p.x > W+14) p.x = -14;
+      const pulse = .5 + .5 * Math.sin(p.ph);
+      cx.save();
+      cx.translate(p.x, p.y); cx.rotate(p.rot);
+      cx.beginPath();
+      cx.ellipse(0, 0, p.rx * 1.9, p.ry, 0, 0, Math.PI * 2);
+      cx.fillStyle = `rgba(${p.col[0]},${p.col[1]},${p.col[2]},${p.a * pulse})`;
+      cx.fill();
+      cx.restore();
+    });
 
-            <!-- ═══ FULL: Admin Panel ═══ -->
-            {% if is_admin or is_super_admin or is_section_admin %}
-            <div class="card b-full c-sky">
-                <div class="card-wm">🛡️</div>
-                <div class="c-title">
-                    <div class="c-title-ico"
-                        style="background:rgba(56,182,255,0.1);border-color:rgba(56,182,255,0.25);">⚙️</div>
-                    Admin Panel
-                </div>
+    /* stickers */
+    stickers.forEach(s => {
+      s.ph += s.ps; s.rot += s.rs;
+      s.x += s.vx + Math.sin(s.ph * .45) * .28;
+      s.y += s.vy;
+      if (s.y < -44) { s.y = H + 44; s.x = Math.random() * W; }
+      if (s.x < -44)  s.x = W + 44;
+      if (s.x > W+44) s.x = -44;
+      const pulse = .6 + .4 * Math.sin(s.ph);
+      cx.save();
+      cx.globalAlpha = s.a * pulse;
+      cx.translate(s.x, s.y); cx.rotate(s.rot);
+      cx.font = s.sz + 'px serif';
+      cx.textAlign = 'center'; cx.textBaseline = 'middle';
+      cx.fillText(s.e, 0, 0);
+      cx.restore();
+    });
 
-                <div
-                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:start;">
-
-                    <!-- Stats column -->
-                    <div>
-                        <div class="sec-lbl">Member Statistics</div>
-                        <div class="stat-grid">
-                            <div class="stat-chip sc-total"><span class="stat-num">{{ total_members }}</span>Total
-                                Members</div>
-                            <div class="stat-chip sc-active"><span class="stat-num">{{ active_members }}</span>Active
-                            </div>
-                            <div class="stat-chip sc-expired"><span class="stat-num">{{ expired_members }}</span>Expired
-                            </div>
-                        </div>
-                        <div class="prog-row">
-                            <div class="prog-meta">
-                                <span class="prog-label">Active Ratio</span>
-                                <span class="prog-val" id="ratio-txt">—</span>
-                            </div>
-                            <div class="prog-track">
-                                <div class="prog-fill" id="ratio-bar" style="width:0%"></div>
-                            </div>
-                        </div>
-
-                        <div class="sec-lbl">Medical Inventory</div>
-                        <div class="stat-grid">
-                            <div class="stat-chip sc-total"><span class="stat-num">{{ total_medical_items }}</span>Total
-                                Items</div>
-                            <div class="stat-chip sc-active"><span class="stat-num">{{ available_medical
-                                    }}</span>Available</div>
-                            <div class="stat-chip sc-orange"><span class="stat-num">{{ issued_medical }}</span>Issued
-                            </div>
-                            <div class="stat-chip sc-expired"><span class="stat-num">{{ overdue_medical }}</span>Overdue
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Actions column -->
-                    <div>
-                        <div class="sec-lbl">Quick Actions</div>
-                        <div class="adm-btns">
-                            <a href="{{ url_for('portal.admin_members') }}" class="btn primary">👥 Members</a>
-                            <a href="{{ url_for('portal.admin_add_member') }}" class="btn primary">➕ Add Member</a>
-                            <a href="{{ url_for('portal.admin_announcements') }}" class="btn primary">📢 Announce</a>
-                            <a href="{{ url_for('portal.admin_renewals') }}" class="btn primary">💳 Renewals</a>
-                            <a href="{{ url_for('portal.admin_events') }}" class="btn primary">📅 Events</a>
-                            <a href="{{ url_for('portal.admin_analytics') }}" class="btn primary">📊 Analytics</a>
-                            <a href="{{ url_for('portal.blood_donors') }}" class="btn danger">🚨 Blood Panel</a>
-                            <a href="{{ url_for('portal.medical_dashboard') }}" class="btn success">🏥 Medical</a>
-                        </div>
-
-                        {% if is_super_admin %}
-                        <div class="sec-lbl" style="margin-top:20px;">Super Admin Tools</div>
-                        <div class="adm-btns">
-                            <a href="{{ url_for('portal.admin_dashboard') }}" class="btn warning">🖥️ Full Dashboard</a>
-                            <a href="{{ url_for('portal.admin_committees') }}" class="btn warning">📂 All Committees</a>
-                            <a href="{{ url_for('portal.create_committee') }}" class="btn warning">➕ Create
-                                Committee</a>
-                            <a href="{{ url_for('portal.manage_admins') }}" class="btn warning">🛡️ Manage Admins</a>
-                        </div>
-
-                        {% if is_admin or is_super_admin %}
-                        <hr class="rule">
-                        <div>
-                            <div class="mc-title">🔑 Membership Control</div>
-                            <form method="POST" action="{{ url_for('portal.toggle_renewal') }}" style="display:inline;">
-                                <input type="hidden" name="value" value="{{ '0' if renewal_enabled else '1' }}">
-                                {% if renewal_enabled %}
-                                <button type="submit" class="btn danger">🔒 Disable Renewal</button>
-                                {% else %}
-                                <button type="submit" class="btn success">🔓 Enable Renewal</button>
-                                {% endif %}
-                            </form>
-                        </div>
-                        {% endif %}
-                        {% endif %}
-                    </div>
-
-                </div>
-            </div>
-            {% endif %}
-
-        </div><!-- /.bento -->
-    </div><!-- /.pg -->
-
-    <script>
-        /* ── Clock ── */
-        function tick() {
-            const n = new Date();
-            const t = n.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-            const d = n.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
-            const ce = document.getElementById('live-clock'), de = document.getElementById('live-date');
-            if (ce) ce.textContent = t;
-            if (de) de.textContent = d;
-        }
-        tick(); setInterval(tick, 1000);
-
-        /* ── Header scroll ── */
-        const hdr = document.getElementById('hdr');
-        window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 30));
-
-        /* ── Active ratio bar ── */
-        (function () {
-            const total = parseInt('{{ total_members }}') || 0;
-            const active = parseInt('{{ active_members }}') || 0;
-            const pct = total > 0 ? Math.round((active / total) * 100) : 0;
-            const bar = document.getElementById('ratio-bar');
-            const txt = document.getElementById('ratio-txt');
-            if (bar) setTimeout(() => bar.style.width = pct + '%', 400);
-            if (txt) txt.textContent = pct + '%';
-        })();
-
-        /* ── Ambient FX Canvas ── */
-        (function () {
-            const cv = document.getElementById('fx');
-            if (!cv) return;
-            const cx = cv.getContext('2d');
-            let W, H;
-            const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
-            window.addEventListener('resize', resize); resize();
-
-            /* star field */
-            const stars = Array.from({ length: 180 }, () => ({
-                x: Math.random() * innerWidth, y: Math.random() * innerHeight,
-                r: Math.random() * .9 + .15,
-                a: Math.random() * .5 + .05,
-                ph: Math.random() * Math.PI * 2,
-                sp: Math.random() * .012 + .004
-            }));
-
-            /* coloured orbs */
-            const COLS = [[0, 200, 150], [245, 166, 35], [56, 182, 255], [255, 95, 87]];
-            const orbs = Array.from({ length: 6 }, (v, i) => ({
-                x: Math.random() * innerWidth, y: Math.random() * innerHeight,
-                r: Math.random() * 180 + 90,
-                vx: (Math.random() - .5) * .18, vy: (Math.random() - .5) * .18,
-                col: COLS[i % COLS.length],
-                a: Math.random() * .06 + .015,
-                ph: Math.random() * Math.PI * 2, sp: Math.random() * .006 + .003
-            }));
-
-            /* shooting streaks */
-            function mkStreak() { return { x: Math.random() * W * .7, y: Math.random() * H * .4, len: Math.random() * 130 + 60, vx: Math.random() * 2.5 + 1.5, vy: Math.random() * .9 + .3, a: 0, on: false, timer: 100 + Math.random() * 250 }; }
-            const streaks = Array.from({ length: 3 }, mkStreak);
-
-            let t = 0;
-            function draw() {
-                cx.clearRect(0, 0, W, H);
-                t += .012;
-
-                /* orbs */
-                orbs.forEach(o => {
-                    o.ph += o.sp;
-                    o.x += o.vx; o.y += o.vy;
-                    if (o.x < -o.r) o.x = W + o.r; if (o.x > W + o.r) o.x = -o.r;
-                    if (o.y < -o.r) o.y = H + o.r; if (o.y > H + o.r) o.y = -o.r;
-                    const pulse = .75 + .25 * Math.sin(o.ph);
-                    const g = cx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r * pulse);
-                    g.addColorStop(0, `rgba(${o.col[0]},${o.col[1]},${o.col[2]},${o.a})`);
-                    g.addColorStop(1, 'transparent');
-                    cx.beginPath(); cx.arc(o.x, o.y, o.r * pulse, 0, Math.PI * 2);
-                    cx.fillStyle = g; cx.fill();
-                });
-
-                /* stars */
-                stars.forEach(s => {
-                    s.ph += s.sp;
-                    const a = s.a * (0.4 + 0.6 * Math.sin(s.ph));
-                    cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                    cx.fillStyle = `rgba(180,230,210,${a})`; cx.fill();
-                });
-
-                /* streaks */
-                streaks.forEach((sk, i) => {
-                    sk.timer--;
-                    if (sk.timer <= 0 && !sk.on) { sk.x = Math.random() * W * .7; sk.y = Math.random() * H * .35; sk.a = 1; sk.on = true; sk.timer = 0; }
-                    if (sk.on) {
-                        sk.x += sk.vx * 3.5; sk.y += sk.vy * 3.5; sk.a -= .022;
-                        if (sk.a <= 0) { sk.on = false; Object.assign(sk, mkStreak(), { on: false }); }
-                        const g = cx.createLinearGradient(sk.x, sk.y, sk.x - sk.len, sk.y - sk.len * (sk.vy / sk.vx) * .5);
-                        g.addColorStop(0, `rgba(0,229,170,${sk.a})`);
-                        g.addColorStop(.5, `rgba(245,193,66,${sk.a * .5})`);
-                        g.addColorStop(1, 'transparent');
-                        cx.beginPath(); cx.moveTo(sk.x, sk.y); cx.lineTo(sk.x - sk.len, sk.y - sk.len * (sk.vy / sk.vx) * .4);
-                        cx.strokeStyle = g; cx.lineWidth = 1.5; cx.stroke();
-                    }
-                });
-
-                requestAnimationFrame(draw);
-            }
-            draw();
-        })();
-    </script>
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
 </body>
-
 </html>
