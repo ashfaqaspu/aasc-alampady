@@ -1387,7 +1387,11 @@
 
                 <div class="prof-top">
                     <div class="av-wrap">
-                        <img src="{{ url_for('static', filename=user.photo or 'default_avatar.png') }}" class="id-photo"
+                        {% if user.photo %}
+    <img src="{{ user.photo }}" class="id-photo">
+{% else %}
+    <img src="{{ url_for('static', filename='default_avatar.png') }}" class="id-photo">
+{% endif %}
                             alt="{{ user.name }}">
                         <div class="av-dot"></div>
                     </div>

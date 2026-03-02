@@ -524,7 +524,11 @@
         <div class="photo-ring-wrap">
             <div class="photo-ring-outer"></div>
             <div class="photo-ring-mid"></div>
-            <img src="{{ url_for('static', filename=user.photo if user.photo else 'default_avatar.png') }}" class="id-photo">
+            {% if user.photo %}
+        <img src="{{ user.photo }}" class="id-photo">
+            {% else %}
+        <img src="{{ url_for('static', filename='default_avatar.png') }}" class="id-photo">
+            {% endif %}
         </div>
 
         <!-- NAME -->

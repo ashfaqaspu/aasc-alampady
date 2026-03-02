@@ -169,10 +169,13 @@ button:hover {
       enctype="multipart/form-data"
       action="{{ url_for('portal.complete_profile') }}">
 
-<!-- PHOTO -->
+<!-- PHOTO PREVIEW -->
 <div class="photo-preview">
-<img src="{{ url_for('static',
-filename=user.photo if user.photo else 'default_avatar.png') }}">
+    {% if user.photo %}
+        <img src="{{ user.photo }}">
+    {% else %}
+        <img src="{{ url_for('static', filename='default_avatar.png') }}">
+    {% endif %}
 </div>
 
 <label>Upload Profile Photo (Optional)</label>
@@ -184,12 +187,10 @@ filename=user.photo if user.photo else 'default_avatar.png') }}">
 <textarea name="address" rows="3">{{ user.address or "" }}</textarea>
 
 <label>Email</label>
-<input type="email" name="email"
-value="{{ user.email or '' }}">
+<input type="email" name="email" value="{{ user.email or '' }}">
 
 <label>WhatsApp Number</label>
-<input type="text" name="whatsapp"
-value="{{ user.whatsapp or '' }}">
+<input type="text" name="whatsapp" value="{{ user.whatsapp or '' }}">
 
 <label>Date of Birth</label>
 <input type="date" name="dob"
