@@ -116,7 +116,7 @@ def add_sports():
         flash("Sport added successfully", "success")
         return redirect(url_for("admin.sports"))
 
-    return render_template("admin/add_sports.html")
+    return render_template("admin/add_sport.html")
 
 
 @admin_bp.route("/sports/edit/<int:id>", methods=["GET", "POST"])
