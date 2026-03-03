@@ -116,24 +116,29 @@
    IMAGE SECTION FIXED
 ================================= */
 
-/* Container for multiple images */
-.award-img-wrap {
+/* ===============================
+   IMAGE SECTION FINAL FIX
+================================= */
+
+.award-img-wrap{
     display:flex;
     flex-direction:column;
-    gap:14px;
-    padding:20px 30px 30px 30px;
+    gap:18px;
+    padding:25px 40px 40px 40px;
 }
 
-/* Image Styling */
-.award-img-wrap img {
+.award-img-wrap img{
     width:100%;
     height:auto;
-    max-height:500px;
-    object-fit:contain;   /* IMPORTANT FIX */
-    border-radius:14px;
+    max-height:600px;
+    object-fit:contain;
+    border-radius:16px;
     background:#fdf8f2;
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
-    transition:transform .4s ease;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+.award-card{
+    width:100%;
 }
 
 /* Hover Effect */
@@ -164,6 +169,52 @@
 @media(max-width:860px){
     .award-body { padding:24px; }
     .award-img-wrap { padding:20px; }
+}
+
+/* ==================================
+   HERO SECTION FIX (DO NOT REMOVE)
+================================== */
+
+.awards-hero{
+    position:relative;
+    border-radius:28px;
+    overflow:hidden;
+    padding:80px 60px;
+    text-align:center;
+    background:linear-gradient(135deg,#f5e8cc,#fdf8f2);
+    border:1px solid rgba(184,117,26,.25);
+    box-shadow:0 30px 80px rgba(184,117,26,.15);
+    margin-bottom:60px;
+}
+
+.awards-hero h1{
+    font-family:'Cinzel',serif;
+    font-size:42px;
+    margin-bottom:10px;
+    color:var(--ink);
+}
+
+.awards-hero p{
+    font-family:'Cormorant Garamond',serif;
+    font-size:18px;
+    color:var(--amber);
+    letter-spacing:2px;
+}
+
+.page-eyebrow{
+    font-size:12px;
+    letter-spacing:3px;
+    color:var(--amber);
+    margin-bottom:15px;
+}
+
+.hero-stars{
+    margin:15px 0;
+}
+
+.hero-star{
+    font-size:18px;
+    color:var(--amber);
 }
 </style>
 
