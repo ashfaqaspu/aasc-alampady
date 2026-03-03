@@ -148,6 +148,8 @@ def logout():
     session.clear()
     return redirect("/")
 
+from datetime import datetime, date
+
 @portal_bp.route("/events")
 def portal_events():
 
@@ -158,21 +160,31 @@ def portal_events():
         PortalEvent.event_date.desc()
     ).all()
 
+    # ✅ Convert event_date safely (string OR date)
+    for event in events:
+        if isinstance(event.event_date, str):
+            try:
+                event.event_date = datetime.strptime(
+                    event.event_date,
+                    "%Y-%m-%d"
+                ).date()
+            except:
+                event.event_date = None  # fallback safety
+
     registered = PortalEventParticipant.query.filter_by(
         user_id=session["user_id"]
     ).all()
 
     registered_ids = [r.portal_event_id for r in registered]
 
-    today = date.today()   # 👈 Get today's date
+    today = date.today()
 
     return render_template(
         "event.html",
         events=events,
         registered_ids=registered_ids,
-        today=today      # 👈 Pass to template
+        today=today
     )
-
 
 @portal_bp.route("/events/participate/<int:event_id>")
 def participate_portal_event(event_id):
@@ -1233,12 +1245,20 @@ def admin_events():
     if not is_admin():
         return "Access Denied", 403
 
+    from datetime import datetime
+
+    # ✅ HANDLE POST FIRST
     if request.method == "POST":
+
+        event_date = datetime.strptime(
+            request.form["event_date"],
+            "%Y-%m-%d"
+        ).date()
 
         event = PortalEvent(
             title=request.form["title"],
             description=request.form["description"],
-            event_date=request.form["event_date"],
+            event_date=event_date,   # ✅ DATE TYPE
             location=request.form["location"],
             created_at=datetime.utcnow()
         )
@@ -1248,7 +1268,7 @@ def admin_events():
 
         return redirect(url_for("portal.admin_events"))
 
-    # 🔥 Add participant count to each event
+    # 🔥 GET SECTION BELOW (Only runs when not POST)
     events = db.session.query(
         PortalEvent,
         func.count(PortalEventParticipant.user_id).label("participant_count")
@@ -1261,7 +1281,6 @@ def admin_events():
         PortalEvent.created_at.desc()
     ).all()
 
-    # Convert tuple result into usable object list
     event_list = []
     for event, count in events:
         event.participant_count = count

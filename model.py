@@ -105,7 +105,7 @@ class PortalEvent(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    event_date = db.Column(db.String(20))
+    event_date = db.Column(db.Date)
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
