@@ -228,15 +228,14 @@ img:hover {
     <td class="amount">₹{{ r.amount }}</td>
 
     <td>
-        {% if r.screenshot %}
-            <a href="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}"
-               target="_blank">
-                <img src="{{ url_for('static', filename=r.screenshot.replace('static/', '')) }}">
-            </a>
-        {% else %}
-            —
-        {% endif %}
-    </td>
+    {% if r.screenshot %}
+        <a href="{{ r.screenshot }}" target="_blank">
+            <img src="{{ r.screenshot }}" style="max-width:60px;border-radius:8px;">
+        </a>
+    {% else %}
+        —
+    {% endif %}
+</td>
 
     <td>
         {% if r.status == 'PENDING' %}
