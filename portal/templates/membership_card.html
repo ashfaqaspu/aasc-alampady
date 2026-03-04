@@ -521,15 +521,22 @@
         </div>
 
         <!-- PHOTO -->
-        <div class="photo-ring-wrap">
-            <div class="photo-ring-outer"></div>
-            <div class="photo-ring-mid"></div>
-            {% if user.photo %}
-        <img src="{{ user.photo }}" class="id-photo">
-            {% else %}
-        <img src="{{ url_for('static', filename='default_avatar.png') }}" class="id-photo">
-            {% endif %}
-        </div>
+<div class="photo-ring-wrap">
+    <div class="photo-ring-outer"></div>
+    <div class="photo-ring-mid"></div>
+
+    {% if user.photo %}
+        <img src="{{ user.photo }}" 
+             alt="{{ user.name }}" 
+             class="id-photo">
+    {% else %}
+        <img src="{{ url_for('static', filename='default_avatar.png') }}" 
+             alt="Default Avatar" 
+             class="id-photo">
+    {% endif %}
+
+</div>
+
 
         <!-- NAME -->
         <div class="member-name">{{ user.name }}</div>

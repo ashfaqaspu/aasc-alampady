@@ -70,6 +70,10 @@ def dashboard():
 # SPORTS
 # ===================================================
 
+# ===================================================
+# SPORTS LIST
+# ===================================================
+
 @admin_bp.route("/sports")
 def sports():
     if not admin_logged_in():
@@ -78,6 +82,10 @@ def sports():
     items = Sport.query.order_by(Sport.created_at.desc()).all()
     return render_template("admin/sports.html", items=items)
 
+
+# ===================================================
+# ADD SPORT
+# ===================================================
 
 @admin_bp.route("/sports/add", methods=["GET", "POST"])
 def add_sports():
@@ -89,22 +97,28 @@ def add_sports():
         images = request.files.getlist("images[]")
         image_urls = []
 
+        # Limit to 6 images
         if len(images) > 6:
-            return "Maximum 6 images allowed"
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
                 result = cloudinary.uploader.upload(
                     image,
                     folder="aasc/sports",
-                    transformation=[{"quality": "auto", "fetch_format": "auto"}]
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
                 )
                 image_urls.append(result["secure_url"])
 
         sport = Sport(
             title=request.form["title"],
             description=request.form["description"],
-            date=request.form["date"],
+            date=datetime.strptime(
+                request.form["date"], "%Y-%m-%d"
+            ).date(),
             image=",".join(image_urls),
             pinned=True if request.form.get("pinned") else False,
             created_at=datetime.now()
@@ -113,11 +127,15 @@ def add_sports():
         db.session.add(sport)
         db.session.commit()
 
-        flash("Sport added successfully", "success")
+        flash("Sport added successfully!", "success")
         return redirect(url_for("admin.sports"))
 
     return render_template("admin/add_sport.html")
 
+
+# ===================================================
+# EDIT SPORT
+# ===================================================
 
 @admin_bp.route("/sports/edit/<int:id>", methods=["GET", "POST"])
 def edit_sports(id):
@@ -130,31 +148,44 @@ def edit_sports(id):
 
         sport.title = request.form["title"]
         sport.description = request.form["description"]
-        sport.date = request.form["date"]
+        sport.date = datetime.strptime(
+            request.form["date"], "%Y-%m-%d"
+        ).date()
         sport.pinned = True if request.form.get("pinned") else False
 
         images = request.files.getlist("images[]")
         image_urls = []
 
         if len(images) > 6:
-            return "Maximum 6 images allowed"
+            flash("Maximum 6 images allowed", "danger")
+            return redirect(request.url)
 
         for image in images:
             if image and image.filename:
                 result = cloudinary.uploader.upload(
                     image,
-                    folder="aasc/sports"
+                    folder="aasc/sports",
+                    transformation=[
+                        {"quality": "auto", "fetch_format": "auto"}
+                    ]
                 )
                 image_urls.append(result["secure_url"])
 
+        # Replace images only if new ones uploaded
         if image_urls:
             sport.image = ",".join(image_urls)
 
         db.session.commit()
+
+        flash("Sport updated successfully!", "success")
         return redirect(url_for("admin.sports"))
 
     return render_template("admin/edit_sports.html", item=sport)
 
+
+# ===================================================
+# DELETE SPORT
+# ===================================================
 
 @admin_bp.route("/sports/delete/<int:id>")
 def delete_sport(id):
@@ -164,8 +195,14 @@ def delete_sport(id):
     sport = Sport.query.get_or_404(id)
     db.session.delete(sport)
     db.session.commit()
+
+    flash("Sport deleted successfully!", "success")
     return redirect(url_for("admin.sports"))
 
+
+# ===================================================
+# PIN SPORT
+# ===================================================
 
 @admin_bp.route("/sports/pin/<int:id>")
 def pin_sport(id):
@@ -175,8 +212,14 @@ def pin_sport(id):
     sport = Sport.query.get_or_404(id)
     sport.pinned = True
     db.session.commit()
+
+    flash("Sport pinned!", "success")
     return redirect(url_for("admin.sports"))
 
+
+# ===================================================
+# UNPIN SPORT
+# ===================================================
 
 @admin_bp.route("/sports/unpin/<int:id>")
 def unpin_sport(id):
@@ -186,7 +229,10 @@ def unpin_sport(id):
     sport = Sport.query.get_or_404(id)
     sport.pinned = False
     db.session.commit()
+
+    flash("Sport unpinned!", "success")
     return redirect(url_for("admin.sports"))
+
 
 # ===================================================
 # EVENTS (MULTI IMAGE + PIN - CLOUDINARY VERSION)

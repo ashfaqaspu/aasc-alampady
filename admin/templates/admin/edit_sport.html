@@ -90,7 +90,7 @@
     <!-- Date (IMPORTANT: name must match backend = date) -->
     <input name="date"
            type="date"
-           value="{{ item.date.strftime('%Y-%m-%d') if item.date else '' }}"
+           value="{{ item.date.strftime('%Y-%m-%d') if item.date and item.date.__class__.__name__ == 'date' else item.date }}"
            required>
 
     <!-- Description -->
