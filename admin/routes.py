@@ -116,7 +116,7 @@ def add_sports():
         sport = Sport(
             title=request.form["title"],
             description=request.form["description"],
-            date=datetime.strptime(
+            event_date=datetime.strptime(
                 request.form["date"], "%Y-%m-%d"
             ).date(),
             image=",".join(image_urls),
@@ -148,7 +148,7 @@ def edit_sports(id):
 
         sport.title = request.form["title"]
         sport.description = request.form["description"]
-        sport.date = datetime.strptime(
+        sport.event_date = datetime.strptime(
             request.form["date"], "%Y-%m-%d"
         ).date()
         sport.pinned = True if request.form.get("pinned") else False
