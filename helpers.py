@@ -9,9 +9,9 @@ from extensions import db
 from model import (
     User,
     Setting,
-    CommitteeMember
+    CommitteeMember,
+    Receipt
 )
-
 # 🔥 IMPORTANT: Define these properly
 SUPER_ADMIN_PHONE = "7012538103"
 
@@ -141,3 +141,18 @@ def import_members_from_excel():
 
 def generate_membership_id(num):
     return f"AASC{str(num).zfill(3)}"
+
+def get_membership_validity(user):
+    """
+    Returns latest membership validity from receipt
+    """
+
+    receipt = Receipt.query\
+        .filter_by(user_id=user.id)\
+        .order_by(Receipt.membership_end.desc())\
+        .first()
+
+    if receipt:
+        return receipt.membership_start, receipt.membership_end
+
+    return user.membership_start, user.membership_end

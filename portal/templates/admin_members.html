@@ -306,15 +306,17 @@ tbody tr:hover {
 {% for m in members %}
 <tr>
     <td>{{ loop.index }}</td>
-    <td>{{ m.name }}</td>
-    <td>{{ m.nativity }}</td>
-    <td>{{ m.phone }}</td>
-    <td>{{ m.membership_id }}</td>
-    <td>{{ m.membership_start }}</td>
-    <td>{{ m.membership_end }}</td>
+
+    <td>{{ m.user.name }}</td>
+    <td>{{ m.user.nativity }}</td>
+    <td>{{ m.user.phone }}</td>
+    <td>{{ m.user.membership_id }}</td>
+
+    <td>{{ m.user.membership_start }}</td>
+    <td>{{ m.validity_end }}</td>
 
     <td>
-        {% if m.is_admin %}
+        {% if m.user.is_admin %}
             <span class="yes">YES</span>
         {% else %}
             <span class="no">NO</span>
@@ -322,7 +324,7 @@ tbody tr:hover {
     </td>
 
     <td>
-        {% if m.section_admin %}
+        {% if m.user.section_admin %}
             <span class="yes">YES</span>
         {% else %}
             <span class="no">NO</span>
@@ -331,12 +333,12 @@ tbody tr:hover {
 
     <td>
         <a class="btn edit"
-           href="{{ url_for('portal.admin_edit_member', user_id=m.id) }}">
+           href="{{ url_for('portal.admin_edit_member', user_id=m.user.id) }}">
            Edit
         </a>
 
         <a class="btn reset"
-           href="{{ url_for('portal.admin_reset_password', user_id=m.id) }}"
+           href="{{ url_for('portal.admin_reset_password', user_id=m.user.id) }}"
            onclick="return confirm('Reset password to phone number?')">
            Reset
         </a>
@@ -344,21 +346,22 @@ tbody tr:hover {
 
     {% if is_super_admin %}
     <td>
-        {% if m.phone != SUPER_ADMIN_PHONE %}
+        {% if m.user.phone != SUPER_ADMIN_PHONE %}
             <a class="btn info"
-               href="{{ url_for('portal.toggle_admin', user_id=m.id) }}">
-               {% if m.is_admin %}Remove Admin{% else %}Make Admin{% endif %}
+               href="{{ url_for('portal.toggle_admin', user_id=m.user.id) }}">
+               {% if m.user.is_admin %}Remove Admin{% else %}Make Admin{% endif %}
             </a>
 
             <a class="btn edit"
-               href="{{ url_for('portal.toggle_section_admin', user_id=m.id) }}">
-               {% if m.section_admin %}Remove Section{% else %}Make Section{% endif %}
+               href="{{ url_for('portal.toggle_section_admin', user_id=m.user.id) }}">
+               {% if m.user.section_admin %}Remove Section{% else %}Make Section{% endif %}
             </a>
         {% else %}
             —
         {% endif %}
     </td>
     {% endif %}
+
 </tr>
 {% endfor %}
 </tbody>

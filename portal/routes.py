@@ -9,6 +9,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
 import cloudinary
 import cloudinary.uploader
+from helpers import get_membership_validity
+
+
 
 
 
@@ -44,6 +47,7 @@ def update_overdue_items():
 
 @portal_bp.route("/dashboard")
 def dashboard():
+
     if "user_id" not in session:
         return redirect("/")
 
@@ -61,11 +65,22 @@ def dashboard():
     # ADMIN DASHBOARD METRICS
     # ==========================
 
+    today = date.today()
+
     total_members = User.query.count()
 
-    active_members = User.query.filter(
-        User.membership_end >= date.today()
-    ).count()
+    # Subquery to get latest receipt per user
+    latest_receipts = db.session.query(
+        Receipt.user_id,
+        func.max(Receipt.membership_end).label("latest_end")
+    ).group_by(
+        Receipt.user_id
+    ).subquery()
+
+    # Active members
+    active_members = db.session.query(latest_receipts)\
+        .filter(latest_receipts.c.latest_end >= today)\
+        .count()
 
     expired_members = total_members - active_members
 
@@ -74,7 +89,13 @@ def dashboard():
     total_events = Event.query.count()
 
     # ==========================
-    # ✅ NEW MEDICAL LOGIC
+    # MEMBERSHIP VALIDITY
+    # ==========================
+
+    validity_start, validity_end = get_membership_validity(user)
+
+    # ==========================
+    # MEDICAL LOGIC
     # ==========================
 
     update_overdue_items()
@@ -102,20 +123,26 @@ def dashboard():
     ).count()
 
     renewal_success_rate = 0
+
     total_renewals = Renewal.query.count()
+
     approved_renewals = Renewal.query.filter_by(
         status="APPROVED"
     ).count()
 
     if total_renewals > 0:
         renewal_success_rate = round(
-            (approved_renewals / total_renewals) * 100, 2
+            (approved_renewals / total_renewals) * 100,
+            2
         )
 
     return render_template(
         "dashboard.html",
         user=user,
         expired=is_expired(user),
+        validity_start=validity_start,
+        validity_end=validity_end,
+
         announcements=announcements,
         is_admin=is_admin(),
         is_super_admin=is_super_admin(),
@@ -131,17 +158,16 @@ def dashboard():
         total_committees=total_committees,
         total_events=total_events,
 
-        # ✅ NEW Medical Metrics
+        # Medical Metrics
         total_medical_items=total_medical_items,
         available_medical=available_medical,
         issued_medical=issued_medical,
         overdue_medical=overdue_medical,
 
-        # Renewal
+        # Renewal Metrics
         total_pending_renewals=total_pending_renewals,
         renewal_success_rate=renewal_success_rate
     )
-
 
 @portal_bp.route("/logout")
 def logout():
@@ -207,20 +233,26 @@ def participate_portal_event(event_id):
 
     return redirect(url_for("portal.portal_events"))
 
+from model import Receipt
+from helpers import is_expired
+
 @portal_bp.route("/membership-card")
 def membership_card():
+
     if "user_id" not in session:
         return redirect("/")
 
     user = current_user()
 
+    validity_start, validity_end = get_membership_validity(user)
+
     return render_template(
         "membership_card.html",
         user=user,
+        validity_start=validity_start,
+        validity_end=validity_end,
         expired=is_expired(user)
     )
-
-
 @portal_bp.route("/change-password", methods=["GET", "POST"])
 def change_password():
     if "user_id" not in session:
@@ -929,31 +961,29 @@ def renew():
 
 @portal_bp.route("/receipt")
 def view_receipt():
+
     if "user_id" not in session:
         return redirect("/")
 
     user = current_user()
-    print("LOGGED USER ID:", user.id)
 
-    receipt = Receipt.query.filter_by(
-        user_id=user.id
-    ).order_by(Receipt.id.desc()).first()
-
-    print("FOUND RECEIPT:", receipt)
-
-    if receipt:
-        print("Receipt No:", receipt.receipt_no)
-        print("Amount:", receipt.amount)
-        print("Issued:", receipt.issued_date)
+    # Get latest receipt for the user
+    receipt = Receipt.query\
+        .filter_by(user_id=user.id)\
+        .order_by(Receipt.membership_end.desc())\
+        .first()
 
     if not receipt:
         return "No receipt available"
 
-    return render_template("receipt.html", receipt=receipt)
-
+    return render_template(
+        "receipt.html",
+        receipt=receipt
+    )
 
 @portal_bp.route("/admin/members")
 def admin_members():
+
     if not is_admin():
         return "Access Denied", 403
 
@@ -973,16 +1003,37 @@ def admin_members():
 
     members = query.order_by(User.membership_id).all()
 
+    member_data = []
+
+    for m in members:
+
+        receipt = Receipt.query\
+            .filter_by(user_id=m.id)\
+            .order_by(Receipt.membership_end.desc())\
+            .first()
+
+        if receipt:
+            validity_end = receipt.membership_end
+        else:
+            validity_end = m.membership_end
+
+        member_data.append({
+            "user": m,
+            "validity_end": validity_end
+        })
+
     return render_template(
         "admin_members.html",
-        members=members,
+        members=member_data,
         view="all",
         is_super_admin=is_super_admin(),
         SUPER_ADMIN_PHONE=SUPER_ADMIN_PHONE
     )
 
+
 @portal_bp.route("/admin/members/renewed")
 def admin_members_renewed():
+
     if not is_admin():
         return "Access Denied", 403
 
@@ -990,14 +1041,35 @@ def admin_members_renewed():
         User.membership_end >= date.today()
     ).order_by(User.membership_id).all()
 
+    member_data = []
+
+    for m in members:
+
+        receipt = Receipt.query\
+            .filter_by(user_id=m.id)\
+            .order_by(Receipt.membership_end.desc())\
+            .first()
+
+        if receipt:
+            validity_end = receipt.membership_end
+        else:
+            validity_end = m.membership_end
+
+        member_data.append({
+            "user": m,
+            "validity_end": validity_end
+        })
+
     return render_template(
         "admin_members.html",
-        members=members,
+        members=member_data,
         view="renewed"
     )
 
+
 @portal_bp.route("/admin/members/pending")
 def admin_members_pending():
+
     if not is_admin():
         return "Access Denied", 403
 
@@ -1007,15 +1079,35 @@ def admin_members_pending():
         Renewal.status == "PENDING"
     ).all()
 
+    member_data = []
+
+    for m in members:
+
+        receipt = Receipt.query\
+            .filter_by(user_id=m.id)\
+            .order_by(Receipt.membership_end.desc())\
+            .first()
+
+        if receipt:
+            validity_end = receipt.membership_end
+        else:
+            validity_end = m.membership_end
+
+        member_data.append({
+            "user": m,
+            "validity_end": validity_end
+        })
+
     return render_template(
         "admin_members.html",
-        members=members,
+        members=member_data,
         view="pending"
     )
 
 
 @portal_bp.route("/admin/members/not-renewed")
 def admin_members_not_renewed():
+
     if not is_admin():
         return "Access Denied", 403
 
@@ -1023,9 +1115,28 @@ def admin_members_not_renewed():
         User.membership_end < date.today()
     ).order_by(User.membership_id).all()
 
+    member_data = []
+
+    for m in members:
+
+        receipt = Receipt.query\
+            .filter_by(user_id=m.id)\
+            .order_by(Receipt.membership_end.desc())\
+            .first()
+
+        if receipt:
+            validity_end = receipt.membership_end
+        else:
+            validity_end = m.membership_end
+
+        member_data.append({
+            "user": m,
+            "validity_end": validity_end
+        })
+
     return render_template(
         "admin_members.html",
-        members=members,
+        members=member_data,
         view="not_renewed"
     )
 
