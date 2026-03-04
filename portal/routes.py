@@ -882,8 +882,12 @@ def delete_committee(cid):
 
 
 
+import time
+import cloudinary.uploader
+
 @portal_bp.route("/renew", methods=["GET", "POST"])
 def renew():
+
     if "user_id" not in session:
         return redirect("/")
 
@@ -898,10 +902,16 @@ def renew():
         amount = int(request.form.get("amount"))
 
         path = None
+
         if screenshot:
-            os.makedirs("static/renewals", exist_ok=True)
-            path = f"static/renewals/{user.id}_{screenshot.filename}"
-            screenshot.save(path)
+            upload_result = cloudinary.uploader.upload(
+                screenshot,
+                folder="renew",  # Cloudinary folder
+                public_id=f"user_{user.id}_{int(time.time())}",
+                resource_type="image"
+            )
+
+            path = upload_result["secure_url"]
 
         renewal = Renewal(
             user_id=user.id,
@@ -916,7 +926,6 @@ def renew():
         return redirect(url_for("portal.dashboard"))
 
     return render_template("renew.html")
-
 
 @portal_bp.route("/receipt")
 def view_receipt():
@@ -1290,6 +1299,7 @@ def admin_events():
         "admin_events.html",
         events=event_list
     )
+
 
 @portal_bp.route("/admin/events/<int:event_id>/participants")
 def event_participants(event_id):
