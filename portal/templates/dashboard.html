@@ -494,47 +494,88 @@ body {
 }
 
 /* ══ PROFILE CARD ══ */
-.profile-body { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.profile-body { 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center; 
+}
 
-.avatar-wrap { position: relative; width: 132px; height: 132px; margin-bottom: 22px; }
+/* FIX 1 */
+.avatar-wrap { 
+  position: relative; 
+  width: 132px; 
+  height: 132px; 
+  margin-bottom: 22px; 
+  border-radius: 50%;
+  overflow: hidden;   /* keeps image inside circle */
+}
 
 .avatar-ring {
-  position: absolute; inset: -6px; border-radius: 50%;
+  position: absolute; 
+  inset: -6px; 
+  border-radius: 50%;
   background: conic-gradient(
     var(--crimson-d) 0deg,
     var(--gold-l) 80deg,
     rgba(255,200,220,0.8) 155deg,
     var(--crimson-m) 230deg,
     var(--gold) 300deg,
-    var(--crimson-d) 360deg);
+    var(--crimson-d) 360deg
+  );
   animation: ringRotate 9s linear infinite;
 }
+
 .avatar-ring-inner {
-  position: absolute; inset: 2px; border-radius: 50%;
-  background: var(--bg); z-index: 1;
+  position: absolute; 
+  inset: 2px; 
+  border-radius: 50%;
+  background: var(--bg); 
+  z-index: 1;
 }
+
+/* FIX 2 */
 .avatar-img {
-  position: absolute; inset: 7px; border-radius: 50%;
-  object-fit: cover; z-index: 2;
+  position: absolute; 
+  inset: 7px;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
+  border-radius: 50%;
+  object-fit: cover; 
+  z-index: 2;
   border: 3px solid rgba(255,255,255,0.9);
   box-shadow: 0 10px 36px rgba(192,24,44,0.22);
   transition: transform var(--t) var(--spring);
 }
-.avatar-img:hover { transform: scale(1.06); }
+
+.avatar-img:hover { 
+  transform: scale(1.06); 
+}
+
 .avatar-status {
-  position: absolute; bottom: 10px; right: 10px; z-index: 3;
-  width: 18px; height: 18px; border-radius: 50%;
+  position: absolute; 
+  bottom: 10px; 
+  right: 10px; 
+  z-index: 3;
+  width: 18px; 
+  height: 18px; 
+  border-radius: 50%;
   background: #16a34a;
   border: 3px solid rgba(255,255,255,0.95);
   animation: statusPulse 2.6s ease-in-out infinite;
   box-shadow: 0 0 0 0 rgba(22,163,74,0.4);
 }
-@keyframes ringRotate { to { transform: rotate(360deg); } }
+
+@keyframes ringRotate { 
+  to { transform: rotate(360deg); } 
+}
+
 @keyframes statusPulse {
   0%   { box-shadow: 0 0 0 0 rgba(22,163,74,0.55); }
   70%  { box-shadow: 0 0 0 9px rgba(22,163,74,0); }
   100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
 }
+
 
 .profile-name {
   font-family: var(--fd); font-size: 24px; font-weight: 700;
@@ -1377,7 +1418,6 @@ document.querySelectorAll('[data-tilt]').forEach(card => {
   });
   card.addEventListener('mouseenter', () => {
     card.style.transition = 'none';
-  });
 });
 
 /* ═══════════════════════════════════════
