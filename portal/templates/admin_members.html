@@ -262,7 +262,7 @@ tbody tr:hover {
 
     <!-- SEARCH FORM WITH BUTTON -->
     <form method="GET"
-          action="{{ url_for('portal.admin_members') }}"
+      action="{{ request.path }}"
           class="search-form">
 
         <input type="text"
@@ -312,7 +312,7 @@ tbody tr:hover {
     <td>{{ m.user.phone }}</td>
     <td>{{ m.user.membership_id }}</td>
 
-    <td>{{ m.user.membership_start }}</td>
+    <td>{{ m.validity_start }}</td>
     <td>{{ m.validity_end }}</td>
 
     <td>

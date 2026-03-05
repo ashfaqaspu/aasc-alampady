@@ -981,6 +981,11 @@ def view_receipt():
         receipt=receipt
     )
 
+from flask import request, render_template
+from helpers import get_membership_validity
+from model import User
+from extensions import db
+
 @portal_bp.route("/admin/members")
 def admin_members():
 
@@ -1007,18 +1012,12 @@ def admin_members():
 
     for m in members:
 
-        receipt = Receipt.query\
-            .filter_by(user_id=m.id)\
-            .order_by(Receipt.membership_end.desc())\
-            .first()
-
-        if receipt:
-            validity_end = receipt.membership_end
-        else:
-            validity_end = m.membership_end
+        # ✅ Use helper instead of manual receipt query
+        validity_start, validity_end = get_membership_validity(m)
 
         member_data.append({
             "user": m,
+            "validity_start": validity_start,
             "validity_end": validity_end
         })
 
@@ -1031,34 +1030,30 @@ def admin_members():
     )
 
 
+from helpers import get_membership_validity
+from datetime import date
+
 @portal_bp.route("/admin/members/renewed")
 def admin_members_renewed():
 
     if not is_admin():
         return "Access Denied", 403
 
-    members = User.query.filter(
-        User.membership_end >= date.today()
-    ).order_by(User.membership_id).all()
+    users = User.query.order_by(User.membership_id).all()
 
     member_data = []
 
-    for m in members:
+    for m in users:
 
-        receipt = Receipt.query\
-            .filter_by(user_id=m.id)\
-            .order_by(Receipt.membership_end.desc())\
-            .first()
+        validity_start, validity_end = get_membership_validity(m)
 
-        if receipt:
-            validity_end = receipt.membership_end
-        else:
-            validity_end = m.membership_end
+        if validity_end and validity_end >= date.today():
 
-        member_data.append({
-            "user": m,
-            "validity_end": validity_end
-        })
+            member_data.append({
+                "user": m,
+                "validity_start": validity_start,
+                "validity_end": validity_end
+            })
 
     return render_template(
         "admin_members.html",
@@ -1066,35 +1061,25 @@ def admin_members_renewed():
         view="renewed"
     )
 
-
 @portal_bp.route("/admin/members/pending")
 def admin_members_pending():
 
     if not is_admin():
         return "Access Denied", 403
 
-    members = db.session.query(User).join(
-        Renewal
-    ).filter(
+    users = db.session.query(User).join(Renewal).filter(
         Renewal.status == "PENDING"
     ).all()
 
     member_data = []
 
-    for m in members:
+    for m in users:
 
-        receipt = Receipt.query\
-            .filter_by(user_id=m.id)\
-            .order_by(Receipt.membership_end.desc())\
-            .first()
-
-        if receipt:
-            validity_end = receipt.membership_end
-        else:
-            validity_end = m.membership_end
+        validity_start, validity_end = get_membership_validity(m)
 
         member_data.append({
             "user": m,
+            "validity_start": validity_start,
             "validity_end": validity_end
         })
 
@@ -1111,36 +1096,27 @@ def admin_members_not_renewed():
     if not is_admin():
         return "Access Denied", 403
 
-    members = User.query.filter(
-        User.membership_end < date.today()
-    ).order_by(User.membership_id).all()
+    users = User.query.order_by(User.membership_id).all()
 
     member_data = []
 
-    for m in members:
+    for m in users:
 
-        receipt = Receipt.query\
-            .filter_by(user_id=m.id)\
-            .order_by(Receipt.membership_end.desc())\
-            .first()
+        validity_start, validity_end = get_membership_validity(m)
 
-        if receipt:
-            validity_end = receipt.membership_end
-        else:
-            validity_end = m.membership_end
+        if validity_end and validity_end < date.today():
 
-        member_data.append({
-            "user": m,
-            "validity_end": validity_end
-        })
+            member_data.append({
+                "user": m,
+                "validity_start": validity_start,
+                "validity_end": validity_end
+            })
 
     return render_template(
         "admin_members.html",
         members=member_data,
         view="not_renewed"
     )
-
-
 
 @portal_bp.route("/admin/edit-member/<int:user_id>", methods=["GET", "POST"])
 def admin_edit_member(user_id):

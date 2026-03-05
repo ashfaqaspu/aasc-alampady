@@ -747,12 +747,19 @@ body {
 }
 @media (max-width: 768px) {
   :root { --sidebar-w: 0px; }
+
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); width: 268px; }
+
   .topbar { padding: 0 20px; }
   .page   { padding: 24px 20px 60px; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .tb-clock  { display: none; }
+
+  /* mobile menu button */
+  .mobile-menu{
+      display:block;
+  }
 }
 @media (max-width: 520px) {
   .stats-row  { grid-template-columns: 1fr; }
@@ -760,6 +767,13 @@ body {
   .date-row   { grid-template-columns: 1fr 1fr; }
   .panel      { padding: 20px 16px; }
   .fields-2col{ grid-template-columns: 1fr; }
+}
+.mobile-menu{
+    display:none;
+    font-size:20px;
+    background:none;
+    border:none;
+    cursor:pointer;
 }
 </style>
 </head>
@@ -876,7 +890,8 @@ body {
 
   <!-- TOPBAR -->
   <div class="topbar" id="topbar">
-    <div class="topbar-left">
+    <div class="topbar-left" style="display:flex;align-items:center;gap:12px;">
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
       <div class="topbar-eyebrow">Member Dashboard</div>
       <div class="topbar-title"><em>Welcome back,</em> {{ user.name.split()[0] }} 👋</div>
     </div>
@@ -1525,6 +1540,10 @@ body {
   })();
 
 })(); /* end IIFE */
+
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("open");
+}
 </script>
 
 </body>
