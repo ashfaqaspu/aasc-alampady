@@ -123,6 +123,23 @@ body {
   transition: transform 0.35s cubic-bezier(.16,1,.3,1);
   overflow: hidden;
 }
+.sidebar-overlay{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.4);
+    z-index:700;
+    opacity:0;
+    visibility:hidden;
+    transition:0.3s;
+}
+
+.sidebar-overlay.show{
+    opacity:1;
+    visibility:visible;
+}
 .sidebar::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 3px;
@@ -749,7 +766,9 @@ body {
   :root { --sidebar-w: 0px; }
 
   .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); width: 268px; }
+  .sidebar.open{
+    transform: translateX(0);
+}
 
   .topbar { padding: 0 20px; }
   .page   { padding: 24px 20px 60px; }
@@ -770,10 +789,11 @@ body {
 }
 .mobile-menu{
     display:none;
-    font-size:20px;
+    font-size:22px;
     background:none;
     border:none;
     cursor:pointer;
+    padding:6px 10px;
 }
 </style>
 </head>
@@ -1547,7 +1567,12 @@ function toggleSidebar(){
     const overlay = document.getElementById("sidebarOverlay");
 
     sidebar.classList.toggle("open");
-    overlay.classList.toggle("show");
+
+    if(sidebar.classList.contains("open")){
+        overlay.classList.add("show");
+    }else{
+        overlay.classList.remove("show");
+    }
 }
 </script>
 
