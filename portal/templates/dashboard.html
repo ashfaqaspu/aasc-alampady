@@ -120,7 +120,7 @@ body {
   border-right: 1px solid var(--b1);
   display: flex; flex-direction: column;
   box-shadow: 4px 0 32px rgba(15,23,42,0.04);
-  transition: transform 0.4s var(--spring);
+  transition: transform 0.35s cubic-bezier(.16,1,.3,1);
   overflow: hidden;
 }
 .sidebar::before {
@@ -792,6 +792,7 @@ body {
      SIDEBAR
 ════════════════════════════════ -->
 <aside class="sidebar" id="sidebar">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
   <a class="sb-logo" href="/">
     <div class="sb-logo-gem"><span class="sb-logo-letter">A</span></div>
@@ -1542,7 +1543,11 @@ body {
 })(); /* end IIFE */
 
 function toggleSidebar(){
-    document.getElementById("sidebar").classList.toggle("open");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
 }
 </script>
 
