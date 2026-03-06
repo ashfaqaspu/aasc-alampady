@@ -1915,26 +1915,125 @@
       }
     }
 
+    .mobile-logo {
+      display: none;
+    }
+
+    .mobile-nav-row {
+      display: none;
+    }
+
+    .topbar-desktop-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
     @media (max-width: 768px) {
       :root {
         --sidebar-w: 0px;
       }
 
+      /* Fix sidebar cutoff on mobile */
       .sidebar {
         transform: translateX(-100%);
-        width: 260px;
+        width: 280px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
       }
 
       .sidebar.open {
         transform: translateX(0);
       }
 
+      /* Mobile Header Redesign */
       .topbar {
-        padding: 0 20px;
+        padding: 12px 16px;
+        height: auto;
+        min-height: auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+
+      .topbar-desktop-left {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .topbar-titles {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .topbar-eyebrow {
+        display: none !important;
+      }
+
+      .topbar-title {
+        font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mobile-logo {
+        display: flex !important;
+        align-items: center;
+      }
+
+      .topbar-right {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .desktop-pills {
+        display: none !important;
+      }
+
+      .mobile-nav-row {
+        display: flex !important;
+        gap: 10px;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .mobile-nav-btn {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--r-md);
+        background: var(--white);
+        border: 1px solid var(--b1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        text-decoration: none;
+        box-shadow: var(--s0);
+        transition: var(--t) var(--spring);
+      }
+
+      .mobile-nav-btn:active {
+        transform: scale(0.94);
+      }
+
+      .mobile-nav-btn.logout-btn {
+        background: var(--rose-pale);
+        border-color: rgba(244, 63, 94, 0.22);
       }
 
       .page {
-        padding: 24px 20px 60px;
+        padding: 24px 16px 60px;
       }
 
       .stats-row {
@@ -2098,17 +2197,33 @@
 
     <!-- TOPBAR -->
     <div class="topbar" id="topbar">
-      <div class="topbar-left" style="display:flex;align-items:center;gap:12px;">
+      <div class="topbar-desktop-left">
         <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
-        <div class="topbar-eyebrow">Member Dashboard</div>
-        <div class="topbar-title"><em>Welcome back,</em> {{ user.name.split()[0] }} 👋</div>
+        <div class="mobile-logo">
+          <div class="sb-logo-gem" style="width:34px;height:34px;border-radius:10px;"><span class="sb-logo-letter"
+              style="font-size:16px;">A</span></div>
+        </div>
+        <div class="topbar-titles">
+          <div class="topbar-eyebrow">Member Dashboard</div>
+          <div class="topbar-title"><em>Welcome back,</em> {{ user.name.split()[0] }} 👋</div>
+        </div>
       </div>
       <div class="topbar-right">
-        <div style="display:flex;gap:6px;">
+        <div class="desktop-pills" style="display:flex;gap:6px;">
           <div class="tb-pill" title="Sports">🏆</div>
           <div class="tb-pill" title="Arts">🎭</div>
           <div class="tb-pill" title="Charity">🤝</div>
         </div>
+
+        <!-- Mobile Actions Row -->
+        <div class="mobile-nav-row">
+          <a href="{{ url_for('portal.portal_events') }}" class="mobile-nav-btn" title="Events">📅</a>
+          <a href="{{ url_for('portal.membership_card') }}" class="mobile-nav-btn" title="Membership Card">🪪</a>
+          <a href="{{ url_for('portal.my_committees') }}" class="mobile-nav-btn" title="My Committees">📂</a>
+          <a href="{{ url_for('portal.complete_profile') }}" class="mobile-nav-btn" title="Profile Update">✏️</a>
+          <a href="{{ url_for('portal.logout') }}" class="mobile-nav-btn logout-btn" title="Logout">🚪</a>
+        </div>
+
         <div class="tb-clock" id="live-clock">—</div>
       </div>
     </div>
