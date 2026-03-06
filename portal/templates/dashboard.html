@@ -1,1580 +1,2812 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AASC Portal | Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ════════════════════════════════════════
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AASC Portal | Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ════════════════════════════════════════
    DESIGN TOKENS
 ════════════════════════════════════════ */
-:root {
-  --white:       #ffffff;
-  --bg:          #f5f7fb;
-  --bg2:         #eef1f8;
-  --bg3:         #e6eaf4;
-
-  --sky:         #3b82f6;
-  --sky-d:       #1d4ed8;
-  --sky-l:       #60a5fa;
-  --sky-xl:      #bfdbfe;
-  --sky-pale:    #eff6ff;
-  --b-sky:       rgba(59,130,246,0.15);
-  --b-sky2:      rgba(59,130,246,0.28);
-
-  --mint:        #10b981;
-  --mint-d:      #059669;
-  --mint-l:      #34d399;
-  --mint-pale:   #ecfdf5;
-
-  --violet:      #8b5cf6;
-  --violet-l:    #a78bfa;
-  --violet-pale: #f5f3ff;
-
-  --amber:       #f59e0b;
-  --amber-l:     #fcd34d;
-  --amber-pale:  #fffbeb;
-
-  --rose:        #f43f5e;
-  --rose-l:      #fb7185;
-  --rose-pale:   #fff1f2;
-
-  --t1:  #0f172a;
-  --t2:  #1e293b;
-  --t3:  #475569;
-  --t4:  #94a3b8;
-  --t5:  #cbd5e1;
-  --t6:  #e2e8f0;
-
-  --b1:  rgba(15,23,42,0.06);
-  --b2:  rgba(15,23,42,0.10);
-
-  --s0:  0 1px 3px rgba(15,23,42,0.04);
-  --s1:  0 2px 12px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.04);
-  --s2:  0 8px 28px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.04);
-  --s3:  0 18px 52px rgba(15,23,42,0.10), 0 4px 14px rgba(15,23,42,0.05);
-  --s4:  0 32px 80px rgba(15,23,42,0.12), 0 8px 22px rgba(15,23,42,0.06);
-  --s-sky:  0 8px 28px rgba(59,130,246,0.22);
-  --s-mint: 0 8px 28px rgba(16,185,129,0.20);
-
-  --fd: 'DM Serif Display', Georgia, serif;
-  --fb: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --fm: 'JetBrains Mono', monospace;
-
-  --r-xl:   24px;
-  --r-lg:   18px;
-  --r-md:   12px;
-  --r-sm:   8px;
-  --r-pill: 999px;
-
-  --sidebar-w: 268px;
-
-  --ease:   cubic-bezier(0.4, 0, 0.2, 1);
-  --spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --t: 0.25s;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-
-body {
-  font-family: var(--fb);
-  background: var(--bg);
-  color: var(--t1);
-  min-height: 100vh;
-  overflow-x: hidden;
-  display: flex;
-}
-
-/* ══ BACKGROUND BLOBS ══ */
-.blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.blob  { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
-.blob-1 {
-  width: 640px; height: 640px; top: -160px; right: -80px;
-  background: radial-gradient(circle, rgba(59,130,246,0.10) 0%, rgba(139,92,246,0.06) 50%, transparent 70%);
-  animation: blobDrift1 20s ease-in-out infinite alternate;
-}
-.blob-2 {
-  width: 540px; height: 540px; bottom: -100px; left: 200px;
-  background: radial-gradient(circle, rgba(16,185,129,0.09) 0%, rgba(59,130,246,0.05) 50%, transparent 70%);
-  animation: blobDrift2 26s ease-in-out infinite alternate;
-}
-.blob-3 {
-  width: 400px; height: 400px; top: 40%; left: 60%;
-  background: radial-gradient(circle, rgba(245,158,11,0.06) 0%, transparent 65%);
-  animation: blobDrift3 18s ease-in-out infinite alternate;
-}
-@keyframes blobDrift1 { 0%{transform:translate(0,0)}   100%{transform:translate(-60px,80px)} }
-@keyframes blobDrift2 { 0%{transform:translate(0,0)}   100%{transform:translate(70px,-60px)} }
-@keyframes blobDrift3 { 0%{transform:translate(0,0)}   100%{transform:translate(-40px,50px)} }
-
-#canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-
-/* ══ SIDEBAR ══ */
-.sidebar {
-  position: fixed; top: 0; left: 0; bottom: 0;
-  width: var(--sidebar-w); z-index: 800;
-  background: var(--white);
-  border-right: 1px solid var(--b1);
-  display: flex; flex-direction: column;
-  box-shadow: 4px 0 32px rgba(15,23,42,0.04);
-  transition: transform 0.35s cubic-bezier(.16,1,.3,1);
-  overflow: hidden;
-}
-.sidebar-overlay{
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.4);
-    z-index:700;
-    opacity:0;
-    visibility:hidden;
-    transition:0.3s;
-}
-
-.sidebar-overlay.show{
-    opacity:1;
-    visibility:visible;
-}
-.sidebar::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--sky-d), var(--sky), var(--mint-l), var(--violet-l));
-  background-size: 300% 100%;
-  animation: sidebarBar 5s linear infinite;
-}
-@keyframes sidebarBar { 0%{background-position:0%} 100%{background-position:300%} }
-
-.sb-logo {
-  display: flex; align-items: center; gap: 12px;
-  padding: 28px 24px 24px; text-decoration: none;
-  border-bottom: 1px solid var(--b1);
-}
-.sb-logo-gem {
-  width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
-  background: linear-gradient(140deg, var(--sky-d) 0%, var(--sky) 55%, var(--mint-l) 100%);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 22px rgba(59,130,246,0.34), inset 0 1px 0 rgba(255,255,255,0.25);
-  animation: gemBreathe 5s ease-in-out infinite alternate;
-  position: relative; overflow: hidden;
-}
-.sb-logo-gem::before {
-  content: '';
-  position: absolute; inset: 0; border-radius: 14px;
-  background: conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,0.18) 90deg, rgba(255,255,255,0) 180deg);
-  animation: gemSheen 3s linear infinite;
-}
-@keyframes gemBreathe {
-  from { box-shadow: 0 4px 18px rgba(59,130,246,0.30); transform: scale(1); }
-  to   { box-shadow: 0 8px 32px rgba(59,130,246,0.50), 0 0 0 5px rgba(59,130,246,0.08); transform: scale(1.04); }
-}
-@keyframes gemSheen { to { transform: rotate(360deg); } }
-.sb-logo-letter {
-  font-family: var(--fd); font-size: 22px; color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.2); position: relative; z-index: 1;
-}
-.sb-logo-text  { display: flex; flex-direction: column; gap: 1px; }
-.sb-logo-name  {
-  font-family: var(--fd); font-size: 16px; line-height: 1;
-  background: linear-gradient(125deg, var(--sky-d) 0%, var(--sky) 50%, var(--mint) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.sb-logo-sub {
-  font-family: var(--fm); font-size: 9px; text-transform: uppercase;
-  letter-spacing: 3px; color: var(--t4); line-height: 1;
-}
-
-.sb-nav { flex: 1; padding: 18px 14px; overflow-y: auto; }
-.sb-section-label {
-  font-family: var(--fm); font-size: 9px; text-transform: uppercase;
-  letter-spacing: 2.5px; color: var(--t4); padding: 0 12px;
-  margin: 16px 0 7px;
-}
-.sb-section-label:first-child { margin-top: 4px; }
-
-.sb-link {
-  display: flex; align-items: center; gap: 11px;
-  padding: 10px 13px; border-radius: var(--r-md);
-  text-decoration: none; color: var(--t3);
-  font-size: 13.5px; font-weight: 500;
-  transition: var(--t) var(--ease);
-  position: relative; margin-bottom: 2px;
-}
-.sb-link-icon {
-  width: 32px; height: 32px; border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
-  background: var(--bg2); border: 1px solid var(--b1);
-  transition: var(--t) var(--spring);
-}
-.sb-link:hover { color: var(--t1); background: var(--bg); }
-.sb-link:hover .sb-link-icon {
-  background: var(--sky-pale); border-color: var(--b-sky);
-  transform: scale(1.08) rotate(-4deg);
-}
-.sb-link.active { color: var(--sky-d); background: var(--sky-pale); font-weight: 600; }
-.sb-link.active .sb-link-icon {
-  background: linear-gradient(135deg, var(--sky-d), var(--sky));
-  border-color: transparent;
-  box-shadow: 0 4px 14px rgba(59,130,246,0.3);
-}
-.sb-link.active .sb-link-icon span { filter: brightness(0) invert(1); }
-.sb-link.active::before {
-  content: '';
-  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  width: 3px; height: 22px; border-radius: 2px 0 0 2px;
-  background: linear-gradient(180deg, var(--sky-d), var(--sky));
-}
-
-.sb-user {
-  padding: 16px 18px; border-top: 1px solid var(--b1);
-  display: flex; align-items: center; gap: 11px;
-}
-.sb-user-av {
-  width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--sky-d), var(--mint));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: white; font-weight: 700;
-  flex-shrink: 0; overflow: hidden;
-}
-.sb-user-av img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-.sb-user-info { flex: 1; min-width: 0; }
-.sb-user-name {
-  font-size: 13px; font-weight: 600; color: var(--t1); line-height: 1.3;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.sb-user-role {
-  font-family: var(--fm); font-size: 9px; color: var(--t4);
-  letter-spacing: 1px; text-transform: uppercase;
-}
-.sb-logout {
-  width: 30px; height: 30px; border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg2); border: 1px solid var(--b1);
-  text-decoration: none; color: var(--t3);
-  transition: var(--t) var(--spring); flex-shrink: 0;
-}
-.sb-logout:hover {
-  background: var(--rose-pale); border-color: rgba(244,63,94,0.2);
-  color: var(--rose); transform: scale(1.1);
-}
-
-/* ══ MAIN ══ */
-.main {
-  margin-left: var(--sidebar-w);
-  flex: 1; min-width: 0;
-  display: flex; flex-direction: column;
-  position: relative; z-index: 10;
-}
-
-/* ══ TOPBAR ══ */
-.topbar {
-  position: sticky; top: 0; z-index: 700;
-  height: 64px; padding: 0 36px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(245,247,251,0.90);
-  backdrop-filter: blur(28px) saturate(1.8);
-  -webkit-backdrop-filter: blur(28px) saturate(1.8);
-  border-bottom: 1px solid var(--b1);
-  transition: box-shadow var(--t) var(--ease);
-}
-.topbar.scrolled { box-shadow: 0 4px 28px rgba(15,23,42,0.07); }
-
-.topbar-left { display: flex; flex-direction: column; gap: 1px; }
-.topbar-eyebrow {
-  font-family: var(--fm); font-size: 9px; text-transform: uppercase;
-  letter-spacing: 3px; color: var(--sky);
-  display: flex; align-items: center; gap: 8px;
-}
-.topbar-eyebrow::before {
-  content: ''; width: 16px; height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--sky));
-}
-.topbar-title { font-family: var(--fd); font-size: 22px; color: var(--t1); line-height: 1; }
-.topbar-title em { font-style: italic; }
-
-.topbar-right { display: flex; align-items: center; gap: 10px; }
-.tb-clock {
-  font-family: var(--fm); font-size: 12px; color: var(--sky);
-  background: var(--sky-pale); border: 1px solid var(--b-sky);
-  padding: 7px 16px; border-radius: var(--r-pill); letter-spacing: 0.3px;
-}
-.tb-pill {
-  width: 36px; height: 36px; border-radius: var(--r-md);
-  display: flex; align-items: center; justify-content: center; font-size: 15px;
-  background: var(--white); border: 1px solid var(--b1); box-shadow: var(--s0);
-  transition: var(--t) var(--spring); cursor: default;
-}
-.tb-pill:hover {
-  background: var(--sky-pale); border-color: var(--b-sky);
-  transform: translateY(-3px) scale(1.1) rotate(-8deg); box-shadow: var(--s-sky);
-}
-
-/* ══ PAGE ══ */
-.page { padding: 36px 36px 80px; max-width: 1440px; }
-
-/* ══ HERO ROW ══ */
-.hero-row {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 14px; margin-bottom: 28px;
-}
-.hero-heading { font-family: var(--fd); font-size: 28px; color: var(--t1); line-height: 1.1; }
-.hero-heading em { font-style: italic; }
-.hero-date {
-  font-family: var(--fm); font-size: 11px; color: var(--t4);
-  letter-spacing: 1px; margin-top: 4px;
-}
-.hero-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-
-/* ══ STAT CARDS ══ */
-.stats-row {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 16px; margin-bottom: 24px;
-}
-.stat-card {
-  background: var(--white); border-radius: var(--r-lg);
-  border: 1px solid var(--b1); padding: 22px 24px;
-  box-shadow: var(--s1);
-  transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
-  position: relative; overflow: hidden;
-  animation: cardRise 0.6s var(--spring) both;
-}
-.stat-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  border-radius: var(--r-lg) var(--r-lg) 0 0;
-  opacity: 0; transition: opacity var(--t);
-}
-.stat-card:hover::before { opacity: 1; }
-.stat-card:hover { transform: translateY(-5px); box-shadow: var(--s3); }
-
-.sc-blue::before   { background: linear-gradient(90deg, var(--sky-d),   var(--sky-l));    }
-.sc-green::before  { background: linear-gradient(90deg, var(--mint-d),  var(--mint-l));   }
-.sc-violet::before { background: linear-gradient(90deg, var(--violet),  var(--violet-l)); }
-.sc-rose::before   { background: linear-gradient(90deg, var(--rose),    var(--rose-l));   }
-
-.stat-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
-.stat-icon {
-  width: 42px; height: 42px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
-  transition: transform var(--t) var(--bounce);
-}
-.stat-card:hover .stat-icon { transform: scale(1.1) rotate(-6deg); }
-.si-blue   { background: var(--sky-pale);    border: 1px solid rgba(59,130,246,0.15); }
-.si-green  { background: var(--mint-pale);   border: 1px solid rgba(16,185,129,0.15); }
-.si-violet { background: var(--violet-pale); border: 1px solid rgba(139,92,246,0.15); }
-.si-rose   { background: var(--rose-pale);   border: 1px solid rgba(244,63,94,0.15); }
-
-.stat-trend {
-  font-family: var(--fm); font-size: 10px; font-weight: 600;
-  padding: 3px 9px; border-radius: var(--r-pill);
-  display: inline-flex; align-items: center; gap: 4px;
-}
-.st-up   { background: var(--mint-pale); color: var(--mint-d); }
-.st-down { background: var(--rose-pale); color: var(--rose); }
-
-.stat-number {
-  font-family: var(--fd); font-size: 40px; font-weight: 400;
-  line-height: 1; display: block; margin-bottom: 4px;
-}
-.sn-blue   { background: linear-gradient(135deg, var(--sky-d),  var(--sky));       -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.sn-green  { background: linear-gradient(135deg, var(--mint-d), var(--mint-l));    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.sn-violet { background: linear-gradient(135deg, var(--violet), var(--violet-l));  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.sn-rose   { background: linear-gradient(135deg, var(--rose),   var(--rose-l));    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-
-.stat-label { font-size: 13px; font-weight: 500; color: var(--t3); }
-.stat-bar   { margin-top: 14px; height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
-.stat-bar-fill { height: 100%; border-radius: 2px; transition: width 1.6s cubic-bezier(0.4,0,0.2,1); }
-.sbf-blue   { background: linear-gradient(90deg, var(--sky-d),  var(--sky-l));    box-shadow: 0 0 10px rgba(59,130,246,0.3); }
-.sbf-green  { background: linear-gradient(90deg, var(--mint-d), var(--mint-l));   box-shadow: 0 0 10px rgba(16,185,129,0.3); }
-.sbf-violet { background: linear-gradient(90deg, var(--violet), var(--violet-l)); box-shadow: 0 0 10px rgba(139,92,246,0.3); }
-.sbf-rose   { background: linear-gradient(90deg, var(--rose),   var(--rose-l));   box-shadow: 0 0 10px rgba(244,63,94,0.3); }
-
-.stat-card:nth-child(1) { animation-delay: 0.07s; }
-.stat-card:nth-child(2) { animation-delay: 0.13s; }
-.stat-card:nth-child(3) { animation-delay: 0.19s; }
-.stat-card:nth-child(4) { animation-delay: 0.25s; }
-
-/* ══ MAIN GRID ══ */
-.main-grid {
-  display: grid;
-  grid-template-columns: 310px 1fr;
-  gap: 20px; align-items: start;
-}
-.col-left  { display: flex; flex-direction: column; gap: 20px; }
-.col-right { display: flex; flex-direction: column; gap: 20px; }
-
-/* ══ PANEL ══ */
-.panel {
-  background: var(--white); border-radius: var(--r-xl);
-  border: 1px solid var(--b1); padding: 28px;
-  box-shadow: var(--s1); position: relative; overflow: hidden;
-  transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
-  animation: cardRise 0.7s var(--spring) both;
-}
-.panel::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--sky-xl) 30%, rgba(16,185,129,0.25) 60%, transparent 100%);
-  border-radius: var(--r-xl) var(--r-xl) 0 0;
-  opacity: 0; transition: opacity var(--t);
-}
-.panel:hover::before { opacity: 1; }
-.panel:hover { transform: translateY(-4px); box-shadow: var(--s3); }
-
-@keyframes cardRise {
-  from { opacity: 0; transform: translateY(22px) scale(0.982); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);     }
-}
-.panel.p2 { animation-delay: 0.12s; }
-.panel.p3 { animation-delay: 0.20s; }
-.panel.p4 { animation-delay: 0.28s; }
-.panel.p5 { animation-delay: 0.36s; }
-
-.panel-head { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
-.panel-icon {
-  width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 18px;
-  background: var(--sky-pale); border: 1px solid var(--b-sky);
-  box-shadow: 0 2px 10px rgba(59,130,246,0.1);
-  transition: transform var(--t) var(--bounce);
-}
-.panel:hover .panel-icon { transform: scale(1.08) rotate(-5deg); }
-.pi-mint   { background: var(--mint-pale);   border-color: rgba(16,185,129,0.18);  box-shadow: 0 2px 10px rgba(16,185,129,0.1); }
-.pi-violet { background: var(--violet-pale); border-color: rgba(139,92,246,0.18);  box-shadow: 0 2px 10px rgba(139,92,246,0.1); }
-.pi-amber  { background: var(--amber-pale);  border-color: rgba(245,158,11,0.18);  box-shadow: 0 2px 10px rgba(245,158,11,0.1); }
-.pi-rose   { background: var(--rose-pale);   border-color: rgba(244,63,94,0.18);   box-shadow: 0 2px 10px rgba(244,63,94,0.1); }
-
-.panel-title { font-family: var(--fd); font-size: 18px; color: var(--t1); line-height: 1.2; }
-.panel-sub   { font-family: var(--fm); font-size: 9.5px; color: var(--t4); text-transform: uppercase; letter-spacing: 1.8px; margin-top: 1px; }
-
-.divider {
-  height: 1px; border: none; margin: 20px 0;
-  background: linear-gradient(90deg, transparent, var(--b1) 30%, var(--b1) 70%, transparent);
-}
-
-/* ══ PROFILE ══ */
-.profile-core { display: flex; flex-direction: column; align-items: center; text-align: center; }
-
-.av-shell { position: relative; width: 118px; height: 118px; margin-bottom: 18px; }
-.av-ring-track {
-  position: absolute; inset: -5px; border-radius: 50%;
-  background: conic-gradient(var(--sky) 0deg, var(--mint-l) 90deg, var(--violet-l) 180deg, var(--sky-l) 270deg, var(--sky) 360deg);
-  animation: avRing 8s linear infinite;
-}
-.av-ring-gap { position: absolute; inset: 2px; border-radius: 50%; background: var(--white); z-index: 1; }
-.av-img {
-  position: absolute; inset: 6px;
-  width: calc(100% - 12px); height: calc(100% - 12px);
-  border-radius: 50%; object-fit: cover; z-index: 2;
-  border: 2px solid rgba(255,255,255,0.9);
-  box-shadow: 0 8px 28px rgba(59,130,246,0.18);
-  transition: transform var(--t) var(--spring);
-}
-.av-img:hover { transform: scale(1.06); }
-.av-pulse {
-  position: absolute; bottom: 8px; right: 8px; z-index: 3;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--mint); border: 2.5px solid var(--white);
-  animation: avPulse 2.4s ease-in-out infinite;
-}
-@keyframes avRing   { to { transform: rotate(360deg); } }
-@keyframes avPulse  {
-  0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
-  50%     { box-shadow: 0 0 0 7px rgba(16,185,129,0); }
-}
-
-.profile-name { font-family: var(--fd); font-size: 22px; color: var(--t1); margin-bottom: 10px; line-height: 1.2; }
-
-.role-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 16px; border-radius: var(--r-pill);
-  font-family: var(--fm); font-size: 10px; font-weight: 600;
-  letter-spacing: 1.8px; text-transform: uppercase;
-}
-.rc-member  { background: var(--bg2);         color: var(--t3);    border: 1px solid var(--b1); }
-.rc-section { background: var(--violet-pale);  color: var(--violet);border: 1px solid rgba(139,92,246,0.2); }
-.rc-admin   { background: var(--sky-pale);     color: var(--sky-d); border: 1px solid var(--b-sky); box-shadow: 0 0 16px rgba(59,130,246,0.14); }
-.rc-super   {
-  background: linear-gradient(125deg, rgba(59,130,246,0.1), rgba(139,92,246,0.12));
-  color: var(--violet); border: 1px solid rgba(139,92,246,0.28);
-  animation: superChip 3s ease-in-out infinite alternate;
-}
-@keyframes superChip {
-  from { box-shadow: 0 0 14px rgba(139,92,246,0.18); }
-  to   { box-shadow: 0 0 30px rgba(139,92,246,0.42), 0 0 50px rgba(59,130,246,0.1); }
-}
-
-.info-stack { list-style: none; }
-.info-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 9px 0; gap: 12px;
-  border-bottom: 1px solid rgba(15,23,42,0.04);
-  transition: 0.15s var(--ease);
-}
-.info-row:last-child { border-bottom: none; }
-.info-row:hover { padding-left: 4px; }
-.ir-l { font-size: 12px; color: var(--t4); font-weight: 400; flex-shrink: 0; }
-.ir-v { font-size: 13px; color: var(--t2); font-weight: 600; text-align: right; word-break: break-all; }
-
-/* ══ BUTTONS ══ */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  padding: 9px 18px; border-radius: var(--r-md);
-  font-family: var(--fb); font-size: 13px; font-weight: 700;
-  border: none; cursor: pointer; text-decoration: none;
-  white-space: nowrap; position: relative; overflow: hidden;
-  transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
-  letter-spacing: 0.1px;
-}
-.btn::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(105deg, transparent 25%, rgba(255,255,255,0.32) 50%, transparent 75%);
-  transform: translateX(-110%) skewX(-8deg); transition: transform 0.5s;
-}
-.btn:hover::after  { transform: translateX(110%) skewX(-8deg); }
-.btn:hover         { transform: translateY(-2px); }
-.btn:active        { transform: translateY(0) scale(0.97); }
-
-.btn-sky  { background: linear-gradient(135deg, var(--sky-d), var(--sky));      color:#fff; box-shadow: 0 4px 16px rgba(59,130,246,0.30); }
-.btn-sky:hover    { box-shadow: 0 8px 26px rgba(59,130,246,0.48); }
-.btn-mint { background: linear-gradient(135deg, var(--mint-d), var(--mint-l));  color:#fff; box-shadow: 0 4px 16px rgba(16,185,129,0.28); }
-.btn-mint:hover   { box-shadow: 0 8px 26px rgba(16,185,129,0.44); }
-.btn-violet{ background: linear-gradient(135deg, var(--violet), var(--violet-l)); color:#fff; box-shadow: 0 4px 16px rgba(139,92,246,0.30); }
-.btn-violet:hover { box-shadow: 0 8px 26px rgba(139,92,246,0.46); }
-.btn-amber { background: linear-gradient(135deg, #d97706, var(--amber-l));      color:#fff; box-shadow: 0 4px 16px rgba(245,158,11,0.28); }
-.btn-amber:hover  { box-shadow: 0 8px 26px rgba(245,158,11,0.44); }
-.btn-rose  { background: linear-gradient(135deg, #be123c, var(--rose-l));       color:#fff; box-shadow: 0 4px 16px rgba(244,63,94,0.28); }
-.btn-rose:hover   { box-shadow: 0 8px 26px rgba(244,63,94,0.44); }
-.btn-ghost {
-  background: var(--white); color: var(--t2);
-  border: 1px solid var(--b1); box-shadow: var(--s0);
-}
-.btn-ghost:hover {
-  background: var(--sky-pale); border-color: var(--b-sky); color: var(--sky-d);
-  box-shadow: 0 4px 16px rgba(59,130,246,0.12);
-}
-.btn-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-
-/* ══ FIELD BLOCKS ══ */
-.field {
-  display: flex; flex-direction: column; gap: 3px;
-  padding: 11px 14px; border-radius: var(--r-sm);
-  background: var(--bg); border: 1px solid var(--b1);
-  margin-bottom: 8px; transition: var(--t) var(--spring);
-}
-.field:hover { background: var(--sky-pale); border-color: var(--b-sky); transform: translateX(4px); box-shadow: var(--s0); }
-.field-lbl {
-  font-family: var(--fm); font-size: 9px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 2px; color: var(--sky);
-}
-.field-val { font-size: 13.5px; color: var(--t2); font-weight: 500; line-height: 1.4; }
-.fields-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8px; }
-.fields-2col .field { margin-bottom: 8px; }
-.field-full { grid-column: 1 / -1; }
-
-/* ══ DATE PAIR ══ */
-.date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
-.date-block {
-  background: var(--bg); border: 1px solid var(--b1);
-  border-radius: var(--r-md); padding: 14px 16px;
-  transition: var(--t) var(--spring);
-}
-.date-block:hover { background: var(--sky-pale); border-color: var(--b-sky); transform: translateY(-3px); box-shadow: var(--s1); }
-.date-block .dl { font-family: var(--fm); font-size: 9px; color: var(--t4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
-.date-block .dv { font-family: var(--fd); font-size: 17px; color: var(--t1); }
-
-/* ══ STATUS BADGE ══ */
-.status-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 22px; border-radius: var(--r-pill);
-  font-family: var(--fm); font-size: 11px; font-weight: 600;
-  letter-spacing: 1.2px; text-transform: uppercase;
-}
-.sb-ok  { background: var(--mint-pale); color: var(--mint-d); border: 1px solid rgba(16,185,129,0.22); }
-.sb-exp { background: var(--rose-pale); color: var(--rose);   border: 1px solid rgba(244,63,94,0.22); animation: expFlash 2s ease-in-out infinite; }
-.sd { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
-.sb-ok .sd  { background: var(--mint); animation: sdPulseG 2.2s infinite; }
-.sb-exp .sd { background: var(--rose); animation: sdPulseR 2.2s infinite; }
-@keyframes sdPulseG { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)}  50%{box-shadow:0 0 0 5px rgba(16,185,129,0)} }
-@keyframes sdPulseR { 0%,100%{box-shadow:0 0 0 0 rgba(244,63,94,0.4)}   50%{box-shadow:0 0 0 5px rgba(244,63,94,0)} }
-@keyframes expFlash { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 18px rgba(244,63,94,0.22)} }
-
-.alert-strip {
-  display: flex; align-items: center; gap: 10px;
-  padding: 11px 14px; border-radius: var(--r-sm); margin-top: 14px;
-  font-size: 13px; font-weight: 500;
-}
-.as-warn { background: var(--amber-pale); border-left: 3px solid var(--amber); color: #92400e; }
-.as-ok   { background: var(--mint-pale);  border-left: 3px solid var(--mint);  color: #065f46; }
-
-/* ══ ANNOUNCEMENTS ══ */
-.ann-list { display: flex; flex-direction: column; gap: 12px; }
-.ann-item {
-  padding: 16px 18px; border-radius: var(--r-md);
-  background: var(--bg); border: 1px solid var(--b1);
-  border-left: 3px solid var(--sky);
-  position: relative; overflow: hidden; transition: var(--t) var(--spring);
-}
-.ann-item::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, transparent 60%);
-  pointer-events: none;
-}
-.ann-item:hover {
-  background: var(--sky-pale); border-color: var(--sky-l);
-  transform: translateY(-3px) translateX(4px); box-shadow: var(--s2);
-}
-.ann-title { font-family: var(--fd); font-size: 15px; font-style: italic; color: var(--sky-d); margin-bottom: 6px; }
-.ann-body  { font-size: 13px; color: var(--t3); line-height: 1.65; }
-.ann-empty { text-align: center; padding: 52px 20px; color: var(--t5); }
-.ann-empty-icon { font-size: 50px; display: block; margin-bottom: 14px; opacity: 0.38; }
-
-/* ══ SECTION LABEL ══ */
-.sec-lbl {
-  display: flex; align-items: center; gap: 10px;
-  font-family: var(--fm); font-size: 9.5px; font-weight: 600;
-  letter-spacing: 2.5px; text-transform: uppercase; color: var(--t4);
-  margin: 16px 0 10px;
-}
-.sec-lbl:first-child { margin-top: 0; }
-.sec-lbl::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(59,130,246,0.18), transparent); }
-
-/* ══ ADMIN LAYOUT ══ */
-.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-
-/* ══ RATIO BOX ══ */
-.ratio-box {
-  display: flex; align-items: center; gap: 16px;
-  padding: 16px 18px; border-radius: var(--r-lg);
-  background: var(--bg); border: 1px solid var(--b1);
-  margin-bottom: 16px;
-}
-.radial-wrap { width: 76px; height: 76px; position: relative; flex-shrink: 0; }
-.radial-wrap svg { transform: rotate(-90deg); }
-.r-bg   { fill: none; stroke: rgba(59,130,246,0.10); stroke-width: 8; }
-.r-fill {
-  fill: none; stroke: url(#rGrad); stroke-width: 8; stroke-linecap: round;
-  stroke-dasharray: 188.5; stroke-dashoffset: 188.5;
-  transition: stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1);
-}
-.r-lbl {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  font-family: var(--fd); font-size: 14px; color: var(--sky-d); line-height: 1;
-}
-.r-lbl-sub { font-family: var(--fm); font-size: 8px; color: var(--t4); margin-top: 2px; letter-spacing: 1px; }
-.ratio-info { flex: 1; }
-.ratio-name { font-family: var(--fd); font-style: italic; font-size: 14px; color: var(--t2); margin-bottom: 3px; }
-.ratio-desc { font-size: 12px; color: var(--t4); }
-.prog-bar   { height: 6px; background: rgba(59,130,246,0.1); border-radius: 4px; overflow: hidden; margin-top: 8px; }
-.prog-fill  {
-  height: 100%; border-radius: 4px;
-  background: linear-gradient(90deg, var(--sky-d), var(--sky), var(--mint-l));
-  background-size: 200% 100%;
-  box-shadow: 0 0 14px rgba(59,130,246,0.28);
-  width: 0%; transition: width 1.8s cubic-bezier(0.4,0,0.2,1);
-  animation: progAnim 3s linear infinite;
-}
-@keyframes progAnim { 0%{background-position:0%} 100%{background-position:200%} }
-
-/* ══ MEDICAL STATS ══ */
-.med-row {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 10px; margin-bottom: 4px;
-}
-.med-stat {
-  background: var(--bg); border: 1px solid var(--b1);
-  border-radius: var(--r-md); padding: 14px 10px; text-align: center;
-  transition: var(--t) var(--spring);
-}
-.med-stat:hover { transform: scale(1.05) translateY(-3px); box-shadow: var(--s2); }
-.med-num {
-  font-family: var(--fd); font-size: 28px; display: block;
-  line-height: 1; margin-bottom: 3px;
-}
-.med-lbl { font-size: 11px; font-weight: 600; color: var(--t4); }
-.ms-sky  .med-num { background: linear-gradient(135deg, var(--sky-d),  var(--sky-l));   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.ms-mint .med-num { background: linear-gradient(135deg, var(--mint-d), var(--mint-l));  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.ms-amb  .med-num { background: linear-gradient(135deg, #d97706, var(--amber-l));        -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.ms-rose .med-num { background: linear-gradient(135deg, var(--rose),   var(--rose-l));  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-
-/* ══ ACTION TILES ══ */
-.tile-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 9px; }
-.tile {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 8px; padding: 16px 8px;
-  border-radius: var(--r-lg); background: var(--bg);
-  border: 1px solid var(--b1); text-decoration: none; color: var(--t2);
-  font-size: 12px; font-weight: 600; text-align: center;
-  transition: var(--t) var(--spring); position: relative; overflow: hidden;
-}
-.tile::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.2), transparent);
-  opacity: 0; transition: opacity var(--t);
-}
-.tile:hover::before { opacity: 1; }
-.tile:hover { background: var(--white); border-color: var(--sky-l); color: var(--sky-d); transform: translateY(-5px); box-shadow: var(--s2); }
-.tile:active { transform: scale(0.96); }
-
-.tile-icon {
-  width: 38px; height: 38px; border-radius: 10px; font-size: 18px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--sky-pale); border: 1px solid var(--b-sky);
-  transition: transform var(--t) var(--bounce);
-}
-.tile:hover .tile-icon { transform: scale(1.12) rotate(-5deg); }
-.tile-icon.ti-red    { background: var(--rose-pale);   border-color: rgba(244,63,94,0.15); }
-.tile-icon.ti-green  { background: var(--mint-pale);   border-color: rgba(16,185,129,0.15); }
-.tile-icon.ti-amber  { background: var(--amber-pale);  border-color: rgba(245,158,11,0.15); }
-.tile-icon.ti-violet { background: var(--violet-pale); border-color: rgba(139,92,246,0.15); }
-
-.tile.t-red:hover    { color: var(--rose);    border-color: rgba(244,63,94,0.3); }
-.tile.t-green:hover  { color: var(--mint-d);  border-color: rgba(16,185,129,0.3); }
-.tile.t-amber:hover  { color: #92400e;        border-color: rgba(245,158,11,0.3); }
-.tile.t-violet:hover { color: var(--violet);  border-color: rgba(139,92,246,0.3); }
-
-/* Renewal bar */
-.mc-bar { display: flex; align-items: center; gap: 14px; margin-top: 18px; flex-wrap: wrap; }
-.mc-lbl { font-family: var(--fd); font-style: italic; font-size: 14px; color: var(--t2); flex: 1; }
-
-/* ══ SCROLLBAR ══ */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--sky), var(--mint-l)); border-radius: 3px; }
-::selection { background: rgba(59,130,246,0.15); color: var(--t1); }
-
-/* ══ RESPONSIVE ══ */
-@media (max-width: 1280px) {
-  :root { --sidebar-w: 240px; }
-  .stats-row  { grid-template-columns: repeat(2, 1fr); }
-  .admin-grid { grid-template-columns: 1fr; gap: 24px; }
-}
-@media (max-width: 1024px) {
-  .main-grid { grid-template-columns: 1fr; }
-  .med-row   { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 768px) {
-  :root { --sidebar-w: 0px; }
-
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open{
-    transform: translateX(0);
-}
-
-  .topbar { padding: 0 20px; }
-  .page   { padding: 24px 20px 60px; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .tb-clock  { display: none; }
-
-  /* mobile menu button */
-  .mobile-menu{
-      display:block;
-  }
-}
-@media (max-width: 520px) {
-  .stats-row  { grid-template-columns: 1fr; }
-  .tile-grid  { grid-template-columns: repeat(2, 1fr); }
-  .date-row   { grid-template-columns: 1fr 1fr; }
-  .panel      { padding: 20px 16px; }
-  .fields-2col{ grid-template-columns: 1fr; }
-}
-.mobile-menu{
-    display:none;
-    font-size:22px;
-    background:none;
-    border:none;
-    cursor:pointer;
-    padding:6px 10px;
-}
-</style>
+    :root {
+      --white: #ffffff;
+      --bg: #f5f7fb;
+      --bg2: #eef1f8;
+      --bg3: #e6eaf4;
+
+      --sky: #3b82f6;
+      --sky-d: #1d4ed8;
+      --sky-l: #60a5fa;
+      --sky-xl: #bfdbfe;
+      --sky-pale: #eff6ff;
+      --b-sky: rgba(59, 130, 246, 0.15);
+      --b-sky2: rgba(59, 130, 246, 0.28);
+
+      --mint: #10b981;
+      --mint-d: #059669;
+      --mint-l: #34d399;
+      --mint-pale: #ecfdf5;
+
+      --violet: #8b5cf6;
+      --violet-l: #a78bfa;
+      --violet-pale: #f5f3ff;
+
+      --amber: #f59e0b;
+      --amber-l: #fcd34d;
+      --amber-pale: #fffbeb;
+
+      --rose: #f43f5e;
+      --rose-l: #fb7185;
+      --rose-pale: #fff1f2;
+
+      --t1: #0f172a;
+      --t2: #1e293b;
+      --t3: #475569;
+      --t4: #94a3b8;
+      --t5: #cbd5e1;
+      --t6: #e2e8f0;
+
+      --b1: rgba(15, 23, 42, 0.06);
+      --b2: rgba(15, 23, 42, 0.10);
+
+      --s0: 0 1px 3px rgba(15, 23, 42, 0.04);
+      --s1: 0 2px 12px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+      --s2: 0 8px 28px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+      --s3: 0 18px 52px rgba(15, 23, 42, 0.10), 0 4px 14px rgba(15, 23, 42, 0.05);
+      --s4: 0 32px 80px rgba(15, 23, 42, 0.12), 0 8px 22px rgba(15, 23, 42, 0.06);
+      --s-sky: 0 8px 28px rgba(59, 130, 246, 0.22);
+      --s-mint: 0 8px 28px rgba(16, 185, 129, 0.20);
+
+      --fd: 'DM Serif Display', Georgia, serif;
+      --fb: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --fm: 'JetBrains Mono', monospace;
+
+      --r-xl: 24px;
+      --r-lg: 18px;
+      --r-md: 12px;
+      --r-sm: 8px;
+      --r-pill: 999px;
+
+      --sidebar-w: 268px;
+
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --spring: cubic-bezier(0.16, 1, 0.3, 1);
+      --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --t: 0.25s;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-family: var(--fb);
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+    }
+
+    /* ══ BACKGROUND BLOBS ══ */
+    .blobs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      will-change: transform;
+    }
+
+    .blob-1 {
+      width: 640px;
+      height: 640px;
+      top: -160px;
+      right: -80px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.10) 0%, rgba(139, 92, 246, 0.06) 50%, transparent 70%);
+      animation: blobDrift1 20s ease-in-out infinite alternate;
+    }
+
+    .blob-2 {
+      width: 540px;
+      height: 540px;
+      bottom: -100px;
+      left: 200px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.09) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 70%);
+      animation: blobDrift2 26s ease-in-out infinite alternate;
+    }
+
+    .blob-3 {
+      width: 400px;
+      height: 400px;
+      top: 40%;
+      left: 60%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 65%);
+      animation: blobDrift3 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes blobDrift1 {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(-60px, 80px)
+      }
+    }
+
+    @keyframes blobDrift2 {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(70px, -60px)
+      }
+    }
+
+    @keyframes blobDrift3 {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      100% {
+        transform: translate(-40px, 50px)
+      }
+    }
+
+    #canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ══ SIDEBAR ══ */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-w);
+      z-index: 800;
+      background: var(--white);
+      border-right: 1px solid var(--b1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 32px rgba(15, 23, 42, 0.04);
+      transition: transform 0.35s cubic-bezier(.16, 1, .3, 1);
+      overflow: hidden;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 700;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--sky-d), var(--sky), var(--mint-l), var(--violet-l));
+      background-size: 300% 100%;
+      animation: sidebarBar 5s linear infinite;
+    }
+
+    @keyframes sidebarBar {
+      0% {
+        background-position: 0%
+      }
+
+      100% {
+        background-position: 300%
+      }
+    }
+
+    .sb-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 28px 24px 24px;
+      text-decoration: none;
+      border-bottom: 1px solid var(--b1);
+    }
+
+    .sb-logo-gem {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      background: linear-gradient(140deg, var(--sky-d) 0%, var(--sky) 55%, var(--mint-l) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 22px rgba(59, 130, 246, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      animation: gemBreathe 5s ease-in-out infinite alternate;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sb-logo-gem::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: conic-gradient(from 0deg, rgba(255, 255, 255, 0) 0deg, rgba(255, 255, 255, 0.18) 90deg, rgba(255, 255, 255, 0) 180deg);
+      animation: gemSheen 3s linear infinite;
+    }
+
+    @keyframes gemBreathe {
+      from {
+        box-shadow: 0 4px 18px rgba(59, 130, 246, 0.30);
+        transform: scale(1);
+      }
+
+      to {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.50), 0 0 0 5px rgba(59, 130, 246, 0.08);
+        transform: scale(1.04);
+      }
+    }
+
+    @keyframes gemSheen {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .sb-logo-letter {
+      font-family: var(--fd);
+      font-size: 22px;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .sb-logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .sb-logo-name {
+      font-family: var(--fd);
+      font-size: 16px;
+      line-height: 1;
+      background: linear-gradient(125deg, var(--sky-d) 0%, var(--sky) 50%, var(--mint) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sb-logo-sub {
+      font-family: var(--fm);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--t4);
+      line-height: 1;
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: 18px 14px;
+      overflow-y: auto;
+    }
+
+    .sb-section-label {
+      font-family: var(--fm);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: var(--t4);
+      padding: 0 12px;
+      margin: 16px 0 7px;
+    }
+
+    .sb-section-label:first-child {
+      margin-top: 4px;
+    }
+
+    .sb-link {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 13px;
+      border-radius: var(--r-md);
+      text-decoration: none;
+      color: var(--t3);
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: var(--t) var(--ease);
+      position: relative;
+      margin-bottom: 2px;
+    }
+
+    .sb-link-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      transition: var(--t) var(--spring);
+    }
+
+    .sb-link:hover {
+      color: var(--t1);
+      background: var(--bg);
+    }
+
+    .sb-link:hover .sb-link-icon {
+      background: var(--sky-pale);
+      border-color: var(--b-sky);
+      transform: scale(1.08) rotate(-4deg);
+    }
+
+    .sb-link.active {
+      color: var(--sky-d);
+      background: var(--sky-pale);
+      font-weight: 600;
+    }
+
+    .sb-link.active .sb-link-icon {
+      background: linear-gradient(135deg, var(--sky-d), var(--sky));
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+    }
+
+    .sb-link.active .sb-link-icon span {
+      filter: brightness(0) invert(1);
+    }
+
+    .sb-link.active::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 22px;
+      border-radius: 2px 0 0 2px;
+      background: linear-gradient(180deg, var(--sky-d), var(--sky));
+    }
+
+    .sb-user {
+      padding: 16px 18px;
+      border-top: 1px solid var(--b1);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .sb-user-av {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--sky-d), var(--mint));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+      font-weight: 700;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sb-user-av img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .sb-user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sb-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--t1);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sb-user-role {
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--t4);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .sb-logout {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      text-decoration: none;
+      color: var(--t3);
+      transition: var(--t) var(--spring);
+      flex-shrink: 0;
+    }
+
+    .sb-logout:hover {
+      background: var(--rose-pale);
+      border-color: rgba(244, 63, 94, 0.2);
+      color: var(--rose);
+      transform: scale(1.1);
+    }
+
+    /* ══ MAIN ══ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ══ TOPBAR ══ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 700;
+      height: 64px;
+      padding: 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(245, 247, 251, 0.90);
+      backdrop-filter: blur(28px) saturate(1.8);
+      -webkit-backdrop-filter: blur(28px) saturate(1.8);
+      border-bottom: 1px solid var(--b1);
+      transition: box-shadow var(--t) var(--ease);
+    }
+
+    .topbar.scrolled {
+      box-shadow: 0 4px 28px rgba(15, 23, 42, 0.07);
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .topbar-eyebrow {
+      font-family: var(--fm);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--sky);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-eyebrow::before {
+      content: '';
+      width: 16px;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--sky));
+    }
+
+    .topbar-title {
+      font-family: var(--fd);
+      font-size: 22px;
+      color: var(--t1);
+      line-height: 1;
+    }
+
+    .topbar-title em {
+      font-style: italic;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tb-clock {
+      font-family: var(--fm);
+      font-size: 12px;
+      color: var(--sky);
+      background: var(--sky-pale);
+      border: 1px solid var(--b-sky);
+      padding: 7px 16px;
+      border-radius: var(--r-pill);
+      letter-spacing: 0.3px;
+    }
+
+    .tb-pill {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      background: var(--white);
+      border: 1px solid var(--b1);
+      box-shadow: var(--s0);
+      transition: var(--t) var(--spring);
+      cursor: default;
+    }
+
+    .tb-pill:hover {
+      background: var(--sky-pale);
+      border-color: var(--b-sky);
+      transform: translateY(-3px) scale(1.1) rotate(-8deg);
+      box-shadow: var(--s-sky);
+    }
+
+    /* ══ PAGE ══ */
+    .page {
+      padding: 36px 36px 80px;
+      max-width: 1440px;
+    }
+
+    /* ══ HERO ROW ══ */
+    .hero-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .hero-heading {
+      font-family: var(--fd);
+      font-size: 28px;
+      color: var(--t1);
+      line-height: 1.1;
+    }
+
+    .hero-heading em {
+      font-style: italic;
+    }
+
+    .hero-date {
+      font-family: var(--fm);
+      font-size: 11px;
+      color: var(--t4);
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ══ STAT CARDS ══ */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--b1);
+      padding: 22px 24px;
+      box-shadow: var(--s1);
+      transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
+      position: relative;
+      overflow: hidden;
+      animation: cardRise 0.6s var(--spring) both;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: var(--r-lg) var(--r-lg) 0 0;
+      opacity: 0;
+      transition: opacity var(--t);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--s3);
+    }
+
+    .sc-blue::before {
+      background: linear-gradient(90deg, var(--sky-d), var(--sky-l));
+    }
+
+    .sc-green::before {
+      background: linear-gradient(90deg, var(--mint-d), var(--mint-l));
+    }
+
+    .sc-violet::before {
+      background: linear-gradient(90deg, var(--violet), var(--violet-l));
+    }
+
+    .sc-rose::before {
+      background: linear-gradient(90deg, var(--rose), var(--rose-l));
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: transform var(--t) var(--bounce);
+    }
+
+    .stat-card:hover .stat-icon {
+      transform: scale(1.1) rotate(-6deg);
+    }
+
+    .si-blue {
+      background: var(--sky-pale);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    .si-green {
+      background: var(--mint-pale);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+    }
+
+    .si-violet {
+      background: var(--violet-pale);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+    }
+
+    .si-rose {
+      background: var(--rose-pale);
+      border: 1px solid rgba(244, 63, 94, 0.15);
+    }
+
+    .stat-trend {
+      font-family: var(--fm);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--r-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .st-up {
+      background: var(--mint-pale);
+      color: var(--mint-d);
+    }
+
+    .st-down {
+      background: var(--rose-pale);
+      color: var(--rose);
+    }
+
+    .stat-number {
+      font-family: var(--fd);
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .sn-blue {
+      background: linear-gradient(135deg, var(--sky-d), var(--sky));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sn-green {
+      background: linear-gradient(135deg, var(--mint-d), var(--mint-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sn-violet {
+      background: linear-gradient(135deg, var(--violet), var(--violet-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sn-rose {
+      background: linear-gradient(135deg, var(--rose), var(--rose-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--t3);
+    }
+
+    .stat-bar {
+      margin-top: 14px;
+      height: 4px;
+      background: var(--bg2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sbf-blue {
+      background: linear-gradient(90deg, var(--sky-d), var(--sky-l));
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+
+    .sbf-green {
+      background: linear-gradient(90deg, var(--mint-d), var(--mint-l));
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+
+    .sbf-violet {
+      background: linear-gradient(90deg, var(--violet), var(--violet-l));
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+    }
+
+    .sbf-rose {
+      background: linear-gradient(90deg, var(--rose), var(--rose-l));
+      box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: 0.07s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.13s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.19s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.25s;
+    }
+
+    /* ══ MAIN GRID ══ */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .col-left {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .col-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ══ PANEL ══ */
+    .panel {
+      background: var(--white);
+      border-radius: var(--r-xl);
+      border: 1px solid var(--b1);
+      padding: 28px;
+      box-shadow: var(--s1);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
+      animation: cardRise 0.7s var(--spring) both;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, var(--sky-xl) 30%, rgba(16, 185, 129, 0.25) 60%, transparent 100%);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      opacity: 0;
+      transition: opacity var(--t);
+    }
+
+    .panel:hover::before {
+      opacity: 1;
+    }
+
+    .panel:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--s3);
+    }
+
+    @keyframes cardRise {
+      from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.982);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .panel.p2 {
+      animation-delay: 0.12s;
+    }
+
+    .panel.p3 {
+      animation-delay: 0.20s;
+    }
+
+    .panel.p4 {
+      animation-delay: 0.28s;
+    }
+
+    .panel.p5 {
+      animation-delay: 0.36s;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .panel-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: var(--sky-pale);
+      border: 1px solid var(--b-sky);
+      box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
+      transition: transform var(--t) var(--bounce);
+    }
+
+    .panel:hover .panel-icon {
+      transform: scale(1.08) rotate(-5deg);
+    }
+
+    .pi-mint {
+      background: var(--mint-pale);
+      border-color: rgba(16, 185, 129, 0.18);
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.1);
+    }
+
+    .pi-violet {
+      background: var(--violet-pale);
+      border-color: rgba(139, 92, 246, 0.18);
+      box-shadow: 0 2px 10px rgba(139, 92, 246, 0.1);
+    }
+
+    .pi-amber {
+      background: var(--amber-pale);
+      border-color: rgba(245, 158, 11, 0.18);
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);
+    }
+
+    .pi-rose {
+      background: var(--rose-pale);
+      border-color: rgba(244, 63, 94, 0.18);
+      box-shadow: 0 2px 10px rgba(244, 63, 94, 0.1);
+    }
+
+    .panel-title {
+      font-family: var(--fd);
+      font-size: 18px;
+      color: var(--t1);
+      line-height: 1.2;
+    }
+
+    .panel-sub {
+      font-family: var(--fm);
+      font-size: 9.5px;
+      color: var(--t4);
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      margin-top: 1px;
+    }
+
+    .divider {
+      height: 1px;
+      border: none;
+      margin: 20px 0;
+      background: linear-gradient(90deg, transparent, var(--b1) 30%, var(--b1) 70%, transparent);
+    }
+
+    /* ══ PROFILE ══ */
+    .profile-core {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .av-shell {
+      position: relative;
+      width: 118px;
+      height: 118px;
+      margin-bottom: 18px;
+    }
+
+    .av-ring-track {
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: conic-gradient(var(--sky) 0deg, var(--mint-l) 90deg, var(--violet-l) 180deg, var(--sky-l) 270deg, var(--sky) 360deg);
+      animation: avRing 8s linear infinite;
+    }
+
+    .av-ring-gap {
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      background: var(--white);
+      z-index: 1;
+    }
+
+    .av-img {
+      position: absolute;
+      inset: 6px;
+      width: calc(100% - 12px);
+      height: calc(100% - 12px);
+      border-radius: 50%;
+      object-fit: cover;
+      z-index: 2;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 28px rgba(59, 130, 246, 0.18);
+      transition: transform var(--t) var(--spring);
+    }
+
+    .av-img:hover {
+      transform: scale(1.06);
+    }
+
+    .av-pulse {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      z-index: 3;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--mint);
+      border: 2.5px solid var(--white);
+      animation: avPulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes avRing {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes avPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+      }
+    }
+
+    .profile-name {
+      font-family: var(--fd);
+      font-size: 22px;
+      color: var(--t1);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .role-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 16px;
+      border-radius: var(--r-pill);
+      font-family: var(--fm);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .rc-member {
+      background: var(--bg2);
+      color: var(--t3);
+      border: 1px solid var(--b1);
+    }
+
+    .rc-section {
+      background: var(--violet-pale);
+      color: var(--violet);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .rc-admin {
+      background: var(--sky-pale);
+      color: var(--sky-d);
+      border: 1px solid var(--b-sky);
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.14);
+    }
+
+    .rc-super {
+      background: linear-gradient(125deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.12));
+      color: var(--violet);
+      border: 1px solid rgba(139, 92, 246, 0.28);
+      animation: superChip 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes superChip {
+      from {
+        box-shadow: 0 0 14px rgba(139, 92, 246, 0.18);
+      }
+
+      to {
+        box-shadow: 0 0 30px rgba(139, 92, 246, 0.42), 0 0 50px rgba(59, 130, 246, 0.1);
+      }
+    }
+
+    .info-stack {
+      list-style: none;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      gap: 12px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+      transition: 0.15s var(--ease);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-row:hover {
+      padding-left: 4px;
+    }
+
+    .ir-l {
+      font-size: 12px;
+      color: var(--t4);
+      font-weight: 400;
+      flex-shrink: 0;
+    }
+
+    .ir-v {
+      font-size: 13px;
+      color: var(--t2);
+      font-weight: 600;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    /* ══ BUTTONS ══ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: var(--r-md);
+      font-family: var(--fb);
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--t) var(--spring), box-shadow var(--t) var(--ease);
+      letter-spacing: 0.1px;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 25%, rgba(255, 255, 255, 0.32) 50%, transparent 75%);
+      transform: translateX(-110%) skewX(-8deg);
+      transition: transform 0.5s;
+    }
+
+    .btn:hover::after {
+      transform: translateX(110%) skewX(-8deg);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(0.97);
+    }
+
+    .btn-sky {
+      background: linear-gradient(135deg, var(--sky-d), var(--sky));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.30);
+    }
+
+    .btn-sky:hover {
+      box-shadow: 0 8px 26px rgba(59, 130, 246, 0.48);
+    }
+
+    .btn-mint {
+      background: linear-gradient(135deg, var(--mint-d), var(--mint-l));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.28);
+    }
+
+    .btn-mint:hover {
+      box-shadow: 0 8px 26px rgba(16, 185, 129, 0.44);
+    }
+
+    .btn-violet {
+      background: linear-gradient(135deg, var(--violet), var(--violet-l));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.30);
+    }
+
+    .btn-violet:hover {
+      box-shadow: 0 8px 26px rgba(139, 92, 246, 0.46);
+    }
+
+    .btn-amber {
+      background: linear-gradient(135deg, #d97706, var(--amber-l));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.28);
+    }
+
+    .btn-amber:hover {
+      box-shadow: 0 8px 26px rgba(245, 158, 11, 0.44);
+    }
+
+    .btn-rose {
+      background: linear-gradient(135deg, #be123c, var(--rose-l));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(244, 63, 94, 0.28);
+    }
+
+    .btn-rose:hover {
+      box-shadow: 0 8px 26px rgba(244, 63, 94, 0.44);
+    }
+
+    .btn-ghost {
+      background: var(--white);
+      color: var(--t2);
+      border: 1px solid var(--b1);
+      box-shadow: var(--s0);
+    }
+
+    .btn-ghost:hover {
+      background: var(--sky-pale);
+      border-color: var(--b-sky);
+      color: var(--sky-d);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.12);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    /* ══ FIELD BLOCKS ══ */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 11px 14px;
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      margin-bottom: 8px;
+      transition: var(--t) var(--spring);
+    }
+
+    .field:hover {
+      background: var(--sky-pale);
+      border-color: var(--b-sky);
+      transform: translateX(4px);
+      box-shadow: var(--s0);
+    }
+
+    .field-lbl {
+      font-family: var(--fm);
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--sky);
+    }
+
+    .field-val {
+      font-size: 13.5px;
+      color: var(--t2);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .fields-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 8px;
+    }
+
+    .fields-2col .field {
+      margin-bottom: 8px;
+    }
+
+    .field-full {
+      grid-column: 1 / -1;
+    }
+
+    /* ══ DATE PAIR ══ */
+    .date-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .date-block {
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      border-radius: var(--r-md);
+      padding: 14px 16px;
+      transition: var(--t) var(--spring);
+    }
+
+    .date-block:hover {
+      background: var(--sky-pale);
+      border-color: var(--b-sky);
+      transform: translateY(-3px);
+      box-shadow: var(--s1);
+    }
+
+    .date-block .dl {
+      font-family: var(--fm);
+      font-size: 9px;
+      color: var(--t4);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 5px;
+    }
+
+    .date-block .dv {
+      font-family: var(--fd);
+      font-size: 17px;
+      color: var(--t1);
+    }
+
+    /* ══ STATUS BADGE ══ */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 22px;
+      border-radius: var(--r-pill);
+      font-family: var(--fm);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .sb-ok {
+      background: var(--mint-pale);
+      color: var(--mint-d);
+      border: 1px solid rgba(16, 185, 129, 0.22);
+    }
+
+    .sb-exp {
+      background: var(--rose-pale);
+      color: var(--rose);
+      border: 1px solid rgba(244, 63, 94, 0.22);
+      animation: expFlash 2s ease-in-out infinite;
+    }
+
+    .sd {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .sb-ok .sd {
+      background: var(--mint);
+      animation: sdPulseG 2.2s infinite;
+    }
+
+    .sb-exp .sd {
+      background: var(--rose);
+      animation: sdPulseR 2.2s infinite;
+    }
+
+    @keyframes sdPulseG {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4)
+      }
+
+      50% {
+        box-shadow: 0 0 0 5px rgba(16, 185, 129, 0)
+      }
+    }
+
+    @keyframes sdPulseR {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4)
+      }
+
+      50% {
+        box-shadow: 0 0 0 5px rgba(244, 63, 94, 0)
+      }
+    }
+
+    @keyframes expFlash {
+
+      0%,
+      100% {
+        box-shadow: none
+      }
+
+      50% {
+        box-shadow: 0 0 18px rgba(244, 63, 94, 0.22)
+      }
+    }
+
+    .alert-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: var(--r-sm);
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .as-warn {
+      background: var(--amber-pale);
+      border-left: 3px solid var(--amber);
+      color: #92400e;
+    }
+
+    .as-ok {
+      background: var(--mint-pale);
+      border-left: 3px solid var(--mint);
+      color: #065f46;
+    }
+
+    /* ══ ANNOUNCEMENTS ══ */
+    .ann-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ann-item {
+      padding: 16px 18px;
+      border-radius: var(--r-md);
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      border-left: 3px solid var(--sky);
+      position: relative;
+      overflow: hidden;
+      transition: var(--t) var(--spring);
+    }
+
+    .ann-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .ann-item:hover {
+      background: var(--sky-pale);
+      border-color: var(--sky-l);
+      transform: translateY(-3px) translateX(4px);
+      box-shadow: var(--s2);
+    }
+
+    .ann-title {
+      font-family: var(--fd);
+      font-size: 15px;
+      font-style: italic;
+      color: var(--sky-d);
+      margin-bottom: 6px;
+    }
+
+    .ann-body {
+      font-size: 13px;
+      color: var(--t3);
+      line-height: 1.65;
+    }
+
+    .ann-empty {
+      text-align: center;
+      padding: 52px 20px;
+      color: var(--t5);
+    }
+
+    .ann-empty-icon {
+      font-size: 50px;
+      display: block;
+      margin-bottom: 14px;
+      opacity: 0.38;
+    }
+
+    /* ══ SECTION LABEL ══ */
+    .sec-lbl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--fm);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--t4);
+      margin: 16px 0 10px;
+    }
+
+    .sec-lbl:first-child {
+      margin-top: 0;
+    }
+
+    .sec-lbl::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.18), transparent);
+    }
+
+    /* ══ ADMIN LAYOUT ══ */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    /* ══ RATIO BOX ══ */
+    .ratio-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      border-radius: var(--r-lg);
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      margin-bottom: 16px;
+    }
+
+    .radial-wrap {
+      width: 76px;
+      height: 76px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .radial-wrap svg {
+      transform: rotate(-90deg);
+    }
+
+    .r-bg {
+      fill: none;
+      stroke: rgba(59, 130, 246, 0.10);
+      stroke-width: 8;
+    }
+
+    .r-fill {
+      fill: none;
+      stroke: url(#rGrad);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 188.5;
+      stroke-dashoffset: 188.5;
+      transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .r-lbl {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--fd);
+      font-size: 14px;
+      color: var(--sky-d);
+      line-height: 1;
+    }
+
+    .r-lbl-sub {
+      font-family: var(--fm);
+      font-size: 8px;
+      color: var(--t4);
+      margin-top: 2px;
+      letter-spacing: 1px;
+    }
+
+    .ratio-info {
+      flex: 1;
+    }
+
+    .ratio-name {
+      font-family: var(--fd);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--t2);
+      margin-bottom: 3px;
+    }
+
+    .ratio-desc {
+      font-size: 12px;
+      color: var(--t4);
+    }
+
+    .prog-bar {
+      height: 6px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--sky-d), var(--sky), var(--mint-l));
+      background-size: 200% 100%;
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.28);
+      width: 0%;
+      transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: progAnim 3s linear infinite;
+    }
+
+    @keyframes progAnim {
+      0% {
+        background-position: 0%
+      }
+
+      100% {
+        background-position: 200%
+      }
+    }
+
+    /* ══ MEDICAL STATS ══ */
+    .med-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .med-stat {
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      border-radius: var(--r-md);
+      padding: 14px 10px;
+      text-align: center;
+      transition: var(--t) var(--spring);
+    }
+
+    .med-stat:hover {
+      transform: scale(1.05) translateY(-3px);
+      box-shadow: var(--s2);
+    }
+
+    .med-num {
+      font-family: var(--fd);
+      font-size: 28px;
+      display: block;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .med-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--t4);
+    }
+
+    .ms-sky .med-num {
+      background: linear-gradient(135deg, var(--sky-d), var(--sky-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ms-mint .med-num {
+      background: linear-gradient(135deg, var(--mint-d), var(--mint-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ms-amb .med-num {
+      background: linear-gradient(135deg, #d97706, var(--amber-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .ms-rose .med-num {
+      background: linear-gradient(135deg, var(--rose), var(--rose-l));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ══ ACTION TILES ══ */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 9px;
+    }
+
+    .tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 8px;
+      border-radius: var(--r-lg);
+      background: var(--bg);
+      border: 1px solid var(--b1);
+      text-decoration: none;
+      color: var(--t2);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      transition: var(--t) var(--spring);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+      opacity: 0;
+      transition: opacity var(--t);
+    }
+
+    .tile:hover::before {
+      opacity: 1;
+    }
+
+    .tile:hover {
+      background: var(--white);
+      border-color: var(--sky-l);
+      color: var(--sky-d);
+      transform: translateY(-5px);
+      box-shadow: var(--s2);
+    }
+
+    .tile:active {
+      transform: scale(0.96);
+    }
+
+    .tile-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sky-pale);
+      border: 1px solid var(--b-sky);
+      transition: transform var(--t) var(--bounce);
+    }
+
+    .tile:hover .tile-icon {
+      transform: scale(1.12) rotate(-5deg);
+    }
+
+    .tile-icon.ti-red {
+      background: var(--rose-pale);
+      border-color: rgba(244, 63, 94, 0.15);
+    }
+
+    .tile-icon.ti-green {
+      background: var(--mint-pale);
+      border-color: rgba(16, 185, 129, 0.15);
+    }
+
+    .tile-icon.ti-amber {
+      background: var(--amber-pale);
+      border-color: rgba(245, 158, 11, 0.15);
+    }
+
+    .tile-icon.ti-violet {
+      background: var(--violet-pale);
+      border-color: rgba(139, 92, 246, 0.15);
+    }
+
+    .tile.t-red:hover {
+      color: var(--rose);
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+
+    .tile.t-green:hover {
+      color: var(--mint-d);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .tile.t-amber:hover {
+      color: #92400e;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .tile.t-violet:hover {
+      color: var(--violet);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    /* Renewal bar */
+    .mc-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .mc-lbl {
+      font-family: var(--fd);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--t2);
+      flex: 1;
+    }
+
+    /* ══ SCROLLBAR ══ */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--sky), var(--mint-l));
+      border-radius: 3px;
+    }
+
+    ::selection {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--t1);
+    }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1280px) {
+      :root {
+        --sidebar-w: 240px;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .admin-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .med-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --sidebar-w: 0px;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .topbar {
+        padding: 0 20px;
+      }
+
+      .page {
+        padding: 24px 20px 60px;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tb-clock {
+        display: none;
+      }
+
+      /* mobile menu button */
+      .mobile-menu {
+        display: block;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tile-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .date-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .panel {
+        padding: 20px 16px;
+      }
+
+      .fields-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mobile-menu {
+      display: none;
+      font-size: 22px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- ══ BACKGROUND ══ -->
-<div class="blobs">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
-<canvas id="canvas"></canvas>
+  <!-- ══ BACKGROUND ══ -->
+  <div class="blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <canvas id="canvas"></canvas>
 
-<!-- ════════════════════════════════
+  <!-- ════════════════════════════════
      SIDEBAR
 ════════════════════════════════ -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-  <a class="sb-logo" href="/">
-    <div class="sb-logo-gem"><span class="sb-logo-letter">A</span></div>
-    <div class="sb-logo-text">
-      <span class="sb-logo-name">AASC Alampady</span>
-      <span class="sb-logo-sub">Member Portal</span>
-    </div>
-  </a>
-
-  <nav class="sb-nav">
-    <div class="sb-section-label">Navigation</div>
-
-    <a href="#" class="sb-link active">
-      <div class="sb-link-icon"><span>🏠</span></div>Dashboard
-    </a>
-    <a href="{{ url_for('portal.portal_events') }}" class="sb-link">
-      <div class="sb-link-icon"><span>📅</span></div>Events
-    </a>
-    <a href="{{ url_for('portal.membership_card') }}" class="sb-link">
-      <div class="sb-link-icon"><span>🪪</span></div>Membership Card
-    </a>
-    <a href="{{ url_for('portal.my_committees') }}" class="sb-link">
-      <div class="sb-link-icon"><span>📂</span></div>My Committees
-    </a>
-    <a href="{{ url_for('portal.complete_profile') }}" class="sb-link">
-      <div class="sb-link-icon"><span>✏️</span></div>Edit Profile
-    </a>
-    <a href="{{ url_for('portal.change_password') }}" class="sb-link">
-      <div class="sb-link-icon"><span>🔐</span></div>Change Password
-    </a>
-
-    {% if is_admin or is_super_admin or is_section_admin %}
-    <div class="sb-section-label">Admin</div>
-    <a href="{{ url_for('portal.admin_members') }}" class="sb-link">
-      <div class="sb-link-icon"><span>👥</span></div>Members
-    </a>
-    <a href="{{ url_for('portal.admin_analytics') }}" class="sb-link">
-      <div class="sb-link-icon"><span>📊</span></div>Analytics
-    </a>
-    <a href="{{ url_for('portal.admin_announcements') }}" class="sb-link">
-      <div class="sb-link-icon"><span>📢</span></div>Announcements
-    </a>
-    <a href="{{ url_for('portal.blood_donors') }}" class="sb-link">
-      <div class="sb-link-icon"><span>🩸</span></div>Blood Panel
-    </a>
-    <a href="{{ url_for('portal.medical_dashboard') }}" class="sb-link">
-      <div class="sb-link-icon"><span>🏥</span></div>Medical
-    </a>
-    {% endif %}
-
-    {% if is_super_admin %}
-    <div class="sb-section-label">Super Admin</div>
-    <a href="{{ url_for('portal.admin_dashboard') }}" class="sb-link">
-      <div class="sb-link-icon"><span>🖥️</span></div>Full Dashboard
-    </a>
-    <a href="{{ url_for('portal.manage_admins') }}" class="sb-link">
-      <div class="sb-link-icon"><span>🛡️</span></div>Manage Admins
-    </a>
-    <a href="{{ url_for('portal.admin_committees') }}" class="sb-link">
-      <div class="sb-link-icon"><span>📋</span></div>All Committees
-    </a>
-    {% endif %}
-  </nav>
-
-  <div class="sb-user">
-    <div class="sb-user-av">
-      {% if user.photo %}
-        <img src="{{ user.photo }}" alt="{{ user.name }}">
-      {% else %}
-        {{ user.name[0] }}
-      {% endif %}
-    </div>
-    <div class="sb-user-info">
-      <div class="sb-user-name">{{ user.name }}</div>
-      <div class="sb-user-role">
-        {% if is_super_admin %}Super Admin
-        {% elif is_admin %}Admin
-        {% elif is_section_admin %}Section Admin
-        {% else %}Member{% endif %}
+    <a class="sb-logo" href="/">
+      <div class="sb-logo-gem"><span class="sb-logo-letter">A</span></div>
+      <div class="sb-logo-text">
+        <span class="sb-logo-name">AASC Alampady</span>
+        <span class="sb-logo-sub">Member Portal</span>
       </div>
-    </div>
-    <a href="{{ url_for('portal.logout') }}" class="sb-logout" title="Logout">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-        <polyline points="16 17 21 12 16 7"/>
-        <line x1="21" y1="12" x2="9" y2="12"/>
-      </svg>
     </a>
-  </div>
-</aside>
 
-<!-- ════════════════════════════════
-     MAIN AREA
-════════════════════════════════ -->
-<div class="main">
+    <nav class="sb-nav">
+      <div class="sb-section-label">Navigation</div>
 
-  <!-- TOPBAR -->
-  <div class="topbar" id="topbar">
-    <div class="topbar-left" style="display:flex;align-items:center;gap:12px;">
-    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
-      <div class="topbar-eyebrow">Member Dashboard</div>
-      <div class="topbar-title"><em>Welcome back,</em> {{ user.name.split()[0] }} 👋</div>
-    </div>
-    <div class="topbar-right">
-      <div style="display:flex;gap:6px;">
-        <div class="tb-pill" title="Sports">🏆</div>
-        <div class="tb-pill" title="Arts">🎭</div>
-        <div class="tb-pill" title="Charity">🤝</div>
-      </div>
-      <div class="tb-clock" id="live-clock">—</div>
-    </div>
-  </div>
-
-  <!-- PAGE CONTENT -->
-  <div class="page">
-
-    <!-- HERO ROW -->
-    <div class="hero-row">
-      <div>
-        <div class="hero-heading">Your <em>Overview</em></div>
-        <div class="hero-date" id="live-date">—</div>
-      </div>
-      <div class="hero-btns">
-        <a href="{{ url_for('portal.portal_events') }}" class="btn btn-sky">📅 View Events</a>
-        <a href="{{ url_for('portal.membership_card') }}" class="btn btn-ghost">🪪 My Card</a>
-      </div>
-    </div>
-
-    <!-- ── STAT CARDS ── -->
-    <div class="stats-row">
-
-      <!-- Card 1: always shown — membership ID / joined -->
-      <div class="stat-card sc-blue">
-        <div class="stat-header">
-          <div class="stat-icon si-blue">🪪</div>
-          <span class="stat-trend st-up">{{ user.membership_id }}</span>
-        </div>
-        <span class="stat-number sn-blue" style="font-size:30px;">{{ user.membership_id }}</span>
-        <div class="stat-label">here from {{ user.membership_start }}</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-blue" id="bar-id" style="width:0%"></div></div>
-      </div>
+      <a href="#" class="sb-link active">
+        <div class="sb-link-icon"><span>🏠</span></div>Dashboard
+      </a>
+      <a href="{{ url_for('portal.portal_events') }}" class="sb-link">
+        <div class="sb-link-icon"><span>📅</span></div>Events
+      </a>
+      <a href="{{ url_for('portal.membership_card') }}" class="sb-link">
+        <div class="sb-link-icon"><span>🪪</span></div>Membership Card
+      </a>
+      <a href="{{ url_for('portal.my_committees') }}" class="sb-link">
+        <div class="sb-link-icon"><span>📂</span></div>My Committees
+      </a>
+      <a href="{{ url_for('portal.complete_profile') }}" class="sb-link">
+        <div class="sb-link-icon"><span>✏️</span></div>Edit Profile
+      </a>
+      <a href="{{ url_for('portal.change_password') }}" class="sb-link">
+        <div class="sb-link-icon"><span>🔐</span></div>Change Password
+      </a>
 
       {% if is_admin or is_super_admin or is_section_admin %}
-      <!-- Card 2: Total members -->
-      <div class="stat-card sc-green">
-        <div class="stat-header">
-          <div class="stat-icon si-green">👥</div>
-          <span class="stat-trend st-up">Total</span>
-        </div>
-        <span class="stat-number sn-green" id="cnt-total" data-target="{{ total_members }}">0</span>
-        <div class="stat-label">Total Members</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-green" id="bar-total" style="width:0%"></div></div>
-      </div>
-
-      <!-- Card 3: Active members -->
-      <div class="stat-card sc-violet">
-        <div class="stat-header">
-          <div class="stat-icon si-violet">✅</div>
-          <span class="stat-trend st-up">Active</span>
-        </div>
-        <span class="stat-number sn-violet" id="cnt-active" data-target="{{ active_members }}">0</span>
-        <div class="stat-label">Active Members</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-violet" id="bar-active" style="width:0%"></div></div>
-      </div>
-
-      <!-- Card 4: Expired members -->
-      <div class="stat-card sc-rose">
-        <div class="stat-header">
-          <div class="stat-icon si-rose">⚠️</div>
-          <span class="stat-trend st-down">Expired</span>
-        </div>
-        <span class="stat-number sn-rose" id="cnt-expired" data-target="{{ expired_members }}">0</span>
-        <div class="stat-label">Expired Members</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-rose" id="bar-expired" style="width:0%"></div></div>
-      </div>
-
-      {% else %}
-      <!-- Non-admin: show personal membership info -->
-      <div class="stat-card sc-green">
-        <div class="stat-header">
-          <div class="stat-icon si-green">💚</div>
-          {% if expired %}<span class="stat-trend st-down">Expired</span>{% else %}<span class="stat-trend st-up">Active</span>{% endif %}
-        </div>
-        <span class="stat-number sn-green" style="font-size:26px;">{% if expired %}Expired{% else %}Active{% endif %}</span>
-        <div class="stat-label">Membership Status</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-green" style="width:{% if expired %}25%{% else %}100%{% endif %}"></div></div>
-      </div>
-
-      <div class="stat-card sc-violet">
-        <div class="stat-header">
-          <div class="stat-icon si-violet">📅</div>
-        </div>
-       <span class="stat-number sn-violet" style="font-size:22px;">
-      {{ validity_end }}
-      </span>
-        <div class="stat-label">Membership Ends</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-violet" style="width:65%"></div></div>
-      </div>
-
-      <div class="stat-card sc-rose">
-        <div class="stat-header">
-          <div class="stat-icon si-rose">🩸</div>
-        </div>
-        <span class="stat-number sn-rose" style="font-size:30px;">{{ user.blood_group if user.blood_group else '—' }}</span>
-        <div class="stat-label">Blood Group</div>
-        <div class="stat-bar"><div class="stat-bar-fill sbf-rose" style="width:80%"></div></div>
-      </div>
+      <div class="sb-section-label">Admin</div>
+      <a href="{{ url_for('portal.admin_members') }}" class="sb-link">
+        <div class="sb-link-icon"><span>👥</span></div>Members
+      </a>
+      <a href="{{ url_for('portal.admin_analytics') }}" class="sb-link">
+        <div class="sb-link-icon"><span>📊</span></div>Analytics
+      </a>
+      <a href="{{ url_for('portal.admin_announcements') }}" class="sb-link">
+        <div class="sb-link-icon"><span>📢</span></div>Announcements
+      </a>
+      <a href="{{ url_for('portal.blood_donors') }}" class="sb-link">
+        <div class="sb-link-icon"><span>🩸</span></div>Blood Panel
+      </a>
+      <a href="{{ url_for('portal.medical_dashboard') }}" class="sb-link">
+        <div class="sb-link-icon"><span>🏥</span></div>Medical
+      </a>
       {% endif %}
 
-    </div><!-- /.stats-row -->
+      {% if is_super_admin %}
+      <div class="sb-section-label">Super Admin</div>
+      <a href="{{ url_for('portal.admin_dashboard') }}" class="sb-link">
+        <div class="sb-link-icon"><span>🖥️</span></div>Full Dashboard
+      </a>
+      <a href="{{ url_for('portal.manage_admins') }}" class="sb-link">
+        <div class="sb-link-icon"><span>🛡️</span></div>Manage Admins
+      </a>
+      <a href="{{ url_for('portal.admin_committees') }}" class="sb-link">
+        <div class="sb-link-icon"><span>📋</span></div>All Committees
+      </a>
+      {% endif %}
+    </nav>
 
-    <!-- ── MAIN GRID ── -->
-    <div class="main-grid">
+    <div class="sb-user">
+      <div class="sb-user-av">
+        {% if user.photo %}
+        <img src="{{ user.photo }}" alt="{{ user.name }}">
+        {% else %}
+        {{ user.name[0] }}
+        {% endif %}
+      </div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">{{ user.name }}</div>
+        <div class="sb-user-role">
+          {% if is_super_admin %}Super Admin
+          {% elif is_admin %}Admin
+          {% elif is_section_admin %}Section Admin
+          {% else %}Member{% endif %}
+        </div>
+      </div>
+      <a href="{{ url_for('portal.logout') }}" class="sb-logout" title="Logout">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+      </a>
+    </div>
+  </aside>
 
-      <!-- LEFT COLUMN -->
-      <div class="col-left">
+  <!-- ════════════════════════════════
+     MAIN AREA
+════════════════════════════════ -->
+  <div class="main">
 
-        <!-- Profile Panel -->
-        <div class="panel" data-tilt>
-          <div class="profile-core">
-            <div class="av-shell">
-              <div class="av-ring-track"></div>
-              <div class="av-ring-gap"></div>
-              {% if user.photo %}
+    <!-- TOPBAR -->
+    <div class="topbar" id="topbar">
+      <div class="topbar-left" style="display:flex;align-items:center;gap:12px;">
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+        <div class="topbar-eyebrow">Member Dashboard</div>
+        <div class="topbar-title"><em>Welcome back,</em> {{ user.name.split()[0] }} 👋</div>
+      </div>
+      <div class="topbar-right">
+        <div style="display:flex;gap:6px;">
+          <div class="tb-pill" title="Sports">🏆</div>
+          <div class="tb-pill" title="Arts">🎭</div>
+          <div class="tb-pill" title="Charity">🤝</div>
+        </div>
+        <div class="tb-clock" id="live-clock">—</div>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="page">
+
+      <!-- HERO ROW -->
+      <div class="hero-row">
+        <div>
+          <div class="hero-heading">Your <em>Overview</em></div>
+          <div class="hero-date" id="live-date">—</div>
+        </div>
+        <div class="hero-btns">
+          <a href="{{ url_for('portal.portal_events') }}" class="btn btn-sky">📅 View Events</a>
+          <a href="{{ url_for('portal.membership_card') }}" class="btn btn-ghost">🪪 My Card</a>
+        </div>
+      </div>
+
+      <!-- ── STAT CARDS ── -->
+      <div class="stats-row">
+
+        <!-- Card 1: always shown — membership ID / joined -->
+        <div class="stat-card sc-blue">
+          <div class="stat-header">
+            <div class="stat-icon si-blue">🪪</div>
+            <span class="stat-trend st-up">{{ user.membership_id }}</span>
+          </div>
+          <span class="stat-number sn-blue" style="font-size:30px;">{{ user.membership_id }}</span>
+          <div class="stat-label">here from {{ user.membership_start }}</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-blue" id="bar-id" style="width:0%"></div>
+          </div>
+        </div>
+
+        {% if is_admin or is_super_admin or is_section_admin %}
+        <!-- Card 2: Total members -->
+        <div class="stat-card sc-green">
+          <div class="stat-header">
+            <div class="stat-icon si-green">👥</div>
+            <span class="stat-trend st-up">Total</span>
+          </div>
+          <span class="stat-number sn-green" id="cnt-total" data-target="{{ total_members }}">0</span>
+          <div class="stat-label">Total Members</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-green" id="bar-total" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Card 3: Active members -->
+        <div class="stat-card sc-violet">
+          <div class="stat-header">
+            <div class="stat-icon si-violet">✅</div>
+            <span class="stat-trend st-up">Active</span>
+          </div>
+          <span class="stat-number sn-violet" id="cnt-active" data-target="{{ active_members }}">0</span>
+          <div class="stat-label">Active Members</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-violet" id="bar-active" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Card 4: Expired members -->
+        <div class="stat-card sc-rose">
+          <div class="stat-header">
+            <div class="stat-icon si-rose">⚠️</div>
+            <span class="stat-trend st-down">Expired</span>
+          </div>
+          <span class="stat-number sn-rose" id="cnt-expired" data-target="{{ expired_members }}">0</span>
+          <div class="stat-label">Expired Members</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-rose" id="bar-expired" style="width:0%"></div>
+          </div>
+        </div>
+
+        {% else %}
+        <!-- Non-admin: show personal membership info -->
+        <div class="stat-card sc-green">
+          <div class="stat-header">
+            <div class="stat-icon si-green">💚</div>
+            {% if expired %}<span class="stat-trend st-down">Expired</span>{% else %}<span
+              class="stat-trend st-up">Active</span>{% endif %}
+          </div>
+          <span class="stat-number sn-green" style="font-size:26px;">{% if expired %}Expired{% else %}Active{% endif
+            %}</span>
+          <div class="stat-label">Membership Status</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-green" style="width:{% if expired %}25%{% else %}100%{% endif %}"></div>
+          </div>
+        </div>
+
+        <div class="stat-card sc-violet">
+          <div class="stat-header">
+            <div class="stat-icon si-violet">📅</div>
+          </div>
+          <span class="stat-number sn-violet" style="font-size:22px;">
+            {{ validity_end }}
+          </span>
+          <div class="stat-label">Membership Ends</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-violet" style="width:65%"></div>
+          </div>
+        </div>
+
+        <div class="stat-card sc-rose">
+          <div class="stat-header">
+            <div class="stat-icon si-rose">🩸</div>
+          </div>
+          <span class="stat-number sn-rose" style="font-size:30px;">{{ user.blood_group if user.blood_group else '—'
+            }}</span>
+          <div class="stat-label">Blood Group</div>
+          <div class="stat-bar">
+            <div class="stat-bar-fill sbf-rose" style="width:80%"></div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div><!-- /.stats-row -->
+
+      <!-- ── MAIN GRID ── -->
+      <div class="main-grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-left">
+
+          <!-- Profile Panel -->
+          <div class="panel" data-tilt>
+            <div class="profile-core">
+              <div class="av-shell">
+                <div class="av-ring-track"></div>
+                <div class="av-ring-gap"></div>
+                {% if user.photo %}
                 <img src="{{ user.photo }}" alt="{{ user.name }}" class="av-img">
-              {% else %}
+                {% else %}
                 <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="{{ user.name }}" class="av-img">
-              {% endif %}
-              <div class="av-pulse"></div>
-            </div>
+                {% endif %}
+                <div class="av-pulse"></div>
+              </div>
 
-            <div class="profile-name">{{ user.name }}</div>
+              <div class="profile-name">{{ user.name }}</div>
 
-            {% if is_super_admin %}
+              {% if is_super_admin %}
               <span class="role-chip rc-super">⭐ Super Admin</span>
-            {% elif is_admin %}
+              {% elif is_admin %}
               <span class="role-chip rc-admin">🛡️ Admin</span>
-            {% elif is_section_admin %}
+              {% elif is_section_admin %}
               <span class="role-chip rc-section">📋 Section Admin</span>
-            {% else %}
+              {% else %}
               <span class="role-chip rc-member">👤 Member</span>
-            {% endif %}
-          </div>
-
-          <div class="divider"></div>
-
-          <ul class="info-stack">
-            <li class="info-row">
-              <span class="ir-l">Member ID</span>
-              <span class="ir-v">{{ user.membership_id }}</span>
-            </li>
-            <li class="info-row">
-              <span class="ir-l">Phone</span>
-              <span class="ir-v">{{ user.phone }}</span>
-            </li>
-            <li class="info-row">
-              <span class="ir-l">Nativity</span>
-              <span class="ir-v">{{ user.nativity }}</span>
-            </li>
-          </ul>
-
-          <div class="divider"></div>
-          <div class="btn-row">
-            <a href="{{ url_for('portal.complete_profile') }}" class="btn btn-sky">📷 Update Profile</a>
-            <a href="{{ url_for('portal.change_password') }}" class="btn btn-ghost">🔐 Password</a>
-          </div>
-        </div><!-- /profile panel -->
-
-        <!-- Membership Panel -->
-        <div class="panel p2" style="background:linear-gradient(155deg,#f0f9ff 0%,#e0f2fe 100%);border-color:rgba(59,130,246,0.14);" data-tilt>
-          <div class="panel-head">
-            <div class="panel-icon">🪪</div>
-            <div>
-              <div class="panel-title">Membership</div>
-              <div class="panel-sub">Current Status</div>
+              {% endif %}
             </div>
-          </div>
 
-          <div class="date-row">
-  <div class="date-block">
-    <div class="dl">Start Date</div>
-    <div class="dv">{{ validity_start }}</div>
-  </div>
+            <div class="divider"></div>
 
-  <div class="date-block">
-    <div class="dl">End Date</div>
-    <div class="dv">{{ validity_end }}</div>
-  </div>
-</div>
+            <ul class="info-stack">
+              <li class="info-row">
+                <span class="ir-l">Member ID</span>
+                <span class="ir-v">{{ user.membership_id }}</span>
+              </li>
+              <li class="info-row">
+                <span class="ir-l">Phone</span>
+                <span class="ir-v">{{ user.phone }}</span>
+              </li>
+              <li class="info-row">
+                <span class="ir-l">Nativity</span>
+                <span class="ir-v">{{ user.nativity }}</span>
+              </li>
+            </ul>
 
-          {% if expired %}
+            <div class="divider"></div>
+            <div class="btn-row">
+              <a href="{{ url_for('portal.complete_profile') }}" class="btn btn-sky">📷 Update Profile</a>
+              <a href="{{ url_for('portal.change_password') }}" class="btn btn-ghost">🔐 Password</a>
+            </div>
+          </div><!-- /profile panel -->
+
+          <!-- Membership Panel -->
+          <div class="panel p2"
+            style="background:linear-gradient(155deg,#f0f9ff 0%,#e0f2fe 100%);border-color:rgba(59,130,246,0.14);"
+            data-tilt>
+            <div class="panel-head">
+              <div class="panel-icon">🪪</div>
+              <div>
+                <div class="panel-title">Membership</div>
+                <div class="panel-sub">Current Status</div>
+              </div>
+            </div>
+
+            <div class="date-row">
+              <div class="date-block">
+                <div class="dl">Start Date</div>
+                <div class="dv">{{ validity_start }}</div>
+              </div>
+
+              <div class="date-block">
+                <div class="dl">End Date</div>
+                <div class="dv">{{ validity_end }}</div>
+              </div>
+            </div>
+
+            {% if expired %}
             <span class="status-badge sb-exp"><span class="sd"></span> Membership Expired</span>
-          {% else %}
-            <span class="status-badge sb-ok"><span class="sd"></span> Active Member</span>
-          {% endif %}
-
-          {% if renewal_enabled %}
-            {% if renewal_status == "PENDING" %}
-              <div class="alert-strip as-warn"><span>⏳</span><span>Renewal request is pending approval</span></div>
-            {% elif renewal_status == "APPROVED" %}
-              <div style="margin-top:14px">
-                <a href="{{ url_for('portal.view_receipt') }}" class="btn btn-mint">📄 Download Receipt</a>
-              </div>
             {% else %}
-              <div style="margin-top:14px">
-                <a href="{{ url_for('portal.renew') }}" class="btn btn-sky">🔄 Renew Membership</a>
-              </div>
+            <span class="status-badge sb-ok"><span class="sd"></span> Active Member</span>
             {% endif %}
-          {% endif %}
-        </div><!-- /membership panel -->
 
-      </div><!-- /col-left -->
+            {% if renewal_enabled %}
+            {% if renewal_status == "PENDING" %}
+            <div class="alert-strip as-warn"><span>⏳</span><span>Renewal request is pending approval</span></div>
+            {% elif renewal_status == "APPROVED" %}
+            <div style="margin-top:14px">
+              <a href="{{ url_for('portal.view_receipt') }}" class="btn btn-mint">📄 Download Receipt</a>
+            </div>
+            {% else %}
+            <div style="margin-top:14px">
+              <a href="{{ url_for('portal.renew') }}" class="btn btn-sky">🔄 Renew Membership</a>
+            </div>
+            {% endif %}
+            {% endif %}
+          </div><!-- /membership panel -->
 
-      <!-- RIGHT COLUMN -->
-      <div class="col-right">
+        </div><!-- /col-left -->
 
-        <!-- Additional Info Panel -->
-        <div class="panel p3" data-tilt>
-          <div class="panel-head">
-            <div class="panel-icon pi-violet">ℹ️</div>
-            <div>
-              <div class="panel-title">Profile Details</div>
-              <div class="panel-sub">Additional Information</div>
-            </div>
-          </div>
+        <!-- RIGHT COLUMN -->
+        <div class="col-right">
 
-          <div class="fields-2col">
-            <div class="field">
-              <span class="field-lbl">Address</span>
-              <span class="field-val">{{ user.address if user.address else "—" }}</span>
+          <!-- Additional Info Panel -->
+          <div class="panel p3" data-tilt>
+            <div class="panel-head">
+              <div class="panel-icon pi-violet">ℹ️</div>
+              <div>
+                <div class="panel-title">Profile Details</div>
+                <div class="panel-sub">Additional Information</div>
+              </div>
             </div>
-            <div class="field">
-              <span class="field-lbl">Email</span>
-              <span class="field-val">{{ user.email if user.email else "—" }}</span>
-            </div>
-            <div class="field">
-              <span class="field-lbl">WhatsApp</span>
-              <span class="field-val">{{ user.whatsapp if user.whatsapp else "—" }}</span>
-            </div>
-            <div class="field">
-              <span class="field-lbl">Date of Birth</span>
-              <span class="field-val">{{ user.dob if user.dob else "—" }}</span>
-            </div>
-            <div class="field">
-              <span class="field-lbl">Age</span>
-              <span class="field-val">{% if user.dob %}{{ calculate_age(user.dob) }}{% else %}—{% endif %}</span>
-            </div>
-            <div class="field">
-              <span class="field-lbl">Blood Group</span>
-              <span class="field-val">{{ user.blood_group if user.blood_group else "—" }}</span>
-            </div>
-            <div class="field field-full">
-              <span class="field-lbl">Interests</span>
-              <span class="field-val">{{ user.interests if user.interests else "—" }}</span>
-            </div>
-          </div>
 
-          <div class="divider"></div>
-          <a href="{{ url_for('portal.complete_profile') }}" class="btn btn-sky">✏️ Edit Information</a>
-        </div><!-- /info panel -->
-
-        <!-- Announcements Panel -->
-        <div class="panel p4" data-tilt>
-          <div class="panel-head">
-            <div class="panel-icon pi-amber">📢</div>
-            <div>
-              <div class="panel-title">Announcements</div>
-              <div class="panel-sub">From the Association</div>
+            <div class="fields-2col">
+              <div class="field">
+                <span class="field-lbl">Address</span>
+                <span class="field-val">{{ user.address if user.address else "—" }}</span>
+              </div>
+              <div class="field">
+                <span class="field-lbl">Email</span>
+                <span class="field-val">{{ user.email if user.email else "—" }}</span>
+              </div>
+              <div class="field">
+                <span class="field-lbl">WhatsApp</span>
+                <span class="field-val">{{ user.whatsapp if user.whatsapp else "—" }}</span>
+              </div>
+              <div class="field">
+                <span class="field-lbl">Date of Birth</span>
+                <span class="field-val">{{ user.dob if user.dob else "—" }}</span>
+              </div>
+              <div class="field">
+                <span class="field-lbl">Age</span>
+                <span class="field-val">{% if user.dob %}{{ calculate_age(user.dob) }}{% else %}—{% endif %}</span>
+              </div>
+              <div class="field">
+                <span class="field-lbl">Blood Group</span>
+                <span class="field-val">{{ user.blood_group if user.blood_group else "—" }}</span>
+              </div>
+              <div class="field field-full">
+                <span class="field-lbl">Interests</span>
+                <span class="field-val">{{ user.interests if user.interests else "—" }}</span>
+              </div>
             </div>
-          </div>
 
-          <div class="ann-list">
-            {% for a in announcements %}
+            <div class="divider"></div>
+            <a href="{{ url_for('portal.complete_profile') }}" class="btn btn-sky">✏️ Edit Information</a>
+          </div><!-- /info panel -->
+
+          <!-- Announcements Panel -->
+          <div class="panel p4" data-tilt>
+            <div class="panel-head">
+              <div class="panel-icon pi-amber">📢</div>
+              <div>
+                <div class="panel-title">Announcements</div>
+                <div class="panel-sub">From the Association</div>
+              </div>
+            </div>
+
+            <div class="ann-list">
+              {% for a in announcements %}
               <div class="ann-item">
                 <div class="ann-title">{{ a.title }}</div>
                 <div class="ann-body">{{ a.message }}</div>
               </div>
-            {% else %}
+              {% else %}
               <div class="ann-empty">
                 <span class="ann-empty-icon">📭</span>
                 <div style="font-size:14px;color:var(--t4)">No announcements at this time.</div>
               </div>
-            {% endfor %}
+              {% endfor %}
+            </div>
+          </div><!-- /announcements panel -->
+
+        </div><!-- /col-right -->
+
+      </div><!-- /.main-grid -->
+
+      <!-- ── ADMIN PANEL ── -->
+      {% if is_admin or is_super_admin or is_section_admin %}
+      <div class="panel p5" style="margin-top:20px;background:linear-gradient(155deg,#fafbff 0%,#f5f7ff 100%);"
+        data-tilt>
+        <div class="panel-head">
+          <div class="panel-icon" style="background:var(--violet-pale);border-color:rgba(139,92,246,0.18);">⚙️</div>
+          <div>
+            <div class="panel-title">Administration</div>
+            <div class="panel-sub">Portal Management Tools</div>
           </div>
-        </div><!-- /announcements panel -->
-
-      </div><!-- /col-right -->
-
-    </div><!-- /.main-grid -->
-
-    <!-- ── ADMIN PANEL ── -->
-    {% if is_admin or is_super_admin or is_section_admin %}
-    <div class="panel p5" style="margin-top:20px;background:linear-gradient(155deg,#fafbff 0%,#f5f7ff 100%);" data-tilt>
-      <div class="panel-head">
-        <div class="panel-icon" style="background:var(--violet-pale);border-color:rgba(139,92,246,0.18);">⚙️</div>
-        <div>
-          <div class="panel-title">Administration</div>
-          <div class="panel-sub">Portal Management Tools</div>
         </div>
-      </div>
 
-      <div class="admin-grid">
+        <div class="admin-grid">
 
-        <!-- LEFT: Stats -->
-        <div>
-          <div class="sec-lbl">Member Snapshot</div>
+          <!-- LEFT: Stats -->
+          <div>
+            <div class="sec-lbl">Member Snapshot</div>
 
-          <div class="ratio-box">
-            <div class="radial-wrap">
-              <svg width="76" height="76" viewBox="0 0 76 76">
-                <defs>
-                  <linearGradient id="rGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stop-color="#1d4ed8"/>
-                    <stop offset="60%"  stop-color="#3b82f6"/>
-                    <stop offset="100%" stop-color="#34d399"/>
-                  </linearGradient>
-                </defs>
-                <circle class="r-bg"   cx="38" cy="38" r="30"/>
-                <circle class="r-fill" cx="38" cy="38" r="30" id="r-circle"/>
-              </svg>
-              <div class="r-lbl">
-                <span id="r-pct">0%</span>
-                <span class="r-lbl-sub">ACTIVE</span>
+            <div class="ratio-box">
+              <div class="radial-wrap">
+                <svg width="76" height="76" viewBox="0 0 76 76">
+                  <defs>
+                    <linearGradient id="rGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#1d4ed8" />
+                      <stop offset="60%" stop-color="#3b82f6" />
+                      <stop offset="100%" stop-color="#34d399" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="r-bg" cx="38" cy="38" r="30" />
+                  <circle class="r-fill" cx="38" cy="38" r="30" id="r-circle" />
+                </svg>
+                <div class="r-lbl">
+                  <span id="r-pct">0%</span>
+                  <span class="r-lbl-sub">ACTIVE</span>
+                </div>
+              </div>
+              <div class="ratio-info">
+                <div class="ratio-name">Active Member Ratio</div>
+                <div class="ratio-desc" id="ratio-desc">{{ active_members }} of {{ total_members }} members active</div>
+                <div class="prog-bar">
+                  <div class="prog-fill" id="prog-fill"></div>
+                </div>
               </div>
             </div>
-            <div class="ratio-info">
-              <div class="ratio-name">Active Member Ratio</div>
-              <div class="ratio-desc" id="ratio-desc">{{ active_members }} of {{ total_members }} members active</div>
-              <div class="prog-bar">
-                <div class="prog-fill" id="prog-fill"></div>
+
+            <div class="sec-lbl">Medical Inventory</div>
+            <div class="med-row">
+              <div class="med-stat ms-sky">
+                <span class="med-num" id="cnt-med-total" data-target="{{ total_medical_items }}">0</span>
+                <div class="med-lbl">Total</div>
+              </div>
+              <div class="med-stat ms-mint">
+                <span class="med-num" id="cnt-med-avail" data-target="{{ available_medical }}">0</span>
+                <div class="med-lbl">Available</div>
+              </div>
+              <div class="med-stat ms-amb">
+                <span class="med-num" id="cnt-med-issued" data-target="{{ issued_medical }}">0</span>
+                <div class="med-lbl">Issued</div>
+              </div>
+              <div class="med-stat ms-rose">
+                <span class="med-num" id="cnt-med-overdue" data-target="{{ overdue_medical }}">0</span>
+                <div class="med-lbl">Overdue</div>
               </div>
             </div>
-          </div>
 
-          <div class="sec-lbl">Medical Inventory</div>
-          <div class="med-row">
-            <div class="med-stat ms-sky">
-              <span class="med-num" id="cnt-med-total" data-target="{{ total_medical_items }}">0</span>
-              <div class="med-lbl">Total</div>
-            </div>
-            <div class="med-stat ms-mint">
-              <span class="med-num" id="cnt-med-avail" data-target="{{ available_medical }}">0</span>
-              <div class="med-lbl">Available</div>
-            </div>
-            <div class="med-stat ms-amb">
-              <span class="med-num" id="cnt-med-issued" data-target="{{ issued_medical }}">0</span>
-              <div class="med-lbl">Issued</div>
-            </div>
-            <div class="med-stat ms-rose">
-              <span class="med-num" id="cnt-med-overdue" data-target="{{ overdue_medical }}">0</span>
-              <div class="med-lbl">Overdue</div>
-            </div>
-          </div>
-
-          {% if is_admin or is_super_admin %}
-          <div class="mc-bar">
-            <div class="mc-lbl">🔑 Membership Renewal Control</div>
-            <form method="POST" action="{{ url_for('portal.toggle_renewal') }}" style="display:inline">
-              <input type="hidden" name="value" value="{{ '0' if renewal_enabled else '1' }}">
-              {% if renewal_enabled %}
+            {% if is_admin or is_super_admin %}
+            <div class="mc-bar">
+              <div class="mc-lbl">🔑 Membership Renewal Control</div>
+              <form method="POST" action="{{ url_for('portal.toggle_renewal') }}" style="display:inline">
+                <input type="hidden" name="value" value="{{ '0' if renewal_enabled else '1' }}">
+                {% if renewal_enabled %}
                 <button type="submit" class="btn btn-rose">🔒 Disable Renewal</button>
-              {% else %}
+                {% else %}
                 <button type="submit" class="btn btn-mint">🔓 Enable Renewal</button>
-              {% endif %}
-            </form>
-          </div>
-          {% endif %}
-        </div><!-- /admin left -->
+                {% endif %}
+              </form>
+            </div>
+            {% endif %}
+          </div><!-- /admin left -->
 
-        <!-- RIGHT: Actions -->
-        <div>
-          <div class="sec-lbl">Quick Actions</div>
-          <div class="tile-grid">
-            <a href="{{ url_for('portal.admin_members') }}"       class="tile"><div class="tile-icon">👥</div><span>Members</span></a>
-            <a href="{{ url_for('portal.admin_add_member') }}"    class="tile"><div class="tile-icon">➕</div><span>Add Member</span></a>
-            <a href="{{ url_for('portal.admin_announcements') }}" class="tile"><div class="tile-icon ti-amber">📢</div><span>Announce</span></a>
-            <a href="{{ url_for('portal.admin_renewals') }}"      class="tile"><div class="tile-icon">💳</div><span>Renewals</span></a>
-            <a href="{{ url_for('portal.admin_events') }}"        class="tile"><div class="tile-icon ti-violet">📅</div><span>Events</span></a>
-            <a href="{{ url_for('portal.admin_analytics') }}"     class="tile"><div class="tile-icon ti-violet">📊</div><span>Analytics</span></a>
-            <a href="{{ url_for('portal.blood_donors') }}"        class="tile t-red"><div class="tile-icon ti-red">🩸</div><span>Blood Panel</span></a>
-            <a href="{{ url_for('portal.medical_dashboard') }}"   class="tile t-green"><div class="tile-icon ti-green">🏥</div><span>Medical</span></a>
-          </div>
+          <!-- RIGHT: Actions -->
+          <div>
+            <div class="sec-lbl">Quick Actions</div>
+            <div class="tile-grid">
+              <a href="{{ url_for('portal.admin_members') }}" class="tile">
+                <div class="tile-icon">👥</div><span>Members</span>
+              </a>
+              <a href="{{ url_for('portal.admin_add_member') }}" class="tile">
+                <div class="tile-icon">➕</div><span>Add Member</span>
+              </a>
+              <a href="{{ url_for('portal.admin_announcements') }}" class="tile">
+                <div class="tile-icon ti-amber">📢</div><span>Announce</span>
+              </a>
+              <a href="{{ url_for('portal.admin_renewals') }}" class="tile">
+                <div class="tile-icon">💳</div><span>Renewals</span>
+              </a>
+              <a href="{{ url_for('portal.admin_events') }}" class="tile">
+                <div class="tile-icon ti-violet">📅</div><span>Events</span>
+              </a>
+              <a href="{{ url_for('portal.admin_analytics') }}" class="tile">
+                <div class="tile-icon ti-violet">📊</div><span>Analytics</span>
+              </a>
+              <a href="{{ url_for('portal.blood_donors') }}" class="tile t-red">
+                <div class="tile-icon ti-red">🩸</div><span>Blood Panel</span>
+              </a>
+              <a href="{{ url_for('portal.medical_dashboard') }}" class="tile t-green">
+                <div class="tile-icon ti-green">🏥</div><span>Medical</span>
+              </a>
+            </div>
 
-          {% if is_super_admin %}
-          <div class="sec-lbl" style="margin-top:18px">Super Admin Tools</div>
-          <div class="tile-grid">
-            <a href="{{ url_for('portal.admin_dashboard') }}"  class="tile t-amber"><div class="tile-icon ti-amber">🖥️</div><span>Full Dashboard</span></a>
-            <a href="{{ url_for('portal.admin_committees') }}" class="tile t-amber"><div class="tile-icon ti-amber">📂</div><span>Committees</span></a>
-            <a href="{{ url_for('portal.create_committee') }}" class="tile t-amber"><div class="tile-icon ti-amber">➕</div><span>Create Committee</span></a>
-            <a href="{{ url_for('portal.manage_admins') }}"    class="tile t-violet"><div class="tile-icon ti-violet">🛡️</div><span>Manage Admins</span></a>
-          </div>
-          {% endif %}
-        </div><!-- /admin right -->
+            {% if is_super_admin %}
+            <div class="sec-lbl" style="margin-top:18px">Super Admin Tools</div>
+            <div class="tile-grid">
+              <a href="{{ url_for('portal.admin_dashboard') }}" class="tile t-amber">
+                <div class="tile-icon ti-amber">🖥️</div><span>Full Dashboard</span>
+              </a>
+              <a href="{{ url_for('portal.admin_committees') }}" class="tile t-amber">
+                <div class="tile-icon ti-amber">📂</div><span>Committees</span>
+              </a>
+              <a href="{{ url_for('portal.create_committee') }}" class="tile t-amber">
+                <div class="tile-icon ti-amber">➕</div><span>Create Committee</span>
+              </a>
+              <a href="{{ url_for('portal.manage_admins') }}" class="tile t-violet">
+                <div class="tile-icon ti-violet">🛡️</div><span>Manage Admins</span>
+              </a>
+            </div>
+            {% endif %}
+          </div><!-- /admin right -->
 
-      </div><!-- /.admin-grid -->
-    </div><!-- /admin panel -->
-    {% endif %}
+        </div><!-- /.admin-grid -->
+      </div><!-- /admin panel -->
+      {% endif %}
 
-  </div><!-- /.page -->
-</div><!-- /.main -->
+    </div><!-- /.page -->
+  </div><!-- /.main -->
 
-<!-- ════════════════════════════════
+  <!-- ════════════════════════════════
      JAVASCRIPT — all in one clean block
 ════════════════════════════════ -->
-<script>
-(function () {
-  'use strict';
+  <script>
+    (function () {
+      'use strict';
 
-  /* ── 1. LIVE CLOCK & DATE ── */
-  function tick() {
-    var now = new Date();
-    var timeStr = now.toLocaleTimeString('en-IN', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
-    });
-    var dateStr = now.toLocaleDateString('en-IN', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-    });
-    var clockEl = document.getElementById('live-clock');
-    var dateEl  = document.getElementById('live-date');
-    if (clockEl) clockEl.textContent = timeStr;
-    if (dateEl)  dateEl.textContent  = dateStr;
-  }
-  tick();
-  setInterval(tick, 1000);
-
-  /* ── 2. TOPBAR SCROLL SHADOW ── */
-  var topbar = document.getElementById('topbar');
-  if (topbar) {
-    window.addEventListener('scroll', function () {
-      topbar.classList.toggle('scrolled', window.scrollY > 20);
-    }, { passive: true });
-  }
-
-  /* ── 3. ANIMATED COUNT-UP ── */
-  function animateCount(el, target, duration) {
-    var startTime = null;
-    target = parseInt(target, 10) || 0;
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      var elapsed  = timestamp - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      // cubic ease-out
-      var eased    = 1 - Math.pow(1 - progress, 4);
-      el.textContent = Math.floor(eased * target);
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = target;
+      /* ── 1. LIVE CLOCK & DATE ── */
+      function tick() {
+        var now = new Date();
+        var timeStr = now.toLocaleTimeString('en-IN', {
+          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+        });
+        var dateStr = now.toLocaleDateString('en-IN', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+        var clockEl = document.getElementById('live-clock');
+        var dateEl = document.getElementById('live-date');
+        if (clockEl) clockEl.textContent = timeStr;
+        if (dateEl) dateEl.textContent = dateStr;
       }
-    }
-    requestAnimationFrame(step);
-  }
+      tick();
+      setInterval(tick, 1000);
 
-  /* Observe elements with data-target attribute */
-  var countEls = document.querySelectorAll('[data-target]');
-  if (countEls.length > 0 && 'IntersectionObserver' in window) {
-    var countObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var el     = entry.target;
-          var target = el.getAttribute('data-target');
-          var dur    = 1400 + Math.random() * 400;
-          animateCount(el, target, dur);
-          countObserver.unobserve(el);
+      /* ── 2. TOPBAR SCROLL SHADOW ── */
+      var topbar = document.getElementById('topbar');
+      if (topbar) {
+        window.addEventListener('scroll', function () {
+          topbar.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
+      }
+
+      /* ── 3. ANIMATED COUNT-UP ── */
+      function animateCount(el, target, duration) {
+        var startTime = null;
+        target = parseInt(target, 10) || 0;
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          var elapsed = timestamp - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          // cubic ease-out
+          var eased = 1 - Math.pow(1 - progress, 4);
+          el.textContent = Math.floor(eased * target);
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            el.textContent = target;
+          }
         }
+        requestAnimationFrame(step);
+      }
+
+      /* Observe elements with data-target attribute */
+      var countEls = document.querySelectorAll('[data-target]');
+      if (countEls.length > 0 && 'IntersectionObserver' in window) {
+        var countObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var el = entry.target;
+              var target = el.getAttribute('data-target');
+              var dur = 1400 + Math.random() * 400;
+              animateCount(el, target, dur);
+              countObserver.unobserve(el);
+            }
+          });
+        }, { threshold: 0.3 });
+        countEls.forEach(function (el) { countObserver.observe(el); });
+      } else {
+        /* Fallback: just set the values immediately */
+        countEls.forEach(function (el) {
+          el.textContent = el.getAttribute('data-target') || '0';
+        });
+      }
+
+      /* ── 4. MEMBER RATIO — progress bar + radial chart ── */
+      (function () {
+        var total = parseInt('{{ total_members }}', 10) || 0;
+        var active = parseInt('{{ active_members }}', 10) || 0;
+        var expired = parseInt('{{ expired_members }}', 10) || 0;
+        var pct = total > 0 ? Math.round((active / total) * 100) : 0;
+
+        /* Radial SVG donut */
+        var rCircle = document.getElementById('r-circle');
+        var rPct = document.getElementById('r-pct');
+        var progFill = document.getElementById('prog-fill');
+
+        if (rPct) rPct.textContent = pct + '%';
+
+        setTimeout(function () {
+          if (rCircle) {
+            var circumference = 2 * Math.PI * 30; /* r=30 */
+            var offset = circumference - (pct / 100) * circumference;
+            rCircle.style.strokeDashoffset = offset;
+          }
+          if (progFill) {
+            progFill.style.width = pct + '%';
+          }
+
+          /* Member stat bars */
+          var barTotal = document.getElementById('bar-total');
+          var barActive = document.getElementById('bar-active');
+          var barExpired = document.getElementById('bar-expired');
+          var barId = document.getElementById('bar-id');
+
+          if (barTotal) barTotal.style.width = '100%';
+          if (barActive) barActive.style.width = (total > 0 ? (active / total * 100) : 0) + '%';
+          if (barExpired) barExpired.style.width = (total > 0 ? (expired / total * 100) : 0) + '%';
+          if (barId) barId.style.width = '100%';
+        }, 700);
+      })();
+
+      /* ── 5. 3D CARD TILT ── */
+      document.querySelectorAll('[data-tilt]').forEach(function (card) {
+        card.addEventListener('mouseenter', function () {
+          card.style.transition = 'none';
+        });
+        card.addEventListener('mousemove', function (e) {
+          var rect = card.getBoundingClientRect();
+          var dx = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+          var dy = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+          var rotX = -dy * 4;
+          var rotY = dx * 4;
+          card.style.transform = 'translateY(-4px) perspective(1000px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
+        });
+        card.addEventListener('mouseleave', function () {
+          card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease';
+          card.style.transform = '';
+        });
       });
-    }, { threshold: 0.3 });
-    countEls.forEach(function (el) { countObserver.observe(el); });
-  } else {
-    /* Fallback: just set the values immediately */
-    countEls.forEach(function (el) {
-      el.textContent = el.getAttribute('data-target') || '0';
-    });
-  }
 
-  /* ── 4. MEMBER RATIO — progress bar + radial chart ── */
-  (function () {
-    var total   = parseInt('{{ total_members }}',   10) || 0;
-    var active  = parseInt('{{ active_members }}',  10) || 0;
-    var expired = parseInt('{{ expired_members }}', 10) || 0;
-    var pct     = total > 0 ? Math.round((active / total) * 100) : 0;
+      /* ── 6. PARTICLE CANVAS ── */
+      (function () {
+        var cv = document.getElementById('canvas');
+        if (!cv) return;
+        var ctx = cv.getContext('2d');
+        var W, H;
 
-    /* Radial SVG donut */
-    var rCircle = document.getElementById('r-circle');
-    var rPct    = document.getElementById('r-pct');
-    var progFill= document.getElementById('prog-fill');
+        function resize() {
+          W = cv.width = window.innerWidth;
+          H = cv.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize, { passive: true });
+        resize();
 
-    if (rPct) rPct.textContent = pct + '%';
+        var isMob = window.innerWidth < 600;
 
-    setTimeout(function () {
-      if (rCircle) {
-        var circumference = 2 * Math.PI * 30; /* r=30 */
-        var offset = circumference - (pct / 100) * circumference;
-        rCircle.style.strokeDashoffset = offset;
-      }
-      if (progFill) {
-        progFill.style.width = pct + '%';
-      }
+        /* Emoji stickers */
+        var EMOJIS = [
+          '🌸', '🌺', '🌷', '💐', '🌼', '✨', '💫', '⭐',
+          '🏆', '🏅', '🎭', '🎨', '🎵', '🤝', '❤️', '💙',
+          '⚽', '🏸', '🎯', '🩸', '📚', '🌿', '🦋', '🕊️'
+        ];
 
-      /* Member stat bars */
-      var barTotal   = document.getElementById('bar-total');
-      var barActive  = document.getElementById('bar-active');
-      var barExpired = document.getElementById('bar-expired');
-      var barId      = document.getElementById('bar-id');
+        var numStickers = isMob ? 6 : 14;
+        var stickers = [];
+        for (var i = 0; i < numStickers; i++) {
+          stickers.push({
+            e: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            sz: isMob ? (8 + Math.random() * 10) : (10 + Math.random() * 16),
+            vx: (Math.random() - 0.5) * 0.14,
+            vy: -(Math.random() * 0.16 + 0.03),
+            rot: Math.random() * Math.PI * 2,
+            rs: (Math.random() - 0.5) * 0.007,
+            a: Math.random() * 0.09 + 0.025,
+            ph: Math.random() * Math.PI * 2,
+            ps: Math.random() * 0.005 + 0.002
+          });
+        }
 
-      if (barTotal)   barTotal.style.width   = '100%';
-      if (barActive)  barActive.style.width  = (total > 0 ? (active  / total * 100) : 0) + '%';
-      if (barExpired) barExpired.style.width = (total > 0 ? (expired / total * 100) : 0) + '%';
-      if (barId)      barId.style.width      = '100%';
-    }, 700);
-  })();
+        /* Floating dots */
+        var DCOLS = [
+          [59, 130, 246],
+          [16, 185, 129],
+          [139, 92, 246],
+          [245, 158, 11]
+        ];
+        var numDots = isMob ? 20 : 44;
+        var dots = [];
+        for (var j = 0; j < numDots; j++) {
+          var c = DCOLS[Math.floor(Math.random() * DCOLS.length)];
+          dots.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 2.2 + 0.6,
+            vx: (Math.random() - 0.5) * 0.10,
+            vy: -(Math.random() * 0.15 + 0.03),
+            col: c,
+            a: Math.random() * 0.30 + 0.08,
+            ph: Math.random() * Math.PI * 2,
+            ps: Math.random() * 0.015 + 0.006
+          });
+        }
 
-  /* ── 5. 3D CARD TILT ── */
-  document.querySelectorAll('[data-tilt]').forEach(function (card) {
-    card.addEventListener('mouseenter', function () {
-      card.style.transition = 'none';
-    });
-    card.addEventListener('mousemove', function (e) {
-      var rect = card.getBoundingClientRect();
-      var dx   = (e.clientX - rect.left  - rect.width  / 2) / (rect.width  / 2);
-      var dy   = (e.clientY - rect.top   - rect.height / 2) / (rect.height / 2);
-      var rotX = -dy * 4;
-      var rotY =  dx * 4;
-      card.style.transform = 'translateY(-4px) perspective(1000px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg)';
-    });
-    card.addEventListener('mouseleave', function () {
-      card.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s ease';
-      card.style.transform  = '';
-    });
-  });
+        function drawFrame() {
+          ctx.clearRect(0, 0, W, H);
 
-  /* ── 6. PARTICLE CANVAS ── */
-  (function () {
-    var cv = document.getElementById('canvas');
-    if (!cv) return;
-    var ctx = cv.getContext('2d');
-    var W, H;
+          /* Draw dots */
+          for (var d = 0; d < dots.length; d++) {
+            var dot = dots[d];
+            dot.ph += dot.ps;
+            dot.y += dot.vy;
+            dot.x += dot.vx + Math.sin(dot.ph * 0.5) * 0.18;
+            if (dot.y < -8) { dot.y = H + 8; dot.x = Math.random() * W; }
+            if (dot.x < -8) dot.x = W + 8;
+            if (dot.x > W + 8) dot.x = -8;
+            var pulse = 0.4 + 0.6 * Math.sin(dot.ph);
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + dot.col[0] + ',' + dot.col[1] + ',' + dot.col[2] + ',' + (dot.a * pulse) + ')';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(' + dot.col[0] + ',' + dot.col[1] + ',' + dot.col[2] + ',0.4)';
+            ctx.fill();
+            ctx.restore();
+          }
 
-    function resize() {
-      W = cv.width  = window.innerWidth;
-      H = cv.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize, { passive: true });
-    resize();
+          /* Draw stickers */
+          for (var s = 0; s < stickers.length; s++) {
+            var stk = stickers[s];
+            stk.ph += stk.ps;
+            stk.rot += stk.rs;
+            stk.x += stk.vx + Math.sin(stk.ph * 0.4) * 0.2;
+            stk.y += stk.vy;
+            if (stk.y < -50) { stk.y = H + 50; stk.x = Math.random() * W; }
+            if (stk.x < -50) stk.x = W + 50;
+            if (stk.x > W + 50) stk.x = -50;
+            var sPulse = 0.5 + 0.5 * Math.sin(stk.ph);
+            ctx.save();
+            ctx.globalAlpha = stk.a * sPulse;
+            ctx.translate(stk.x, stk.y);
+            ctx.rotate(stk.rot);
+            ctx.font = stk.sz + 'px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(stk.e, 0, 0);
+            ctx.restore();
+          }
 
-    var isMob = window.innerWidth < 600;
+          requestAnimationFrame(drawFrame);
+        }
 
-    /* Emoji stickers */
-    var EMOJIS = [
-      '🌸','🌺','🌷','💐','🌼','✨','💫','⭐',
-      '🏆','🏅','🎭','🎨','🎵','🤝','❤️','💙',
-      '⚽','🏸','🎯','🩸','📚','🌿','🦋','🕊️'
-    ];
+        drawFrame();
+      })();
 
-    var numStickers = isMob ? 6 : 14;
-    var stickers = [];
-    for (var i = 0; i < numStickers; i++) {
-      stickers.push({
-        e:   EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
-        x:   Math.random() * window.innerWidth,
-        y:   Math.random() * window.innerHeight,
-        sz:  isMob ? (8 + Math.random() * 10) : (10 + Math.random() * 16),
-        vx:  (Math.random() - 0.5) * 0.14,
-        vy:  -(Math.random() * 0.16 + 0.03),
-        rot: Math.random() * Math.PI * 2,
-        rs:  (Math.random() - 0.5) * 0.007,
-        a:   Math.random() * 0.09 + 0.025,
-        ph:  Math.random() * Math.PI * 2,
-        ps:  Math.random() * 0.005 + 0.002
-      });
-    }
+    })(); /* end IIFE */
 
-    /* Floating dots */
-    var DCOLS = [
-      [59, 130, 246],
-      [16, 185, 129],
-      [139, 92, 246],
-      [245, 158, 11]
-    ];
-    var numDots = isMob ? 20 : 44;
-    var dots = [];
-    for (var j = 0; j < numDots; j++) {
-      var c = DCOLS[Math.floor(Math.random() * DCOLS.length)];
-      dots.push({
-        x:   Math.random() * window.innerWidth,
-        y:   Math.random() * window.innerHeight,
-        r:   Math.random() * 2.2 + 0.6,
-        vx:  (Math.random() - 0.5) * 0.10,
-        vy:  -(Math.random() * 0.15 + 0.03),
-        col: c,
-        a:   Math.random() * 0.30 + 0.08,
-        ph:  Math.random() * Math.PI * 2,
-        ps:  Math.random() * 0.015 + 0.006
-      });
-    }
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
 
-    function drawFrame() {
-      ctx.clearRect(0, 0, W, H);
+      sidebar.classList.toggle("open");
 
-      /* Draw dots */
-      for (var d = 0; d < dots.length; d++) {
-        var dot = dots[d];
-        dot.ph += dot.ps;
-        dot.y  += dot.vy;
-        dot.x  += dot.vx + Math.sin(dot.ph * 0.5) * 0.18;
-        if (dot.y < -8) { dot.y = H + 8; dot.x = Math.random() * W; }
-        if (dot.x < -8)  dot.x = W + 8;
-        if (dot.x > W + 8) dot.x = -8;
-        var pulse = 0.4 + 0.6 * Math.sin(dot.ph);
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-        ctx.fillStyle  = 'rgba(' + dot.col[0] + ',' + dot.col[1] + ',' + dot.col[2] + ',' + (dot.a * pulse) + ')';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor= 'rgba(' + dot.col[0] + ',' + dot.col[1] + ',' + dot.col[2] + ',0.4)';
-        ctx.fill();
-        ctx.restore();
-      }
-
-      /* Draw stickers */
-      for (var s = 0; s < stickers.length; s++) {
-        var stk = stickers[s];
-        stk.ph  += stk.ps;
-        stk.rot += stk.rs;
-        stk.x   += stk.vx + Math.sin(stk.ph * 0.4) * 0.2;
-        stk.y   += stk.vy;
-        if (stk.y < -50) { stk.y = H + 50; stk.x = Math.random() * W; }
-        if (stk.x < -50)  stk.x = W + 50;
-        if (stk.x > W + 50) stk.x = -50;
-        var sPulse = 0.5 + 0.5 * Math.sin(stk.ph);
-        ctx.save();
-        ctx.globalAlpha = stk.a * sPulse;
-        ctx.translate(stk.x, stk.y);
-        ctx.rotate(stk.rot);
-        ctx.font          = stk.sz + 'px serif';
-        ctx.textAlign     = 'center';
-        ctx.textBaseline  = 'middle';
-        ctx.fillText(stk.e, 0, 0);
-        ctx.restore();
-      }
-
-      requestAnimationFrame(drawFrame);
-    }
-
-    drawFrame();
-  })();
-
-})(); /* end IIFE */
-
-function toggleSidebar(){
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("sidebarOverlay");
-
-    sidebar.classList.toggle("open");
-
-    if(sidebar.classList.contains("open")){
+      if (sidebar.classList.contains("open")) {
         overlay.classList.add("show");
-    }else{
+      } else {
         overlay.classList.remove("show");
+      }
     }
-}
-</script>
+  </script>
 
 </body>
+
 </html>
