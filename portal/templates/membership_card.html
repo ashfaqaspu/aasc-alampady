@@ -914,77 +914,71 @@
     ═══════════════════════════════════════════ */
     @media print {
 
-  @page {
-    size: A4 portrait;
-    margin: 0;
+  @page{
+    size:A4 portrait;
+    margin:10mm;
   }
 
-  body {
-    background: white;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  body{
+    background:white !important;
+    margin:0;
+    padding:0;
   }
 
+  /* remove background effects */
   body::before,
-  body::after {
-    display: none;
+  body::after{
+    display:none !important;
   }
 
-  .page-eyebrow,
-  .action-row {
-    display: none !important;
-  }
-
-  .card-wrapper {
-    width: 380px;
-    margin: auto;
-    animation: none;
-  }
-
-  .card-shell {
-    animation: none;
-    padding: 1px;
-    background: #dde0ea;
-  }
-
-  .card-shell::before {
-    display: none;
-  }
-
-  .card {
-    backdrop-filter: none;
-    background: white;
-    box-shadow: 0 0 0 1px #dde0ea;
-  }
-
+  /* remove overlay effects */
   .card::before,
-  .card::after {
-    display: none;
+  .card::after{
+    display:none !important;
   }
 
-  .card-header::before {
-    animation: none;
-    background: #7aa7ff;
+  .card-shell::before{
+    display:none !important;
   }
 
-  .photo-ring-outer {
-    animation: none;
-    background: var(--luxury-accent);
+  /* disable glass blur */
+  .card{
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    background:white !important;
+    box-shadow:none !important;
   }
 
-  .tier-badge,
-  .status-badge {
-    animation: none;
+  /* stop animations */
+  *{
+    animation:none !important;
+    transition:none !important;
   }
 
-  * {
-    animation: none !important;
-    transition: none !important;
+  /* hide buttons and label */
+  .action-row,
+  .page-eyebrow{
+    display:none !important;
   }
+
+  /* keep card centered */
+  .card-wrapper{
+    width:380px;
+    margin:0 auto;
+  }
+
+  /* ensure all sections print */
+  .card-header,
+  .card-identity,
+  .card-info,
+  .card-address,
+  .card-status,
+  .card-footer{
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+  }
+
 }
     /* ═══════════════════════════════════════════
        RESPONSIVE
