@@ -913,41 +913,79 @@
        PRINT STYLES
     ═══════════════════════════════════════════ */
     @media print {
-      body {
-        background: white;
-        padding: 20px;
-      }
 
-      body::before,
-      body::after { display: none; }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
 
-      .card-wrapper { animation: none; }
-      .card-shell { animation: none; padding: 1px; background: #dde0ea; }
-      .card-shell::before { display: none; }
+  body {
+    background: white;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
-      .card {
-        backdrop-filter: none;
-        background: white;
-        box-shadow: 0 0 0 1px #dde0ea;
-      }
+  body::before,
+  body::after {
+    display: none;
+  }
 
-      .card::before,
-      .card::after { display: none; }
+  .page-eyebrow,
+  .action-row {
+    display: none !important;
+  }
 
-      .card-header::before { animation: none; background: #7aa7ff; }
+  .card-wrapper {
+    width: 380px;
+    margin: auto;
+    animation: none;
+  }
 
-      .photo-ring-outer { animation: none; background: var(--luxury-accent); }
+  .card-shell {
+    animation: none;
+    padding: 1px;
+    background: #dde0ea;
+  }
 
-      .tier-badge,
-      .status-badge { animation: none; }
+  .card-shell::before {
+    display: none;
+  }
 
-      .action-row { display: none; }
+  .card {
+    backdrop-filter: none;
+    background: white;
+    box-shadow: 0 0 0 1px #dde0ea;
+  }
 
-      .page-eyebrow { display: none; }
+  .card::before,
+  .card::after {
+    display: none;
+  }
 
-      * { animation: none !important; transition: none !important; }
-    }
+  .card-header::before {
+    animation: none;
+    background: #7aa7ff;
+  }
 
+  .photo-ring-outer {
+    animation: none;
+    background: var(--luxury-accent);
+  }
+
+  .tier-badge,
+  .status-badge {
+    animation: none;
+  }
+
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
     /* ═══════════════════════════════════════════
        RESPONSIVE
     ═══════════════════════════════════════════ */
