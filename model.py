@@ -108,7 +108,11 @@ class PortalEvent(db.Model):
     event_date = db.Column(db.Date)
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
+    participants = db.relationship(
+    "PortalEventParticipant",
+    backref="event",
+    lazy=True
+)
 
 class PortalEventParticipant(db.Model):   # ✅ NOT inside PortalEvent
     __tablename__ = "portal_event_participants"

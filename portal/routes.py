@@ -69,20 +69,19 @@ def dashboard():
 
     total_members = User.query.count()
 
-    # Subquery to get latest receipt per user
-    latest_receipts = db.session.query(
-        Receipt.user_id,
-        func.max(Receipt.membership_end).label("latest_end")
-    ).group_by(
-        Receipt.user_id
-    ).subquery()
+    active_members = 0
+    expired_members = 0
 
-    # Active members
-    active_members = db.session.query(latest_receipts)\
-        .filter(latest_receipts.c.latest_end >= today)\
-        .count()
+    users = User.query.all()
 
-    expired_members = total_members - active_members
+    for u in users:
+
+        _, validity_end = get_membership_validity(u)
+
+        if validity_end >= today:
+            active_members += 1
+        else:
+            expired_members += 1
 
     total_committees = Committee.query.count()
 
@@ -168,7 +167,6 @@ def dashboard():
         total_pending_renewals=total_pending_renewals,
         renewal_success_rate=renewal_success_rate
     )
-
 @portal_bp.route("/logout")
 def logout():
     session.clear()
