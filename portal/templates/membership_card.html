@@ -1,613 +1,1134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Digital Membership Card</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AASC Membership Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ═══════════════════════════════════════════
+       DIAMOND PREMIUM LIGHT — DESIGN TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      /* Core palette */
+      --diamond-white:    #ffffff;
+      --soft-pearl:       #f7f8fc;
+      --pearl-mid:        #eef0f6;
+      --platinum:         #c2c6d4;
+      --platinum-light:   #dde0ea;
+      --crystal-blue:     #e8f0ff;
+      --crystal-mid:      #d0e2ff;
+      --luxury-accent:    #7aa7ff;
+      --diamond-glow:     #a8c8ff;
+      --accent-deep:      #4a7de8;
+      --soft-text:        #2b2d35;
+      --mid-text:         #5a5d6e;
+      --light-text:       #8b8fa3;
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+      /* Status */
+      --active-green:     #1a9e5c;
+      --active-bg:        #e8f8f0;
+      --active-border:    #a3dfc0;
+      --expired-red:      #c0392b;
+      --expired-bg:       #fdf0ef;
+      --expired-border:   #f5b7b1;
 
-        @keyframes shimmer    { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
-        @keyframes spinRing   { to{transform:rotate(360deg)} }
-        @keyframes pulseGlow  { from{opacity:.6;transform:scale(1)} to{opacity:1;transform:scale(1.06)} }
-        @keyframes cardIn     { from{opacity:0;transform:translateY(32px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-        @keyframes starFloat  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-        @keyframes scanline   { 0%{top:-10%} 100%{top:110%} }
-        @keyframes borderGlow { 0%,100%{opacity:.6} 50%{opacity:1} }
+      /* Typography */
+      --font-display:     'Cinzel', serif;
+      --font-serif:       'Playfair Display', Georgia, serif;
+      --font-body:        'Lato', system-ui, sans-serif;
 
-        body {
-            background:
-                radial-gradient(ellipse 90% 60% at 20% 20%, rgba(30,20,5,.95) 0%, transparent 60%),
-                radial-gradient(ellipse 70% 80% at 80% 80%, rgba(15,30,25,.95) 0%, transparent 60%),
-                #080604;
-            font-family: 'Raleway', sans-serif;
-            min-height: 100vh;
-            padding: 50px 20px 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            overflow-x: hidden;
-        }
+      /* Radii */
+      --r-card:   28px;
+      --r-inner:  16px;
+      --r-pill:   999px;
+      --r-sm:     8px;
 
-        /* ── background particles ── */
-        body::before {
-            content: '';
-            position: fixed; inset: 0;
-            background-image:
-                radial-gradient(circle at 1px 1px, rgba(184,117,26,.12) 1px, transparent 0);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        body::after {
-            content: '';
-            position: fixed; inset: 0;
-            background:
-                radial-gradient(ellipse 50% 40% at 10% 30%, rgba(184,117,26,.06) 0%, transparent 60%),
-                radial-gradient(ellipse 40% 50% at 90% 70%, rgba(42,122,114,.05) 0%, transparent 55%);
-            pointer-events: none; z-index: 0;
-        }
+      /* Easing */
+      --spring:   cubic-bezier(0.16, 1, 0.3, 1);
+      --ease:     cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        /* ══════════════════════
-           OUTER FRAME / STAGE
-        ══════════════════════ */
-        .card-stage {
-            position: relative; z-index: 10;
-            animation: cardIn .9s cubic-bezier(.16,1,.3,1) both .1s;
-        }
+    /* ═══════════════════════════════════════════
+       PAGE SCAFFOLD
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* large decorative ring behind card */
-        .card-stage::before {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            width: 520px; height: 520px;
-            border-radius: 50%;
-            border: 1px solid rgba(184,117,26,.08);
-            animation: spinRing 40s linear infinite;
-        }
-        .card-stage::after {
-            content: '';
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%,-50%);
-            width: 480px; height: 480px;
-            border-radius: 50%;
-            border: 1px dashed rgba(184,117,26,.06);
-            animation: spinRing 28s linear infinite reverse;
-        }
+    html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
 
-        /* ══════════════════════
-           THE CARD
-        ══════════════════════ */
-        .id-card {
-            max-width: 420px;
-            width: 100%;
-            position: relative;
-            border-radius: 28px;
-            overflow: hidden;
-            background:
-                linear-gradient(160deg,
-                    #1c1409 0%,
-                    #0e1a17 35%,
-                    #120e06 60%,
-                    #0a1510 100%);
-            box-shadow:
-                0 0 0 1px rgba(184,117,26,.35),
-                0 0 0 2px rgba(184,117,26,.08),
-                0 40px 100px rgba(0,0,0,.9),
-                0 8px 40px rgba(0,0,0,.7),
-                inset 0 1px 0 rgba(232,192,122,.15),
-                inset 0 -1px 0 rgba(184,117,26,.08);
-        }
+    body {
+      font-family: var(--font-body);
+      background: var(--soft-pearl);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 48px 20px 64px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-        /* animated shimmer border */
-        .id-card::before {
-            content: '';
-            position: absolute; inset: 0;
-            border-radius: 28px;
-            padding: 1.5px;
-            background: linear-gradient(135deg,
-                rgba(184,117,26,.7) 0%,
-                rgba(232,192,122,.9) 20%,
-                rgba(184,117,26,.3) 40%,
-                rgba(42,122,114,.4) 55%,
-                rgba(184,117,26,.3) 70%,
-                rgba(232,192,122,.9) 85%,
-                rgba(184,117,26,.7) 100%);
-            background-size: 300% 300%;
-            animation: shimmer 6s linear infinite;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: destination-out;
-            mask-composite: exclude;
-            pointer-events: none; z-index: 10;
-        }
+    /* ── Ambient background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 15% 20%, rgba(168, 200, 255, 0.22) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 85% 75%, rgba(122, 167, 255, 0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(208, 226, 255, 0.18) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        /* subtle scanline sweep */
-        .id-card::after {
-            content: '';
-            position: absolute; left: 0; right: 0; height: 80px;
-            background: linear-gradient(transparent, rgba(232,192,122,.04), transparent);
-            animation: scanline 7s linear infinite;
-            pointer-events: none; z-index: 3;
-        }
+    /* ── Dot grid texture ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(122,167,255,0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        /* inner content padding wrapper */
-        .card-inner {
-            position: relative; z-index: 5;
-            padding: 28px 28px 30px;
-        }
+    /* ═══════════════════════════════════════════
+       WRAPPER
+    ═══════════════════════════════════════════ */
+    .card-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
 
-        /* ── top shimmer bar ── */
-        .card-shimmer-bar {
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg,
-                transparent,
-                rgba(184,117,26,.4) 20%,
-                rgba(232,192,122,.95) 50%,
-                rgba(184,117,26,.4) 80%,
-                transparent);
-            background-size: 300% 100%;
-            animation: shimmer 4s linear infinite;
-            border-radius: 28px 28px 0 0;
-        }
+    /* ── Page label ── */
+    .page-eyebrow {
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      align-self: center;
+    }
 
-        /* ── corner ornaments ── */
-        .corner { position: absolute; width: 32px; height: 32px; z-index: 6; }
-        .corner-tl { top: 14px; left: 14px; border-top: 1.5px solid rgba(232,192,122,.6); border-left: 1.5px solid rgba(232,192,122,.6); }
-        .corner-tr { top: 14px; right: 14px; border-top: 1.5px solid rgba(232,192,122,.6); border-right: 1.5px solid rgba(232,192,122,.6); }
-        .corner-bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid rgba(232,192,122,.4); border-left: 1.5px solid rgba(232,192,122,.4); }
-        .corner-br { bottom: 14px; right: 14px; border-bottom: 1.5px solid rgba(232,192,122,.4); border-right: 1.5px solid rgba(232,192,122,.4); }
+    .page-eyebrow::before,
+    .page-eyebrow::after {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--platinum));
+    }
 
-        /* ══════════════════════
-           HEADER
-        ══════════════════════ */
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
-            gap: 10px;
-        }
+    .page-eyebrow::after {
+      background: linear-gradient(90deg, var(--platinum), transparent);
+    }
 
-        .card-logo {
-            width: 46px; height: 46px;
-            object-fit: contain;
-            border-radius: 50%;
-            border: 1.5px solid rgba(232,192,122,.45);
-            box-shadow:
-                0 0 18px rgba(184,117,26,.3),
-                inset 0 1px 0 rgba(255,255,255,.1);
-            background: rgba(232,192,122,.07);
-            padding: 3px;
-            flex-shrink: 0;
-        }
+    /* ═══════════════════════════════════════════
+       DIAMOND BORDER SHELL
+       Animated conic-gradient border
+    ═══════════════════════════════════════════ */
+    .card-shell {
+      width: 100%;
+      position: relative;
+      padding: 2px;
+      border-radius: calc(var(--r-card) + 2px);
+      /* Animated shimmer border */
+      background: conic-gradient(
+        from var(--border-angle, 0deg),
+        var(--crystal-mid)   0deg,
+        var(--luxury-accent) 60deg,
+        var(--diamond-glow)  120deg,
+        var(--platinum)      180deg,
+        var(--crystal-mid)   240deg,
+        var(--luxury-accent) 300deg,
+        var(--crystal-mid)   360deg
+      );
+      animation: borderSpin 8s linear infinite;
+    }
 
-        .card-title {
-            text-align: center; flex: 1;
-        }
+    @property --border-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
 
-        .card-title h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 14.5px; font-weight: 700;
-            letter-spacing: 3.5px;
-            background: linear-gradient(135deg, #c9981a, #f0d88a, #c9981a);
-            background-size: 200% 200%;
-            animation: shimmer 4s linear infinite;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 4px;
-        }
+    @keyframes borderSpin {
+      to { --border-angle: 360deg; }
+    }
 
-        .card-title p {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic; font-size: 11.5px;
-            color: rgba(232,192,122,.6); letter-spacing: 1.5px;
-        }
+    /* Fallback for browsers without @property */
+    @supports not (background: conic-gradient(from 0deg, red, blue)) {
+      .card-shell {
+        background: linear-gradient(135deg, var(--crystal-mid), var(--luxury-accent), var(--platinum));
+      }
+    }
 
-        /* ── diamond divider ── */
-        .card-divider {
-            display: flex; align-items: center; gap: 10px;
-            margin: 4px 0 22px;
-        }
-        .card-divider-line {
-            flex: 1; height: 1px;
-        }
-        .card-divider-line:first-child { background: linear-gradient(90deg, transparent, rgba(184,117,26,.5)); }
-        .card-divider-line:last-child  { background: linear-gradient(90deg, rgba(184,117,26,.5), transparent); }
-        .card-divider-gem {
-            color: rgba(232,192,122,.7); font-size: 8px;
-            display: flex; gap: 5px;
-        }
+    /* ── Subtle outer glow ── */
+    .card-shell::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: calc(var(--r-card) + 6px);
+      background: conic-gradient(
+        from var(--border-angle, 0deg),
+        rgba(168, 200, 255, 0.15) 0deg,
+        rgba(122, 167, 255, 0.25) 60deg,
+        rgba(168, 200, 255, 0.10) 180deg,
+        rgba(122, 167, 255, 0.20) 300deg,
+        rgba(168, 200, 255, 0.15) 360deg
+      );
+      animation: borderSpin 8s linear infinite;
+      filter: blur(8px);
+      z-index: -1;
+    }
 
-        /* ══════════════════════
-           PHOTO
-        ══════════════════════ */
-        .photo-ring-wrap {
-            position: relative;
-            width: 120px; height: 120px;
-            margin: 0 auto 18px;
-        }
+    /* ═══════════════════════════════════════════
+       CARD BODY — Glassmorphism
+    ═══════════════════════════════════════════ */
+    .card {
+      width: 100%;
+      border-radius: var(--r-card);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      box-shadow:
+        0 24px 60px rgba(74, 125, 232, 0.10),
+        0 8px 24px rgba(0, 0, 0, 0.06),
+        0 2px 6px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0 rgba(200, 210, 240, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
 
-        /* spinning outer ring */
-        .photo-ring-outer {
-            position: absolute; inset: -10px;
-            border-radius: 50%;
-            border: 1px solid rgba(184,117,26,.3);
-            animation: spinRing 18s linear infinite;
-        }
-        .photo-ring-outer::before {
-            content: '◆ ◆ ◆ ◆';
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 5px; letter-spacing: 24px;
-            color: rgba(232,192,122,.4);
-            white-space: nowrap;
-            animation: spinRing 18s linear infinite reverse;
-        }
+    /* ── Inner light reflection streaks ── */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -20%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 70%
+      );
+      transform: skewX(-12deg);
+      pointer-events: none;
+      animation: lightSweep 7s ease-in-out infinite;
+    }
 
-        /* mid ring */
-        .photo-ring-mid {
-            position: absolute; inset: -4px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(184,117,26,.5);
-            box-shadow: 0 0 20px rgba(184,117,26,.15);
-        }
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 30% at 50% 0%, rgba(232, 240, 255, 0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 20% at 50% 100%, rgba(208, 226, 255, 0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
 
-        .id-photo {
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            border: 3px solid rgba(232,192,122,.5);
-            box-shadow:
-                0 0 30px rgba(184,117,26,.25),
-                inset 0 2px 0 rgba(255,255,255,.1);
-            background: rgba(20,12,4,.8);
-            position: relative; z-index: 2;
-        }
+    @keyframes lightSweep {
+      0%, 100% { transform: skewX(-12deg) translateX(-40%); opacity: 0; }
+      20%       { opacity: 1; }
+      45%       { transform: skewX(-12deg) translateX(200%); opacity: 0.6; }
+      50%, 99%  { transform: skewX(-12deg) translateX(200%); opacity: 0; }
+    }
 
-        /* ══════════════════════
-           NAME
-        ══════════════════════ */
-        .member-name {
-            text-align: center;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 24px; font-weight: 600;
-            letter-spacing: 1.5px;
-            background: linear-gradient(135deg, #c9981a, #f0d88a, #e8c07a, #c9981a);
-            background-size: 200% 200%;
-            animation: shimmer 5s linear infinite;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 5px;
-        }
+    /* ═══════════════════════════════════════════
+       HEADER BAND
+    ═══════════════════════════════════════════ */
+    .card-header {
+      position: relative;
+      padding: 26px 28px 22px;
+      background: linear-gradient(
+        160deg,
+        rgba(232, 240, 255, 0.7) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(208, 226, 255, 0.5) 100%
+      );
+      border-bottom: 1px solid rgba(194, 198, 212, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow: hidden;
+      z-index: 1;
+    }
 
-        /* ── diamond tier badge ── */
-        .tier-badge {
-            text-align: center; margin-bottom: 20px;
-        }
-        .tier-badge span {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: 3px;
-            text-transform: uppercase;
-            color: rgba(42,162,154,.9);
-            padding: 4px 14px; border-radius: 20px;
-            border: 1px solid rgba(42,122,114,.45);
-            background: rgba(42,122,114,.1);
-            animation: pulseGlow 3s ease-in-out infinite alternate;
-        }
-        .tier-badge span::before, .tier-badge span::after { content: '◆'; font-size: 6px; }
+    /* Header micro-shimmer */
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--crystal-mid) 25%,
+        var(--luxury-accent) 50%,
+        var(--diamond-glow) 75%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: headerShimmer 4s ease-in-out infinite;
+    }
 
-        /* ══════════════════════
-           DETAILS
-        ══════════════════════ */
-        .details {
-            font-size: 13px; position: relative;
-        }
+    @keyframes headerShimmer {
+      0%, 100% { background-position: -100% 0; }
+      50%       { background-position: 200% 0; }
+    }
 
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0;
-            gap: 10px;
-            padding: 9px 14px;
-            border-radius: 8px;
-            transition: background .3s;
-            border-bottom: 1px solid rgba(184,117,26,.08);
-        }
-        .detail-row:last-of-type { border-bottom: none; }
-        .detail-row:hover { background: rgba(184,117,26,.06); }
+    /* ── Logo containers ── */
+    .hd-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--diamond-white);
+      box-shadow:
+        0 4px 12px rgba(74, 125, 232, 0.14),
+        0 1px 4px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(194, 198, 212, 0.5);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s var(--spring), box-shadow 0.3s var(--ease);
+    }
 
-        .detail-label {
-            font-family: 'Cinzel', serif; font-size: 7.5px;
-            letter-spacing: 2px; text-transform: uppercase;
-            color: rgba(184,117,26,.65);
-            white-space: nowrap; flex-shrink: 0;
-        }
+    .hd-logo:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 20px rgba(74, 125, 232, 0.2), 0 2px 6px rgba(0,0,0,0.06);
+    }
 
-        .detail-value {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 15px; font-weight: 600;
-            color: rgba(247,240,230,.88);
-            text-align: right; letter-spacing: .3px;
-        }
+    .hd-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-        /* address */
-        .address {
-            margin-top: 8px; padding: 11px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(184,117,26,.1);
-            background: rgba(184,117,26,.04);
-        }
-        .address .detail-label { display: block; margin-bottom: 5px; }
-        .address .detail-value {
-            text-align: left; font-size: 13.5px;
-            line-height: 1.6; color: rgba(232,212,180,.75);
-        }
+    /* ── Center title block ── */
+    .hd-center {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
 
-        /* ══════════════════════
-           STATUS
-        ══════════════════════ */
-        .status {
-            margin-top: 20px; text-align: center;
-            font-family: 'Cinzel', serif; font-size: 9.5px;
-            font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
-            padding: 12px 18px; border-radius: 10px;
-        }
+    .hd-org {
+      font-family: var(--font-display);
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #3a5fc0 0%, var(--accent-deep) 40%, var(--luxury-accent) 80%, #a0b8f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
 
-        .active {
-            background: rgba(42,122,114,.12);
-            border: 1px solid rgba(42,122,114,.45);
-            color: rgba(100,220,200,.9);
-            box-shadow: 0 0 20px rgba(42,122,114,.15), inset 0 1px 0 rgba(100,220,200,.08);
-            animation: borderGlow 3s ease-in-out infinite;
-        }
+    .hd-sub {
+      font-family: var(--font-serif);
+      font-size: 9.5px;
+      font-style: italic;
+      color: var(--mid-text);
+      letter-spacing: 1.5px;
+      line-height: 1;
+    }
 
-        .expired {
-            background: rgba(180,40,40,.1);
-            border: 1px solid rgba(180,40,40,.4);
-            color: rgba(255,140,140,.85);
-            box-shadow: 0 0 20px rgba(180,40,40,.12);
-        }
+    .hd-divider {
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--luxury-accent), transparent);
+      margin: 3px auto;
+    }
 
-        /* ══════════════════════
-           FOOTER
-        ══════════════════════ */
-        .card-footer {
-            margin-top: 20px; padding-top: 16px;
-            border-top: 1px solid rgba(184,117,26,.12);
-            text-align: center;
-        }
-        .card-footer-text {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic; font-size: 11.5px;
-            color: rgba(184,117,26,.45); letter-spacing: 1px;
-        }
-        .card-footer-dots {
-            display: flex; justify-content: center; gap: 7px; margin-top: 10px;
-        }
-        .card-footer-dot {
-            width: 4px; height: 4px; border-radius: 50%;
-            background: rgba(184,117,26,.25);
-        }
-        .card-footer-dot:nth-child(2) {
-            width: 6px; height: 6px;
-            background: rgba(184,117,26,.45);
-        }
+    .hd-tagline {
+      font-family: var(--font-body);
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--light-text);
+    }
 
-        /* ══════════════════════
-           BUTTONS
-        ══════════════════════ */
-        .action-row {
-            display: flex; gap: 14px; margin-top: 32px;
-            justify-content: center; flex-wrap: wrap;
-            position: relative; z-index: 10;
-        }
+    /* ═══════════════════════════════════════════
+       MEMBER IDENTITY SECTION
+    ═══════════════════════════════════════════ */
+    .card-identity {
+      padding: 32px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
 
-        .print-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 13px 30px;
-            font-family: 'Cinzel', serif; font-size: 9.5px;
-            letter-spacing: 2.5px; text-transform: uppercase;
-            font-weight: 600; cursor: pointer;
-            border: none; border-radius: 6px;
-            background: linear-gradient(135deg, #b8751a, #d4891f, #c0622a);
-            background-size: 200% 200%;
-            animation: shimmer 4s linear infinite;
-            color: rgba(253,248,242,.95);
-            box-shadow:
-                0 6px 28px rgba(184,117,26,.45),
-                inset 0 1px 0 rgba(255,255,255,.2);
-            position: relative; overflow: hidden;
-            transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
-        }
-        .print-btn::after {
-            content: '';
-            position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
-            transform: skewX(-20deg);
-            transition: left .5s;
-        }
-        .print-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(184,117,26,.6), inset 0 1px 0 rgba(255,255,255,.2); }
-        .print-btn:hover::after { left: 150%; }
+    /* ── Diamond photo ring ── */
+    .photo-shell {
+      position: relative;
+      width: 108px;
+      height: 108px;
+    }
 
-        .back-link {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 13px 26px; border-radius: 6px;
-            font-family: 'Cinzel', serif; font-size: 9px;
-            letter-spacing: 2px; text-transform: uppercase;
-            color: rgba(184,117,26,.7);
-            text-decoration: none;
-            border: 1px solid rgba(184,117,26,.3);
-            background: rgba(184,117,26,.05);
-            transition: all .3s;
-        }
-        .back-link:hover {
-            border-color: rgba(184,117,26,.6);
-            color: rgba(232,192,122,.9);
-            background: rgba(184,117,26,.1);
-        }
+    /* Outer rotating diamond ring */
+    .photo-ring-outer {
+      position: absolute;
+      inset: -7px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from var(--ring-angle, 0deg),
+        var(--crystal-mid)   0deg,
+        var(--luxury-accent) 45deg,
+        var(--diamond-glow)  90deg,
+        var(--platinum)      135deg,
+        rgba(255,255,255,0.6) 180deg,
+        var(--crystal-mid)   225deg,
+        var(--luxury-accent) 270deg,
+        var(--diamond-glow)  315deg,
+        var(--crystal-mid)   360deg
+      );
+      animation: ringSpin 6s linear infinite;
+    }
 
-        /* ══════════════════════
-           PRINT
-        ══════════════════════ */
-        @media print {
-            body { background: white; padding: 0; }
-            body::before, body::after { display: none; }
-            .card-stage::before, .card-stage::after { display: none; }
-            .print-btn, .action-row, .back-link { display: none !important; }
-            .id-card {
-                box-shadow: none;
-                border: 1.5px solid #c9981a;
-                background: #fff !important;
-                color: #1a1208 !important;
-            }
-            .id-card::before, .id-card::after { display: none; }
-            .card-shimmer-bar { display: none; }
-            .card-title h3, .member-name { -webkit-text-fill-color: #b8751a !important; }
-            .detail-value { color: #1a1208 !important; }
-            .detail-label { color: #6b5540 !important; }
-            .address .detail-value { color: #6b5540 !important; }
-        }
+    @property --ring-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
 
-        /* ══════════════════════
-           MOBILE
-        ══════════════════════ */
-        @media (max-width: 500px) {
-            body { padding: 30px 12px 50px; }
-            .card-stage::before, .card-stage::after { display: none; }
-        }
-    </style>
+    @keyframes ringSpin {
+      to { --ring-angle: 360deg; }
+    }
+
+    /* White gap between ring and photo */
+    .photo-ring-gap {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Pulse glow */
+    .photo-ring-glow {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(122, 167, 255, 0.22) 0%, transparent 70%);
+      animation: photoGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes photoGlow {
+      from { opacity: 0.6; transform: scale(0.95); }
+      to   { opacity: 1;   transform: scale(1.05); }
+    }
+
+    /* Photo itself */
+    .photo-img {
+      position: absolute;
+      inset: 4px;
+      width: calc(100% - 8px);
+      height: calc(100% - 8px);
+      border-radius: 50%;
+      object-fit: cover;
+      z-index: 2;
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 6px 20px rgba(74, 125, 232, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    /* Diamond facet overlay */
+    .photo-facet {
+      position: absolute;
+      inset: 4px;
+      width: calc(100% - 8px);
+      height: calc(100% - 8px);
+      border-radius: 50%;
+      z-index: 3;
+      background: conic-gradient(
+        from 45deg,
+        transparent 0deg,
+        rgba(255,255,255,0.12) 30deg,
+        transparent 60deg,
+        rgba(255,255,255,0.08) 90deg,
+        transparent 120deg,
+        rgba(255,255,255,0.10) 150deg,
+        transparent 180deg
+      );
+      pointer-events: none;
+    }
+
+    /* ── Name block ── */
+    .member-name {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-align: center;
+      line-height: 1.2;
+      background: linear-gradient(
+        135deg,
+        #2a3a6e 0%,
+        var(--accent-deep) 35%,
+        var(--luxury-accent) 65%,
+        #3a5fc0 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Tier badge ── */
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 20px;
+      border-radius: var(--r-pill);
+      background: linear-gradient(135deg, rgba(208, 226, 255, 0.7) 0%, rgba(232, 240, 255, 0.9) 100%);
+      border: 1px solid rgba(122, 167, 255, 0.35);
+      box-shadow:
+        0 4px 14px rgba(122, 167, 255, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+      animation: badgeGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes badgeGlow {
+      from { box-shadow: 0 3px 12px rgba(122,167,255,0.15), inset 0 1px 0 rgba(255,255,255,0.8); }
+      to   { box-shadow: 0 6px 20px rgba(122,167,255,0.30), inset 0 1px 0 rgba(255,255,255,0.8); }
+    }
+
+    .tier-diamond {
+      font-size: 11px;
+    }
+
+    .tier-label {
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+    }
+
+    /* ═══════════════════════════════════════════
+       INFO SECTION
+    ═══════════════════════════════════════════ */
+    .card-info {
+      padding: 0 24px 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .info-grid {
+      background: rgba(247, 248, 252, 0.6);
+      border: 1px solid rgba(194, 198, 212, 0.3);
+      border-radius: var(--r-inner);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      gap: 12px;
+      border-bottom: 1px solid rgba(194, 198, 212, 0.22);
+      transition: background 0.2s var(--ease);
+      position: relative;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+
+    .info-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent, var(--luxury-accent), transparent);
+      opacity: 0;
+      transition: opacity 0.2s var(--ease);
+    }
+
+    .info-row:hover {
+      background: rgba(232, 240, 255, 0.5);
+    }
+
+    .info-row:hover::before {
+      opacity: 1;
+    }
+
+    .info-label {
+      font-family: var(--font-body);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--light-text);
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--soft-text);
+      text-align: right;
+      word-break: break-word;
+      max-width: 60%;
+    }
+
+    .info-value strong {
+      font-weight: 700;
+    }
+
+    /* Validity row special styling */
+    .info-row.validity-row .info-value {
+      font-family: var(--font-serif);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--mid-text);
+    }
+
+    /* ── Blood group emphasis ── */
+    .blood-value {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #c0392b, #e74c3c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ═══════════════════════════════════════════
+       STATUS SECTION
+    ═══════════════════════════════════════════ */
+    .card-status {
+      padding: 0 24px 24px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 24px;
+      border-radius: var(--r-pill);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active {
+      background: var(--active-bg);
+      color: var(--active-green);
+      border: 1px solid var(--active-border);
+      box-shadow: 0 4px 14px rgba(26, 158, 92, 0.14);
+      animation: activeGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes activeGlow {
+      from { box-shadow: 0 3px 10px rgba(26,158,92,0.12); }
+      to   { box-shadow: 0 5px 18px rgba(26,158,92,0.25); }
+    }
+
+    .status-badge.expired {
+      background: var(--expired-bg);
+      color: var(--expired-red);
+      border: 1px solid var(--expired-border);
+      box-shadow: 0 4px 14px rgba(192, 57, 43, 0.10);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-badge.active .status-dot {
+      background: var(--active-green);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    .status-badge.expired .status-dot {
+      background: var(--expired-red);
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(26,158,92,0.5); }
+      50%       { box-shadow: 0 0 0 5px rgba(26,158,92,0); }
+    }
+
+    /* ═══════════════════════════════════════════
+       ADDRESS SECTION (collapsible-feel)
+    ═══════════════════════════════════════════ */
+    .card-address {
+      padding: 0 24px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .address-block {
+      padding: 12px 16px;
+      border-radius: var(--r-sm);
+      background: rgba(232, 240, 255, 0.35);
+      border: 1px solid rgba(122, 167, 255, 0.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .address-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .address-content { flex: 1; }
+
+    .address-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--light-text);
+      margin-bottom: 3px;
+    }
+
+    .address-value {
+      font-size: 12px;
+      color: var(--mid-text);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       CARD FOOTER
+    ═══════════════════════════════════════════ */
+    .card-footer {
+      padding: 16px 24px 20px;
+      border-top: 1px solid rgba(194, 198, 212, 0.28);
+      background: linear-gradient(
+        160deg,
+        rgba(232, 240, 255, 0.35) 0%,
+        rgba(255, 255, 255, 0.2) 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-text {
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 400;
+      color: var(--light-text);
+      letter-spacing: 0.5px;
+      line-height: 1.5;
+    }
+
+    .footer-text span {
+      display: block;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 8px;
+    }
+
+    /* ── Decorative diamond marks ── */
+    .footer-diamonds {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .fd-diamond {
+      width: 7px;
+      height: 7px;
+      background: linear-gradient(135deg, var(--luxury-accent), var(--crystal-mid));
+      transform: rotate(45deg);
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+
+    .fd-diamond:nth-child(2) {
+      opacity: 0.9;
+      width: 9px;
+      height: 9px;
+      background: linear-gradient(135deg, var(--luxury-accent), var(--diamond-glow));
+    }
+
+    .fd-diamond:nth-child(3) {
+      opacity: 0.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACTION BUTTONS
+    ═══════════════════════════════════════════ */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 22px;
+      border-radius: 14px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s var(--spring), box-shadow 0.25s var(--ease);
+      flex: 1;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
+      transform: translateX(-120%) skewX(-10deg);
+      transition: transform 0.5s;
+    }
+
+    .btn:hover::after { transform: translateX(120%) skewX(-10deg); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.97); }
+
+    /* Primary — print button */
+    .btn-primary {
+      background: linear-gradient(135deg, #4a7de8 0%, #7aa7ff 50%, #a8c8ff 100%);
+      color: #ffffff;
+      box-shadow:
+        0 6px 20px rgba(74, 125, 232, 0.32),
+        0 2px 6px rgba(74, 125, 232, 0.18),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+
+    .btn-primary:hover {
+      box-shadow:
+        0 10px 30px rgba(74, 125, 232, 0.42),
+        0 4px 10px rgba(74, 125, 232, 0.22),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    /* Secondary — dashboard button */
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.75);
+      color: var(--accent-deep);
+      border: 1.5px solid rgba(122, 167, 255, 0.4);
+      box-shadow:
+        0 4px 14px rgba(74, 125, 232, 0.08),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(232, 240, 255, 0.9);
+      border-color: rgba(122, 167, 255, 0.65);
+      box-shadow: 0 6px 18px rgba(74, 125, 232, 0.16), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    /* ── Icon in button ── */
+    .btn-icon { font-size: 15px; }
+
+    /* ═══════════════════════════════════════════
+       CARD ENTRY ANIMATION
+    ═══════════════════════════════════════════ */
+    .card-wrapper {
+      animation: cardReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes cardReveal {
+      from {
+        opacity: 0;
+        transform: translateY(32px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Stagger children */
+    .page-eyebrow { animation: cardReveal 0.6s 0.1s var(--spring) both; }
+    .card-shell   { animation: cardReveal 0.8s 0.2s var(--spring) both; }
+    .action-row   { animation: cardReveal 0.6s 0.5s var(--spring) both; }
+
+    /* ═══════════════════════════════════════════
+       SCROLLBAR
+    ═══════════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--soft-pearl); }
+    ::-webkit-scrollbar-thumb { background: var(--luxury-accent); border-radius: 3px; }
+
+    ::selection { background: rgba(122, 167, 255, 0.2); color: var(--soft-text); }
+
+    /* ═══════════════════════════════════════════
+       PRINT STYLES
+    ═══════════════════════════════════════════ */
+    @media print {
+      body {
+        background: white;
+        padding: 20px;
+      }
+
+      body::before,
+      body::after { display: none; }
+
+      .card-wrapper { animation: none; }
+      .card-shell { animation: none; padding: 1px; background: #dde0ea; }
+      .card-shell::before { display: none; }
+
+      .card {
+        backdrop-filter: none;
+        background: white;
+        box-shadow: 0 0 0 1px #dde0ea;
+      }
+
+      .card::before,
+      .card::after { display: none; }
+
+      .card-header::before { animation: none; background: #7aa7ff; }
+
+      .photo-ring-outer { animation: none; background: var(--luxury-accent); }
+
+      .tier-badge,
+      .status-badge { animation: none; }
+
+      .action-row { display: none; }
+
+      .page-eyebrow { display: none; }
+
+      * { animation: none !important; transition: none !important; }
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 480px) {
+      body { padding: 24px 16px 48px; }
+
+      .card-header { padding: 20px 18px 16px; }
+      .hd-logo { width: 44px; height: 44px; border-radius: 12px; }
+      .hd-org { font-size: 11.5px; letter-spacing: 2px; }
+
+      .card-identity { padding: 24px 20px 18px; }
+
+      .card-info,
+      .card-status,
+      .card-address { padding-left: 18px; padding-right: 18px; }
+
+      .card-footer { padding: 14px 18px 16px; }
+
+      .action-row { flex-direction: column; gap: 10px; }
+      .btn { flex: unset; width: 100%; }
+    }
+
+    @media (max-width: 360px) {
+      .hd-org { font-size: 10px; letter-spacing: 1.5px; }
+      .member-name { font-size: 20px; }
+      .photo-shell { width: 90px; height: 90px; }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="card-stage">
-<div class="id-card">
-    <!-- animated shimmer top bar -->
-    <div class="card-shimmer-bar"></div>
+  <div class="card-wrapper">
 
-    <!-- corner ornaments -->
-    <div class="corner corner-tl"></div>
-    <div class="corner corner-tr"></div>
-    <div class="corner corner-bl"></div>
-    <div class="corner corner-br"></div>
+    <!-- ── Page label ── -->
+    <div class="page-eyebrow">Membership Card</div>
 
-    <div class="card-inner">
+    <!-- ══════════════════════════════════════
+         DIAMOND BORDER SHELL
+    ══════════════════════════════════════ -->
+    <div class="card-shell">
+      <div class="card">
 
-        <!-- HEADER -->
+        <!-- ── HEADER ── -->
         <div class="card-header">
-            <img src="{{ url_for('static', filename='aasc_logo.jpeg') }}" class="card-logo">
 
-            <div class="card-title">
-                <h3>AASC ALAMPADY</h3>
-                <p>Alampady Arts &amp; Sports Club</p>
+          <!-- Left logo: AASC -->
+          <div class="hd-logo">
+            <img src="{{ url_for('static', filename='aasc_logo.jpeg') }}" alt="AASC Logo">
+          </div>
+
+          <!-- Center: org title -->
+          <div class="hd-center">
+            <div class="hd-org">AASC ALAMPADY</div>
+            <div class="hd-divider"></div>
+            <div class="hd-sub">Alampady Arts &amp; Sports Club</div>
+            <div class="hd-tagline">Member ID · {{ user.membership_id }}</div>
+          </div>
+
+          <!-- Right logo: GCC -->
+          <div class="hd-logo">
+            <img src="{{ url_for('static', filename='gcc.jpeg') }}" alt="GCC Logo">
+          </div>
+
+        </div><!-- /card-header -->
+
+        <!-- ── IDENTITY ── -->
+        <div class="card-identity">
+
+          <!-- Diamond ring photo frame -->
+          <div class="photo-shell">
+            <div class="photo-ring-glow"></div>
+            <div class="photo-ring-outer"></div>
+            <div class="photo-ring-gap"></div>
+
+            {% if user.photo %}
+            <img src="{{ user.photo }}" alt="{{ user.name }}" class="photo-img">
+            {% else %}
+            <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="{{ user.name }}" class="photo-img">
+            {% endif %}
+
+            <div class="photo-facet"></div>
+          </div>
+
+          <!-- Member name -->
+          <div class="member-name">{{ user.name }}</div>
+
+          <!-- Tier badge -->
+          <div class="tier-badge">
+            <span class="tier-diamond">◆</span>
+            <span class="tier-label">Premium Member</span>
+            <span class="tier-diamond">◆</span>
+          </div>
+
+        </div><!-- /card-identity -->
+
+        <!-- ── INFO ROWS ── -->
+        <div class="card-info">
+          <div class="info-grid">
+
+            <div class="info-row">
+              <span class="info-label">Member ID</span>
+              <span class="info-value"><strong>{{ user.membership_id }}</strong></span>
             </div>
 
-            <img src="{{ url_for('static', filename='gcc.jpeg') }}" class="card-logo">
-        </div>
-
-        <!-- DIVIDER -->
-        <div class="card-divider">
-            <div class="card-divider-line"></div>
-            <div class="card-divider-gem"><span>◆</span><span style="font-size:5px;opacity:.5">◆</span><span>◆</span></div>
-            <div class="card-divider-line"></div>
-        </div>
-
-        <!-- PHOTO -->
-<div class="photo-ring-wrap">
-    <div class="photo-ring-outer"></div>
-    <div class="photo-ring-mid"></div>
-
-    {% if user.photo %}
-        <img src="{{ user.photo }}" 
-             alt="{{ user.name }}" 
-             class="id-photo">
-    {% else %}
-        <img src="{{ url_for('static', filename='default_avatar.png') }}" 
-             alt="Default Avatar" 
-             class="id-photo">
-    {% endif %}
-
-</div>
-
-
-        <!-- NAME -->
-        <div class="member-name">{{ user.name }}</div>
-
-        <!-- TIER BADGE -->
-        <div class="tier-badge">
-            <span>Premium Member</span>
-        </div>
-
-        <!-- DETAILS -->
-        <div class="details">
-
-            <div class="detail-row">
-                <span class="detail-label">Membership ID</span>
-                <span class="detail-value">{{ user.membership_id }}</span>
+            <div class="info-row">
+              <span class="info-label">Mobile</span>
+              <span class="info-value">{{ user.phone }}</span>
             </div>
 
-            <div class="detail-row">
-                <span class="detail-label">Mobile</span>
-                <span class="detail-value">{{ user.phone }}</span>
+            <div class="info-row">
+              <span class="info-label">Blood Group</span>
+              <span class="info-value blood-value">{{ user.blood_group if user.blood_group else '—' }}</span>
             </div>
 
-            <div class="detail-row">
-                <span class="detail-label">Blood Group</span>
-                <span class="detail-value">{{ user.blood_group or '-' }}</span>
+            <div class="info-row validity-row">
+              <span class="info-label">Validity</span>
+              <span class="info-value">{{ validity_start }} – {{ validity_end }}</span>
             </div>
 
-            <div class="detail-row">
-         <span class="detail-label">Validity</span>
-         <span class="detail-value">
-          {{ validity_start }} → {{ validity_end }}
-        </span>
+          </div>
+        </div><!-- /card-info -->
+
+        <!-- ── ADDRESS ── -->
+        <div class="card-address">
+          <div class="address-block">
+            <div class="address-icon">📍</div>
+            <div class="address-content">
+              <div class="address-label">Residence</div>
+              <div class="address-value">{{ user.address if user.address else '—' }}</div>
+            </div>
+          </div>
         </div>
 
-            <div class="address">
-                <span class="detail-label">Address</span>
-                <div class="detail-value">{{ user.address or '-' }}</div>
-            </div>
-
+        <!-- ── STATUS BADGE ── -->
+        <div class="card-status">
+          {% if expired %}
+          <div class="status-badge expired">
+            <span class="status-dot"></span>
+            Membership Expired
+          </div>
+          {% else %}
+          <div class="status-badge active">
+            <span class="status-dot"></span>
+            Active Member
+          </div>
+          {% endif %}
         </div>
 
-        <!-- STATUS -->
-        {% if expired %}
-            <div class="status expired">❌ &nbsp; Membership Expired</div>
-        {% else %}
-            <div class="status active">✦ &nbsp; Active Member &nbsp; ✦</div>
-        {% endif %}
-
-        <!-- FOOTER -->
+        <!-- ── FOOTER ── -->
         <div class="card-footer">
-            <div class="card-footer-text">Digitally generated membership card • AASC</div>
-            <div class="card-footer-dots">
-                <div class="card-footer-dot"></div>
-                <div class="card-footer-dot"></div>
-                <div class="card-footer-dot"></div>
-            </div>
-        </div>
+          <div class="footer-text">
+            <span>AASC Alampady</span>
+            Digitally generated membership card
+          </div>
+          <div class="footer-diamonds">
+            <div class="fd-diamond"></div>
+            <div class="fd-diamond"></div>
+            <div class="fd-diamond"></div>
+          </div>
+        </div><!-- /card-footer -->
 
-    </div><!-- /card-inner -->
-</div><!-- /id-card -->
-</div><!-- /card-stage -->
+      </div><!-- /card -->
+    </div><!-- /card-shell -->
 
-<!-- ACTIONS -->
-<div class="action-row">
-    <button onclick="window.print()" class="print-btn">
-        🖨️ &nbsp; Print Card
-    </button>
-    <a href="{{ url_for('portal.dashboard') }}" class="back-link">
-        ← &nbsp; Dashboard
-    </a>
-</div>
+    <!-- ── ACTION BUTTONS ── -->
+    <div class="action-row">
+
+      <button class="btn btn-primary" onclick="window.print()">
+        <span class="btn-icon">🖨️</span>
+        Print Card
+      </button>
+
+      <a href="{{ url_for('portal.dashboard') }}" class="btn btn-secondary">
+        <span class="btn-icon">⌂</span>
+        Dashboard
+      </a>
+
+    </div><!-- /action-row -->
+
+  </div><!-- /card-wrapper -->
 
 </body>
 </html>
