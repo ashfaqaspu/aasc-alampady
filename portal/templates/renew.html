@@ -127,21 +127,58 @@
 
     <!-- 🔥 ORIGINAL JS (UNCHANGED) -->
     <script>
-        function openUPI() {
-            const amount = document.getElementById("amount").value;
-            if (!amount || amount <= 0) {
-                alert("Please enter a valid amount");
-                return;
-            }
+       function getAmount() {
 
-            const upiId = "7012538103@upi";
-            const name = "AASC ALAMPADY";
+    const amount = document.getElementById("amount").value;
 
-            const url =
-                `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+    if (!amount || amount <= 0) {
+        alert("Please enter a valid amount");
+        return null;
+    }
 
-            window.location.href = url;
-        }
+    document.getElementById("amount_hidden").value = amount;
+
+    return amount;
+}
+
+function payGpay() {
+
+    const amount = getAmount();
+    if (!amount) return;
+
+    const upi = "ashfaqaspu4@oksbi";
+    const name = "AASC ALAMPADY";
+
+    const url = `tez://upi/pay?pa=${upi}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+
+    window.location.href = url;
+}
+
+function payPhonePe() {
+
+    const amount = getAmount();
+    if (!amount) return;
+
+    const upi = "7012538103@ibl";
+    const name = "AASC ALAMPADY";
+
+    const url = `phonepe://pay?pa=${upi}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+
+    window.location.href = url;
+}
+
+function payPaytm() {
+
+    const amount = getAmount();
+    if (!amount) return;
+
+    const upi = "7012538103@ptsbi";
+    const name = "AASC ALAMPADY";
+
+    const url = `paytmmp://pay?pa=${upi}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+
+    window.location.href = url;
+}
     </script>
 
 </head>
@@ -159,10 +196,16 @@
            placeholder="Enter amount"
            required>
 
-    <button type="button"
-            class="upi-btn"
-            onclick="openUPI()">
-        📱 Pay via UPI App
+    <button type="button" class="upi-btn" onclick="payGpay()">
+    💚 Pay via Google Pay
+    </button>
+
+    <button type="button" class="upi-btn" onclick="payPhonePe()">
+    💜 Pay via PhonePe
+    </button>
+
+    <button type="button" class="upi-btn" onclick="payPaytm()">
+    💙 Pay via Paytm
     </button>
 
     <!-- 🔥 STATIC QR SECTION -->
