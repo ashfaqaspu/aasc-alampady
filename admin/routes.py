@@ -180,7 +180,7 @@ def edit_sports(id):
         flash("Sport updated successfully!", "success")
         return redirect(url_for("admin.sports"))
 
-    return render_template("admin/edit_sports.html", item=sport)
+    return render_template("admin/edit_sport.html", item=sport)
 
 
 # ===================================================
@@ -345,7 +345,7 @@ def edit_event(id):
         flash("Event updated successfully!", "success")
         return redirect(url_for("admin.events"))
 
-    return render_template("admin/edit_event.html", item=event)
+    return render_template("admin/edit_event.html", event=event)
 
 
 # ===================================================
